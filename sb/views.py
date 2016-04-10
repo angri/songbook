@@ -31,7 +31,11 @@ def suggest_a_song(request):
 @login_required
 def view_song(request, song_id):
     song = get_object_or_404(models.Song, pk=song_id)
+
+    new_part_form = forms.SongPartForm()
+    new_link_form = forms.SongLinkForm()
     empty_join_form = forms.JoinSongPartForm()
+
     all_parts = {part.pk: {'part': part,
                            'performers': [],
                            'join_form': empty_join_form,
@@ -45,13 +49,19 @@ def view_song(request, song_id):
             all_parts[part_perf.part.pk]['join_form'] = forms.JoinSongPartForm(
                 initial={'notice': part_perf.notice}
             )
-
-    new_part_form = forms.SongPartForm()
-
     all_parts = [part_info for part_pk, part_info in sorted(all_parts.items())]
+
+    all_links = [
+        (link, forms.SongLinkForm(instance=link))
+        for link in song.songlink_set.all()
+    ]
+
     return render(request, 'sb/view_song.html',
-                  {'song': song, 'parts': all_parts,
-                   'new_part_form': new_part_form})
+                  {'song': song,
+                   'parts': all_parts,
+                   'links': all_links,
+                   'new_part_form': new_part_form,
+                   'new_link_form': new_link_form})
 
 
 @login_required
@@ -86,8 +96,6 @@ def add_song_part(request, song_id):
             notice=form.cleaned_data['notice'],
             instrument=form.cleaned_data['instrument']
         )
-    else:
-        print(form.errors)
     return JsonResponse({'result': 'ok'})
 
 
@@ -96,6 +104,37 @@ def remove_song_part(request, part_id):
     try:
         part = models.SongPart.objects.get(pk=part_id)
         part.delete()
-    except models.SongPerformer.DoesNotExist:
+    except models.SongPart.DoesNotExist:
         pass
+    return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def add_song_link(request, song_id):
+    form = forms.SongLinkForm(request.POST)
+    if form.is_valid():
+        models.SongLink.objects.create(
+            song_id=song_id,
+            notice=form.cleaned_data['notice'],
+            link=form.cleaned_data['link']
+        )
+    return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def remove_song_link(request, link_id):
+    try:
+        link = models.SongLink.objects.get(pk=link_id)
+        link.delete()
+    except models.SongLink.DoesNotExist:
+        pass
+    return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def edit_song_link(request, link_id):
+    link = get_object_or_404(models.SongLink, pk=link_id)
+    form = forms.SongLinkForm(request.POST, instance=link)
+    if form.is_valid():
+        form.save()
     return JsonResponse({'result': 'ok'})

@@ -60,6 +60,9 @@ class SongPartForm(BootstrapModelForm):
         fields = [
             'instrument', 'notice'
         ]
+        widgets = {
+            'instrument': forms.Select(attrs={'required': 'true'})
+        }
 
 
 class JoinSongPartForm(forms.ModelForm):
@@ -68,4 +71,13 @@ class JoinSongPartForm(forms.ModelForm):
         fields = ['notice']
         widgets = {
             'notice': forms.TextInput(attrs={'placeholder': 'Optional notice'})
+        }
+
+
+class SongLinkForm(BootstrapModelForm):
+    class Meta:
+        model = sb.models.SongLink
+        fields = ['link', 'notice']
+        widgets = {
+            'link': forms.TextInput(attrs={'required': 'true', 'type': 'url'})
         }

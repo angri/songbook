@@ -16,4 +16,10 @@ urlpatterns = [
         name='add-song-part'),
     url(r'^remove-part/(?P<part_id>\d+)$', views.remove_song_part,
         name='remove-song-part'),
+    url(r'^song/(?P<song_id>\d+)/add-a-link$', views.add_song_link,
+        name='add-song-link'),
+    url(r'^remove-link/(?P<link_id>\d+)$', views.remove_song_link,
+        name='remove-song-link'),
+    url(r'^edit-link/(?P<link_id>\d+)$', views.edit_song_link,
+        name='edit-song-link'),
 ]
