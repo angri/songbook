@@ -1,12 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 
 class Instrument(models.Model):
-    name = models.CharField(max_length=100, null=False, blank=True)
+    name = models.CharField(_("Instrument name"),
+                            max_length=100, null=False, blank=True)
 
     class Meta:
         ordering = ["name"]
+        verbose_name = _("instrument")
 
     def __str__(self):
         return self.name
@@ -62,7 +65,7 @@ class SongLink(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
                              null=False, blank=False)
     link = models.URLField(null=False, blank=False)
-    notice = models.CharField(max_length=150, null=False, blank=False)
+    notice = models.CharField(max_length=150, null=False, blank=True)
 
     class Meta:
         unique_together = [

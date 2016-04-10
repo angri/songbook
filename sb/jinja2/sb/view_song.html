@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}{{ song.title }} | {{ super() }}{% endblock %}
+
+{% block content %}
+
+<h1>
+  {{ song.title }}
+  <sup><span class="text-muted small">
+    {%- trans suggested_by=song.suggested_by -%}
+      suggested by {{ suggested_by }}
+    {%- endtrans -%}
+  </span></sup>
+</h1>
+
+{% if song.artist %}
+  <h2>{{ song.artist }}</h2>
+{% endif %}
+
+{% if song.description %}
+  <div class="lead">{{ song.description|markdown_safe }}</div>
+{% endif %}
+
+<hr>
+
+<div class="row">
+  <div class="col-sm-4">
+    <ul class="partsinfo">
+      {% for part_info in parts %}
+        <li {% if part_info.has_joined %}class="joined"{% endif %}>
+          <p>
+            <span class="instrument-name">{{ part_info.part.instrument.name }}</span>
+            {% if part_info.part.notice %}
+              <span class="text-muted">({{ part_info.part.notice }})</span>
+            {% endif %}
+            <button type="button" class="btn btn-default btn-xs show-join-form not-joined"
+              title="{{ _("Join this part") }}">
+              <span class="glyphicon glyphicon-flag"></span>
+            </button>
+            <button type="button" class="btn btn-default btn-xs show-join-form joined"
+              title="{{ _("Change notice or leave this part") }}">
+              <span class="glyphicon glyphicon-flag"></span>
+            </button>
+          </p>
+          <div class="join-form">
+            <form method="post" class="well well-sm"
+              data-join-action="{{ url('sb:join-song-part', part_info.part.pk) }}"
+              data-leave-action="{{ url('sb:leave-song-part', part_info.part.pk) }}">
+              {{ csrf(csrf_token) }}
+              <p>{{ part_info.join_form.notice }}</p>
+              <button type="button" class="btn btn-primary join-part">
+                {% trans %}Join{% endtrans %}
+              </button>
+              <button type="button" class="btn btn-success save-changes">
+                {% trans %}Save{% endtrans %}
+              </button>
+              <button type="button" class="btn btn-danger leave-part">
+                {% trans %}Leave part{% endtrans %}
+              </button>
+            </form>
+          </div>
+          <ul id="part-{{ part_info.part.id }}-performers" class="performers">
+            {% for performer in part_info.performers %}
+              <li>
+                {{- performer.performer -}}
+                {% if performer.notice %} <span class="text-muted">({{ performer.notice }}){% endif -%}
+              </li>
+            {% else %}
+              <span class="text-muted">&ndash;</span>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="col-sm-8">
+    {% for link in song.songlink_set.all() %}
+      {% if link.notice %}
+        <span class="link-notice">{{ link.notice }}</span>
+      {% endif %}
+
+      {% if link.link|is_yamusic_link %}
+        <div>
+          <iframe style="border:none; width: 600px; height: 100px;"
+            src="{{ link.link|get_yamusic_embed_link }}"></iframe>
+        </div>
+      {% elif link.link|is_youtube_link %}
+        <div>
+          <iframe width="600" height="{{ 600 / (1 + 1/3) }}"
+            src="{{ link.link|get_youtube_embed_link }}"
+            frameborder="0" allowfullscreen></iframe>
+        </div>
+      {% else %}
+        <a href="{{ link.link }}" target="_blank">{{ link.link|truncate }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  ul.partsinfo {
+    padding: 0;
+  }
+  ul.partsinfo > li {
+    list-style: none;
+    padding: 1em 0;
+  }
+  ul.partsinfo button.joined,
+  ul.partsinfo button.not-joined  {
+    display: none;
+    margin: -2px 0;
+  }
+  ul.partsinfo > li:hover button.not-joined  {
+    display: inline-block;
+  }
+  ul.partsinfo .instrument-name {
+    font-size: 120%;
+  }
+  ul.partsinfo .join-form {
+    display: inline-block;
+  }
+  ul.partsinfo button.save-changes,
+  ul.partsinfo button.joined,
+  ul.partsinfo button.leave-part {
+    display: none;
+  }
+  ul.partsinfo li.joined button.join-part,
+  ul.partsinfo li.joined button.not-joined {
+    display: none;
+  }
+  ul.partsinfo li.joined button.save-changes,
+  ul.partsinfo li.joined:hover button.joined,
+  ul.partsinfo li.joined button.leave-part {
+    display: inline-block;
+  }
+</style>
+
+<script>
+  $(function() {
+    $('ul.partsinfo .join-form').hide();
+    $('button.show-join-form').click(function() {
+      var joinForm = $(this).parents('li').find('.join-form');
+      if (joinForm.is(':visible')) {
+        joinForm.slideUp();
+      } else {
+        joinForm.slideDown();
+      }
+    });
+    $('button.join-part, button.save-changes').click(function() {
+      var joinFormContainer = $(this).parents('li').find('.join-form');
+      var joinForm = joinFormContainer.find('> form');
+      var partContainer = joinFormContainer.parents('ul.partsinfo > li');
+      var data = joinForm.serialize();
+      var action = joinForm.data('join-action');
+      $.post(action, data, function(result) {
+        joinFormContainer.slideUp(function() {
+          partContainer.addClass('joined')
+        });
+        var performersContainer = partContainer.find('.performers');
+        performersContainer.load(
+          window.location.href + ' #' + performersContainer.attr('id') + ' > *'
+        );
+      });
+    });
+    $('button.leave-part').click(function() {
+      var joinFormContainer = $(this).parents('li').find('.join-form');
+      var joinForm = joinFormContainer.find('> form');
+      var partContainer = joinFormContainer.parents('ul.partsinfo > li');
+      var data = joinForm.serialize();
+      var action = joinForm.data('leave-action');
+      $.post(action, data, function(result) {
+        joinFormContainer.slideUp(function() {
+          partContainer.removeClass('joined')
+        });
+        var performersContainer = partContainer.find('.performers');
+        performersContainer.load(
+          window.location.href + ' #' + performersContainer.attr('id') + ' > *'
+        );
+      });
+    });
+  });
+</script>
+
+
+{% endblock %}

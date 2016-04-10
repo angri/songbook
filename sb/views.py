@@ -1,14 +1,17 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.contrib.auth.decorators import login_required
 
 from sb import forms
 from sb import models
 
 
+@login_required
 def index(request):
     return HttpResponse("Hello, world. You're at the sb index.")
 
 
+@login_required
 def suggest_a_song(request):
     if request.method == 'POST':
         form = forms.SongForm(request.POST)
@@ -25,6 +28,7 @@ def suggest_a_song(request):
     return render(request, 'sb/suggest_a_song.html', {'form': form})
 
 
+@login_required
 def view_song(request, song_id):
     song = get_object_or_404(models.Song, pk=song_id)
     empty_join_form = forms.JoinSongPartForm()
@@ -47,6 +51,7 @@ def view_song(request, song_id):
                   {'song': song, 'parts': all_parts})
 
 
+@login_required
 def join_song_part(request, part_id):
     join_part_form = forms.JoinSongPartForm(request.POST)
     if join_part_form.is_valid():
@@ -54,4 +59,16 @@ def join_song_part(request, part_id):
             part_id=part_id, performer=request.user,
             defaults={'notice': join_part_form.cleaned_data['notice']}
         )
+    return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def leave_song_part(request, part_id):
+    try:
+        songperf = models.SongPerformer.objects.get(
+            part_id=part_id, performer=request.user
+        )
+        songperf.delete()
+    except models.SongPerformer.DoesNotExist:
+        pass
     return JsonResponse({'result': 'ok'})
