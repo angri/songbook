@@ -1,0 +1,55 @@
+{% load staticfiles %}
+<!doctype html>
+<head>{% block head %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block pagetitle %}{% endblock %}</title>
+  <link href="{% static 'sb/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  {#<link href="{% static 'bootstrap-islands.css' %}" rel="stylesheet">#}
+  <script src="{% static 'sb/jquery-2.2.3.min.js' %}"></script>
+  <script src="{% static 'sb/bootstrap/js/bootstrap.min.js' %}"></script>
+  {% block extrahead %}{% endblock %}
+{% endblock %}</head>
+<body>{% block body %}
+
+{% block navbar %}
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{% url 'sb:index' %}">songbook</a>
+      </div>
+      <div class="collapse navbar-collapse">
+        {% block breadcrumbs %}{% endblock %}
+      </div>
+    </div>
+  </nav>
+{% endblock %}
+
+<div class="container">
+  {% block flashes %}
+    {% if messages %}
+      <div id="flashes">
+        {% for message in messages %}
+          <p class="alert alert-dismissible alert-{{ message.tags }}">
+            <span>{{ message }}</span>
+            <button type="button" class="close" data-dismiss="alert">
+              &times;
+            </button>
+          </p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endblock %}
+
+  {% block content %}{% endblock %}
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted small text-right">
+    </p>
+  </div>
+</footer>
+
+{% endblock %}</body>
