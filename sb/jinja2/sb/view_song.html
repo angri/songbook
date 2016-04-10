@@ -117,48 +117,62 @@
   </div>
   <div class="col-sm-8">
     <ul id="links">
+      {% macro link_controls(link_pk) %}
+        <span class="controls" style="vertical-align: top">
+          <button type="button" class="btn btn-default btn-xs show-edit-form"
+            title="{{ _("Edit link") }}"
+            data-toggle="collapse" data-target="#edit-link-{{ link_pk }}-form">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </button>
+          <button type="button" class="btn btn-default btn-xs show-remove-form"
+            title="{{ _("Remove this link") }}"
+            data-toggle="collapse" data-target="#remove-link-{{ link_pk }}-form">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        </span>
+      {% endmacro %}
+
       {% for link, link_edit_form in links %}
         <li>
           {% if link.notice %}
-            <span class="link-notice">{{ link.notice }}:</span>
-            <a href="{{ link.link }}" target="_blank">
-              {{- link.link|truncate(60) -}}
-            </a>
-          {% elif link.link|is_yamusic_link %}
-            <span class="link-notice">{{ _("Yandex.Music:") }}</span>
-            <a href="{{ link.link }}" target="_blank">
-              {{- link.link|truncate(60) -}}
-            </a>
+            <p>
+              <span class="link-notice">{{ link.notice }}</span>
+              {% if not link.link|is_yamusic_link and not link.link|is_youtube_link %}
+                <a href="{{ link.link }}" target="_blank">
+                  {{- link.link|truncate(60) -}}
+                </a>
+              {% endif %}
+              {% if link.link|is_youtube_link %}
+                <button type="button" class="btn btn-default btn-sm"
+                  data-toggle="collapse" data-target="#youtube-{{ link.pk }}">
+                  {{ _("show") }}
+                </button>
+              {% endif %}
+              {% if not link.link|is_yamusic_link %}
+                {{ link_controls(link.pk) }}
+              {% endif %}
+            </p>
+          {%- elif link.link|is_yamusic_link -%}
           {% elif link.link|is_youtube_link %}
-            <span class="link-notice">{{ _("YouTube video:") }}</span>
-            <a href="{{ link.link }}" target="_blank">
-              {{- link.link|truncate(60) -}}
-            </a>
+            <p>
+              <span class="link-notice">{{ _("YouTube video:") }}</span>
+              <a href="{{ link.link }}" target="_blank">
+                {{- link.link|truncate(60) -}}
+              </a>
+              <button type="button" class="btn btn-default btn-sm"
+                data-toggle="collapse" data-target="#youtube-{{ link.pk }}">
+                {{ _("show") }}
+              </button>
+              {{ link_controls(link.pk) }}
+            </p>
           {% else %}
-            <a href="{{ link.link }}" target="_blank" class="link-notice">
-              {{- link.link|truncate(60) -}}
-            </a>
+            <p>
+              <a href="{{ link.link }}" target="_blank" class="link-notice">
+                {{- link.link|truncate(60) -}}
+              </a>
+              {{ link_controls(link.pk) }}
+            </p>
           {% endif %}
-
-          {% if link.link|is_youtube_link %}
-            <button type="button" class="btn btn-default btn-sm"
-              data-toggle="collapse" data-target="#youtube-{{ link.pk }}">
-              {{ _("show") }}
-            </button>
-          {% endif %}
-
-          <span class="controls">
-            <button type="button" class="btn btn-default btn-xs show-edit-form"
-              title="{{ _("Edit link") }}"
-              data-toggle="collapse" data-target="#edit-link-{{ link.pk }}-form">
-              <span class="glyphicon glyphicon-pencil"></span>
-            </button>
-            <button type="button" class="btn btn-default btn-xs show-remove-form"
-              title="{{ _("Remove this link") }}"
-              data-toggle="collapse" data-target="#remove-link-{{ link.pk }}-form">
-              <span class="glyphicon glyphicon-trash"></span>
-            </button>
-          </span>
 
           <div id="edit-link-{{ link.pk }}-form" class="collapse edit-form">
             <form class="well well-sm" method="post"
@@ -189,6 +203,7 @@
             <div class="embedded-player">
               <iframe style="border:none; width: 600px; height: 100px;"
                 src="{{ link.link|get_yamusic_embed_link }}"></iframe>
+              {{ link_controls(link.pk) }}
             </div>
           {% elif link.link|is_youtube_link %}
             <div class="embedded-player collapse" id="youtube-{{ link.pk }}">
@@ -226,9 +241,6 @@
 </div>
 
 <style>
-  ul#links div.embedded-player {
-    margin-top: 1em;
-  }
   ul#partsinfo,
   ul#links {
     padding: 0;
