@@ -46,9 +46,12 @@ def view_song(request, song_id):
                 initial={'notice': part_perf.notice}
             )
 
+    new_part_form = forms.SongPartForm()
+
     all_parts = [part_info for part_pk, part_info in sorted(all_parts.items())]
     return render(request, 'sb/view_song.html',
-                  {'song': song, 'parts': all_parts})
+                  {'song': song, 'parts': all_parts,
+                   'new_part_form': new_part_form})
 
 
 @login_required
@@ -69,6 +72,30 @@ def leave_song_part(request, part_id):
             part_id=part_id, performer=request.user
         )
         songperf.delete()
+    except models.SongPerformer.DoesNotExist:
+        pass
+    return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def add_song_part(request, song_id):
+    form = forms.SongPartForm(request.POST)
+    if form.is_valid():
+        models.SongPart.objects.create(
+            song_id=song_id,
+            notice=form.cleaned_data['notice'],
+            instrument=form.cleaned_data['instrument']
+        )
+    else:
+        print(form.errors)
+    return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def remove_song_part(request, part_id):
+    try:
+        part = models.SongPart.objects.get(pk=part_id)
+        part.delete()
     except models.SongPerformer.DoesNotExist:
         pass
     return JsonResponse({'result': 'ok'})

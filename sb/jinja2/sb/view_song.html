@@ -14,7 +14,7 @@
 </h1>
 
 {% if song.artist %}
-  <h2>{{ song.artist }}</h2>
+  <h3>{{ song.artist }}</h3>
 {% endif %}
 
 {% if song.description %}
@@ -25,25 +25,43 @@
 
 <div class="row">
   <div class="col-sm-4">
-    <ul class="partsinfo">
+    <ul id="partsinfo">
       {% for part_info in parts %}
         <li {% if part_info.has_joined %}class="joined"{% endif %}>
-          <p>
+          <div class="controls">
             <span class="instrument-name">{{ part_info.part.instrument.name }}</span>
             {% if part_info.part.notice %}
               <span class="text-muted">({{ part_info.part.notice }})</span>
             {% endif %}
             <button type="button" class="btn btn-default btn-xs show-join-form not-joined"
-              title="{{ _("Join this part") }}">
+              title="{{ _("Join this part") }}"
+              data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
               <span class="glyphicon glyphicon-flag"></span>
             </button>
             <button type="button" class="btn btn-default btn-xs show-join-form joined"
-              title="{{ _("Change notice or leave this part") }}">
+              title="{{ _("Change notice or leave this part") }}"
+              data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
               <span class="glyphicon glyphicon-flag"></span>
             </button>
-          </p>
-          <div class="join-form">
-            <form method="post" class="well well-sm"
+            <button type="button" class="btn btn-default btn-xs remove-part"
+              data-toggle="collapse" data-target="#remove-part-{{ part_info.part.pk }}-form">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </div>
+
+          <div id="remove-part-{{ part_info.part.pk }}-form" class="remove-part-form collapse">
+            <form method="post" action="{{ url('sb:remove-song-part', part_info.part.pk) }}"
+              class="well well-sm">
+              {{ csrf(csrf_token) }}
+              <p>{% trans %}This action can not be undone.{% endtrans %}</p>
+              <button type="submit" class="btn btn-danger">
+                {{ _("Confirm remove") }}
+              </button>
+            </form>
+          </div>
+
+          <div id="join-part-{{ part_info.part.pk }}-form" class="join-form collapse">
+            <form class="well well-sm"
               data-join-action="{{ url('sb:join-song-part', part_info.part.pk) }}"
               data-leave-action="{{ url('sb:leave-song-part', part_info.part.pk) }}">
               {{ csrf(csrf_token) }}
@@ -59,6 +77,7 @@
               </button>
             </form>
           </div>
+
           <ul id="part-{{ part_info.part.id }}-performers" class="performers">
             {% for performer in part_info.performers %}
               <li>
@@ -72,8 +91,31 @@
         </li>
       {% endfor %}
     </ul>
+    <div>
+      <button type="button" class="btn btn-default btn-sm"
+        data-toggle="collapse" data-target="#add-a-part">
+        {{ _("Add a part") }}
+      </button>
+      <div id="add-a-part" class="collapse">
+        <p>
+          <form class="well well-sm" method="post"
+            action="{{ url('sb:add-song-part', song.pk) }}">
+            {{ csrf(csrf_token) }}
+            {{ new_part_form.as_bootstrap_form() }}
+            <button type="submit" class="btn btn-primary submit">
+              {{ _("Add") }}
+            </button>
+            <button type="button" class="btn btn-default"
+              data-toggle="collapse" data-target="#add-a-part">
+              {{ _("Cancel") }}
+            </button>
+          </form>
+        </p>
+      </div>
+    </div>
   </div>
   <div class="col-sm-8">
+    {#
     {% for link in song.songlink_set.all() %}
       {% if link.notice %}
         <span class="link-notice">{{ link.notice }}</span>
@@ -94,68 +136,69 @@
         <a href="{{ link.link }}" target="_blank">{{ link.link|truncate }}</a>
       {% endif %}
     {% endfor %}
+    #}
   </div>
 </div>
 
 <style>
-  ul.partsinfo {
+  ul#partsinfo {
     padding: 0;
   }
-  ul.partsinfo > li {
+  ul#partsinfo > li {
     list-style: none;
     padding: 1em 0;
   }
-  ul.partsinfo button.joined,
-  ul.partsinfo button.not-joined  {
+  ul#partsinfo .controls button {
     display: none;
     margin: -2px 0;
   }
-  ul.partsinfo > li:hover button.not-joined  {
+  ul#partsinfo > li:hover button.not-joined,
+  ul#partsinfo > li:hover button.remove-part {
     display: inline-block;
   }
-  ul.partsinfo .instrument-name {
+  ul#partsinfo .instrument-name {
     font-size: 120%;
   }
-  ul.partsinfo .join-form {
+  ul#partsinfo .join-form > *,
+  ul#partsinfo .remove-part-form > * {
     display: inline-block;
   }
-  ul.partsinfo button.save-changes,
-  ul.partsinfo button.joined,
-  ul.partsinfo button.leave-part {
+  ul#partsinfo button.save-changes,
+  ul#partsinfo button.joined,
+  ul#partsinfo button.leave-part {
     display: none;
   }
-  ul.partsinfo li.joined button.join-part,
-  ul.partsinfo li.joined button.not-joined {
+  ul#partsinfo li.joined button.join-part,
+  ul#partsinfo li.joined button.not-joined {
     display: none;
   }
-  ul.partsinfo li.joined button.save-changes,
-  ul.partsinfo li.joined:hover button.joined,
-  ul.partsinfo li.joined button.leave-part {
+  ul#partsinfo li.joined button.save-changes,
+  ul#partsinfo li.joined:hover button.joined,
+  ul#partsinfo li.joined button.leave-part {
     display: inline-block;
+  }
+  form.remove-part {
+    display: inline;
+  }
+  ul#partsinfo .controls {
+    margin-bottom: 1em;
   }
 </style>
 
 <script>
-  $(function() {
-    $('ul.partsinfo .join-form').hide();
-    $('button.show-join-form').click(function() {
-      var joinForm = $(this).parents('li').find('.join-form');
-      if (joinForm.is(':visible')) {
-        joinForm.slideUp();
-      } else {
-        joinForm.slideDown();
-      }
-    });
+  function initPartsInfo() {
     $('button.join-part, button.save-changes').click(function() {
       var joinFormContainer = $(this).parents('li').find('.join-form');
       var joinForm = joinFormContainer.find('> form');
-      var partContainer = joinFormContainer.parents('ul.partsinfo > li');
+      var partContainer = joinFormContainer.parents('ul#partsinfo > li');
       var data = joinForm.serialize();
       var action = joinForm.data('join-action');
       $.post(action, data, function(result) {
-        joinFormContainer.slideUp(function() {
-          partContainer.addClass('joined')
-        });
+        joinFormContainer
+          .collapse('hide')
+          .one('hidden.bs.collapse', function() {
+            partContainer.addClass('joined');
+          });
         var performersContainer = partContainer.find('.performers');
         performersContainer.load(
           window.location.href + ' #' + performersContainer.attr('id') + ' > *'
@@ -165,17 +208,49 @@
     $('button.leave-part').click(function() {
       var joinFormContainer = $(this).parents('li').find('.join-form');
       var joinForm = joinFormContainer.find('> form');
-      var partContainer = joinFormContainer.parents('ul.partsinfo > li');
+      var partContainer = joinFormContainer.parents('ul#partsinfo > li');
       var data = joinForm.serialize();
       var action = joinForm.data('leave-action');
       $.post(action, data, function(result) {
-        joinFormContainer.slideUp(function() {
-          partContainer.removeClass('joined')
-        });
+        joinFormContainer
+          .collapse('hide')
+          .one('hidden.bs.collapse', function() {
+            partContainer.removeClass('joined')
+          });
         var performersContainer = partContainer.find('.performers');
         performersContainer.load(
           window.location.href + ' #' + performersContainer.attr('id') + ' > *'
         );
+      });
+    });
+    $('.remove-part-form form').on("submit", function(event) {
+      event.preventDefault();
+      var form = $(this);
+      $.post(form.attr('action'), form.serialize(), function(result) {
+        form.parents('ul#partsinfo > li').slideUp(function() {
+          $(this).remove();
+        });
+      });
+    });
+  };
+
+  $(function() {
+    initPartsInfo();
+
+    var addAPartForm = $('#add-a-part form');
+    addAPartForm.find('[name=instrument]').change(function() {
+      addAPartForm.find('button[type=submit]').attr('disabled', ! $(this).val());
+    }).change();
+
+    addAPartForm.on("submit", function(event) {
+      event.preventDefault();
+      var data = addAPartForm.serialize();
+      var action = addAPartForm.attr('action');
+      $.post(action, data, function(result) {
+        $('#partsinfo').load(window.location.href + ' #partsinfo > *', function() {
+          initPartsInfo();
+          addAPartForm.parent().collapse('hide');
+        });
       });
     });
   });

@@ -23,10 +23,28 @@ class CustomErrorList(ErrorList):
         super(CustomErrorList, self).__init__(initlist, error_class)
 
 
-class SongForm(forms.ModelForm):
+class BootstrapModelForm(forms.ModelForm):
     error_css_class = 'has-error'
     label_class = 'control-label'
 
+    def as_bootstrap_form(self):
+        return self._html_output(
+            normal_row='<div class="form-group"><div %(html_class_attr)s>'
+                       '%(label)s%(field)s%(errors)s%(help_text)s</div></div>',
+            error_row='<p class="help-block error-text">%s</p>',
+            row_ender='</div></div>',
+            help_text_html='<p class="help-block">%s</p>',
+            errors_on_separate_row=False
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(BootstrapModelForm, self).__init__(*args, **kwargs)
+        self.error_class = CustomErrorList
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
+
+class SongForm(BootstrapModelForm):
     class Meta:
         model = sb.models.Song
         fields = [
@@ -35,26 +53,16 @@ class SongForm(forms.ModelForm):
             'description',
         ]
 
-    def as_bootstrap_form(self):
-        return self._html_output(
-            normal_row='<div class="form-group"><div %(html_class_attr)s>%(label)s%(field)s%(errors)s%(help_text)s</div></div>',
-            error_row='<p class="help-block error-text">%s</p>',
-            row_ender='</div></div>',
-            help_text_html='<p class="help-block">%s</p>',
-            errors_on_separate_row=False
-        )
 
-    def __init__(self, *args, **kwargs):
-        super(SongForm, self).__init__(*args, **kwargs)
-        self.error_class = CustomErrorList
-        for field in self.fields:
-            self.fields[field].widget.attrs['class'] = 'form-control'
+class SongPartForm(BootstrapModelForm):
+    class Meta:
+        model = sb.models.SongPart
+        fields = [
+            'instrument', 'notice'
+        ]
 
 
 class JoinSongPartForm(forms.ModelForm):
-    #action = forms.ChoiceField(choices=[('join_song_part', ) * 2],
-    #                           widget=forms.HiddenInput())
-
     class Meta:
         model = sb.models.SongPerformer
         fields = ['notice']
