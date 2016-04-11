@@ -5,7 +5,7 @@
 <h1>{% trans %}Suggest a song{% endtrans %}</h1>
 
 <form action="" method="post" class="form">
-  {#{% csrf_token %}#}
+  {{ csrf(csrf_token) }}
   {{ form.as_bootstrap_form() }}
   <button type="submit" class="btn btn-primary">{% trans %}Suggest{% endtrans %}</button>
 </form>

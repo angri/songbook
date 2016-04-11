@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
@@ -72,6 +74,12 @@ class SongLink(models.Model):
             ('song', 'link'),
         ]
 
+    def __str__(self):
+        if self.notice:
+            return "%s (%s)" % (self.link, self.notice)
+        else:
+            return self.link
+
 
 class SongPart(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
@@ -79,6 +87,12 @@ class SongPart(models.Model):
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT,
                                    null=False, blank=False)
     notice = models.CharField(max_length=200, null=False, blank=True)
+
+    def __str__(self):
+        if self.notice:
+            return "%s (%s)" % (self.instrument.name, self.notice)
+        else:
+            return self.instrument.name
 
 
 class SongPerformer(models.Model):
@@ -93,10 +107,36 @@ class SongPerformer(models.Model):
             ('part', 'performer'),
         ]
 
+    def __str__(self):
+        if self.notice:
+            return "%s (%s)" % (self.performer.username, self.notice)
+        else:
+            return self.performer.username
+
 
 class SongComment(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
                              blank=False, null=False)
-    author = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    comment_type = models.CharField(max_length=20, null=False, blank=False,
+                                    choices=[('regular', 'regular comment'),
+                                             ('song_edit', 'song edit')],
+                                    default='regular')
+    author = models.ForeignKey(User, on_delete=models.PROTECT,
+                               null=True, blank=True)
     datetime = models.DateTimeField(auto_now_add=True)
     text = models.TextField(null=False, blank=False)
+
+
+def song_changed(song, what, who, changes):
+    changes = {
+        key: (prev, new)
+        for (key, (prev, new)) in changes.items()
+        if prev != new
+    }
+    if not changes:
+        return
+    info = {'what': what, 'changes': changes}
+    SongComment.objects.create(
+        song=song, comment_type='song_edit',
+        author=who, text=json.dumps(info)
+    )
