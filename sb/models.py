@@ -3,6 +3,7 @@ import json
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_noop
 
 
 class Instrument(models.Model):
@@ -39,8 +40,8 @@ class Song(models.Model):
     changed_by = models.ForeignKey(User, on_delete=models.PROTECT,
                                    null=False, blank=False,
                                    related_name='last_changed_songs')
-    artist = models.CharField(max_length=100, null=False, blank=True)
     title = models.CharField(max_length=150, null=False, blank=False)
+    artist = models.CharField(max_length=100, null=False, blank=True)
     description = models.TextField(null=False, blank=True)
     lyrics = models.TextField(null=False, blank=True)
 
@@ -65,7 +66,7 @@ class SongWatcher(models.Model):
 
 class SongLink(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
-                             null=False, blank=False)
+                             null=False, blank=False, related_name='links')
     link = models.URLField(null=False, blank=False)
     notice = models.CharField(max_length=150, null=False, blank=True)
 
@@ -75,10 +76,13 @@ class SongLink(models.Model):
         ]
 
     def __str__(self):
+        link = self.link
+        if len(link) > 60:
+            link = link[:60] + '...'
         if self.notice:
-            return "%s (%s)" % (self.link, self.notice)
+            return "%s (%s)" % (link, self.notice)
         else:
-            return self.link
+            return link
 
 
 class SongPart(models.Model):
@@ -127,16 +131,128 @@ class SongComment(models.Model):
     text = models.TextField(null=False, blank=False)
 
 
-def song_changed(song, what, who, changes):
-    changes = {
-        key: (prev, new)
-        for (key, (prev, new)) in changes.items()
-        if prev != new
-    }
-    if not changes:
-        return
-    info = {'what': what, 'changes': changes}
-    SongComment.objects.create(
-        song=song, comment_type='song_edit',
-        author=who, text=json.dumps(info)
-    )
+class SongActions:
+    @classmethod
+    def suggested_song(cls, user, song):
+        action = (ugettext_noop('(f) Suggested a song')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Suggested a song'))
+        changes = [
+            {'title': ugettext_noop('Artist'),
+             'title_translatable': True,
+             'prev': '',
+             'new': song.artist},
+            {'title': ugettext_noop('Title'),
+             'title_translatable': True,
+             'prev': '',
+             'new': song.title},
+            {'title': ugettext_noop('Description'),
+             'title_translatable': True,
+             'prev': '',
+             'new': song.description},
+        ]
+        cls._song_changed(song, action, user, changes)
+
+    @classmethod
+    def joined_part(cls, user, part, old_performers):
+        action = (ugettext_noop('(f) Joined a song part')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Joined a song part'))
+        return cls._part_participation_base(action, user, part, old_performers)
+
+    @classmethod
+    def edited_part_participation(cls, user, part, old_performers):
+        action = (ugettext_noop('(f) Edited part participation')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Edited part participation'))
+        return cls._part_participation_base(action, user, part, old_performers)
+
+    @classmethod
+    def left_part(cls, user, part, old_performers):
+        action = (ugettext_noop('(f) Left a song part')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Left a song part'))
+        return cls._part_participation_base(action, user, part, old_performers)
+
+    @classmethod
+    def _part_participation_base(cls, action, user, part, old_performers):
+        new_performers = part.songperformer_set.all()
+        changes = [
+            {'title': str(part),
+             'title_translatable': False,
+             'prev': '\n'.join(sorted(str(songperformer)
+                                      for songperformer in old_performers)),
+             'new': '\n'.join(sorted(str(songperformer)
+                                     for songperformer in new_performers))}
+        ]
+        cls._song_changed(part.song, action, user, changes)
+
+    @classmethod
+    def added_part(cls, user, song, old_parts):
+        action = (ugettext_noop('(f) Added a song part')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Added a song part'))
+        cls._parts_base(action, user, song, old_parts)
+
+    @classmethod
+    def removed_part(cls, user, song, old_parts):
+        action = (ugettext_noop('(f) Removed a song part')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Removed a song part'))
+        cls._parts_base(action, user, song, old_parts)
+
+    @classmethod
+    def _parts_base(cls, action, user, song, old_parts):
+        new_parts = song.parts.all()
+        changes = [
+            {'title': ugettext_noop('Parts'),
+             'title_translatable': True,
+             'prev': '\n'.join(sorted(str(part) for part in old_parts)),
+             'new': '\n'.join(sorted(str(part) for part in new_parts))}
+        ]
+        cls._song_changed(song, action, user, changes)
+
+    @classmethod
+    def added_link(cls, user, song, old_links):
+        action = (ugettext_noop('(f) Added a link')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Added a song link'))
+        cls._links_base(action, user, song, old_links)
+
+    @classmethod
+    def removed_link(cls, user, song, old_links):
+        action = (ugettext_noop('(f) Removed a link')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Removed a link'))
+        cls._links_base(action, user, song, old_links)
+
+    @classmethod
+    def edited_link(cls, user, song, old_links):
+        action = (ugettext_noop('(f) Edited a link')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('(m) Edited a link'))
+        cls._links_base(action, user, song, old_links)
+
+    @classmethod
+    def _links_base(cls, action, user, song, old_links):
+        new_links = song.links.all()
+        changes = [
+            {'title': ugettext_noop('Links'),
+             'title_translatable': True,
+             'prev': '\n'.join(sorted(str(link) for link in old_links)),
+             'new': '\n'.join(sorted(str(link) for link in new_links))}
+        ]
+        cls._song_changed(song, action, user, changes)
+
+    @classmethod
+    def _song_changed(cls, song, action, user, changes):
+        changes = [
+            change
+            for change in changes
+            if change['prev'] != change['new']
+        ]
+        if not changes:
+            return
+        info = {'action': action, 'changes': changes}
+        SongComment.objects.create(song=song, comment_type='song_changed',
+                                   author=user, text=json.dumps(info))

@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext_noop
 from django.core.urlresolvers import reverse
 
 from sb import forms
@@ -22,16 +21,10 @@ def suggest_a_song(request):
             new_song.suggested_by = request.user
             new_song.changed_by = request.user
             new_song.save()
-            changes = {
-                ugettext_noop('Artist'): ('', new_song.artist),
-                ugettext_noop('Title'): ('', new_song.title),
-                ugettext_noop('Description'): ('', new_song.description)
-            }
-            models.song_changed(new_song, ugettext_noop('Suggested a song'),
-                                request.user, changes)
+            models.SongActions.suggested_song(request.user, new_song)
             models.SongWatcher.objects.create(song=new_song,
                                               user=request.user).save()
-            return HttpResponseRedirect(reverse('sb:view_song',
+            return HttpResponseRedirect(reverse('sb:view-song',
                                                 args=[new_song.pk]))
     else:
         form = forms.SongForm()
@@ -63,7 +56,7 @@ def view_song(request, song_id):
 
     all_links = [
         (link, forms.SongLinkForm(instance=link))
-        for link in song.songlink_set.all()
+        for link in song.links.all()
     ]
 
     return render(request, 'sb/view_song.html',
@@ -85,21 +78,13 @@ def join_song_part(request, part_id):
             part_id=part_id, performer=request.user,
             defaults={'notice': join_part_form.cleaned_data['notice']}
         )
-        new_performers = songperf.part.songperformer_set.all()
-        changes = {
-            str(songperf.part): (
-                sorted(str(songperformer)
-                       for songperformer in old_performers),
-                sorted(str(songperformer)
-                       for songperformer in new_performers)
+        if created:
+            models.SongActions.joined_part(request.user, songperf.part,
+                                           old_performers)
+        else:
+            models.SongActions.edited_part_participation(
+                request.user, songperf.part, old_performers
             )
-        }
-        models.song_changed(
-            songperf.part.song,
-            ugettext_noop('Joined a part')
-            if created
-            else ugettext_noop('Edited part participation notice'),
-            request.user, changes)
     return JsonResponse({'result': 'ok'})
 
 
@@ -109,23 +94,13 @@ def leave_song_part(request, part_id):
         songperf = models.SongPerformer.objects.get(
             part_id=part_id, performer=request.user
         )
+    except models.SongPerformer.DoesNotExist:
+        pass
+    else:
         part = songperf.part
         old_performers = list(part.songperformer_set.all())
         songperf.delete()
-        changes = {
-            str(part): (
-                sorted(str(songperformer)
-                       for songperformer in old_performers),
-                sorted(str(songperformer)
-                       for songperformer in old_performers
-                       if songperformer.performer != request.user)
-            )
-        }
-        models.song_changed(songperf.part.song,
-                            ugettext_noop('Left a part'),
-                            request.user, changes)
-    except models.SongPerformer.DoesNotExist:
-        pass
+        models.SongActions.left_part(request.user, part, old_performers)
     return JsonResponse({'result': 'ok'})
 
 
@@ -133,22 +108,13 @@ def leave_song_part(request, part_id):
 def add_song_part(request, song_id):
     form = forms.SongPartForm(request.POST)
     if form.is_valid():
+        old_parts = list(models.SongPart.objects.filter(song_id=song_id))
         new_part = models.SongPart.objects.create(
             song_id=song_id,
             notice=form.cleaned_data['notice'],
             instrument=form.cleaned_data['instrument']
         )
-        changes = {
-            ugettext_noop('Parts'): (
-                sorted(str(part)
-                       for part in new_part.song.parts.all()
-                       if part != new_part),
-                sorted(str(part) for part in new_part.song.parts.all())
-            )
-        }
-        models.song_changed(new_part.song,
-                            ugettext_noop('Added a part'),
-                            request.user, changes)
+        models.SongActions.added_part(request.user, new_part.song, old_parts)
     return JsonResponse({'result': 'ok'})
 
 
@@ -156,19 +122,13 @@ def add_song_part(request, song_id):
 def remove_song_part(request, part_id):
     try:
         removed_part = models.SongPart.objects.get(pk=part_id)
+    except models.SongPart.DoesNotExist:
+        pass
+    else:
         song = removed_part.song
         old_parts = list(song.parts.all())
         removed_part.delete()
-        changes = {
-            ugettext_noop('Parts'): (
-                sorted(str(part) for part in old_parts),
-                sorted(str(part) for part in song.parts.all())
-            )
-        }
-        models.song_changed(song, ugettext_noop('Removed a part'),
-                            request.user, changes)
-    except models.SongPart.DoesNotExist:
-        pass
+        models.SongActions.removed_part(request.user, song, old_parts)
     return JsonResponse({'result': 'ok'})
 
 
@@ -176,22 +136,13 @@ def remove_song_part(request, part_id):
 def add_song_link(request, song_id):
     form = forms.SongLinkForm(request.POST)
     if form.is_valid():
+        old_links = list(models.SongLink.objects.filter(song_id=song_id))
         new_link = models.SongLink.objects.create(
             song_id=song_id,
             notice=form.cleaned_data['notice'],
             link=form.cleaned_data['link']
         )
-        changes = {
-            ugettext_noop('Links'): (
-                sorted(str(link)
-                       for link in new_link.song.songlink_set.all()
-                       if link != new_link),
-                sorted(str(link) for link in new_link.song.songlink_set.all())
-            )
-        }
-        models.song_changed(new_link.song,
-                            ugettext_noop('Added a link'),
-                            request.user, changes)
+        models.SongActions.added_link(request.user, new_link.song, old_links)
     return JsonResponse({'result': 'ok'})
 
 
@@ -199,18 +150,13 @@ def add_song_link(request, song_id):
 def remove_song_link(request, link_id):
     try:
         link = models.SongLink.objects.get(pk=link_id)
-        old_links = list(link.song.songlink_set.all())
-        link.delete()
-        changes = {
-            ugettext_noop('Links'): (
-                sorted(str(link) for link in old_links),
-                sorted(str(link) for link in link.song.songlink_set.all())
-            )
-        }
-        models.song_changed(link.song, ugettext_noop('Removed a link'),
-                            request.user, changes)
     except models.SongLink.DoesNotExist:
         pass
+    else:
+        old_links = list(link.song.links.all())
+        song = link.song
+        link.delete()
+        models.SongActions.removed_link(request.user, song, old_links)
     return JsonResponse({'result': 'ok'})
 
 
@@ -221,12 +167,5 @@ def edit_song_link(request, link_id):
     if form.is_valid():
         old_links = list(models.SongLink.objects.filter(song=link.song))
         form.save()
-        changes = {
-            ugettext_noop('Links'): (
-                sorted(str(link) for link in old_links),
-                sorted(str(link) for link in link.song.songlink_set.all())
-            )
-        }
-        models.song_changed(link.song, ugettext_noop('Edited a link'),
-                            request.user, changes)
+        models.SongActions.edited_link(request.user, link.song, old_links)
     return JsonResponse({'result': 'ok'})
