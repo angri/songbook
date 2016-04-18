@@ -120,23 +120,26 @@ class SongPerformer(models.Model):
 
 class SongComment(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
-                             blank=False, null=False)
+                             blank=False, null=False, related_name='comments')
     comment_type = models.CharField(max_length=20, null=False, blank=False,
                                     choices=[('regular', 'regular comment'),
-                                             ('song_edit', 'song edit')],
+                                             ('song_changed', 'song edit')],
                                     default='regular')
     author = models.ForeignKey(User, on_delete=models.PROTECT,
                                null=True, blank=True)
     datetime = models.DateTimeField(auto_now_add=True)
     text = models.TextField(null=False, blank=False)
 
+    class Meta:
+        ordering = ['song', '-datetime']
+
 
 class SongActions:
     @classmethod
     def suggested_song(cls, user, song):
-        action = (ugettext_noop('(f) Suggested a song')
+        action = (ugettext_noop('%(who)s (f) suggested a song %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Suggested a song'))
+                  ugettext_noop('%(who)s (m) suggested a song %(when)s'))
         changes = [
             {'title': ugettext_noop('Artist'),
              'title_translatable': True,
@@ -155,23 +158,25 @@ class SongActions:
 
     @classmethod
     def joined_part(cls, user, part, old_performers):
-        action = (ugettext_noop('(f) Joined a song part')
+        action = (ugettext_noop('%(who)s (f) joined a song part %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Joined a song part'))
+                  ugettext_noop('%(who)s (m) joined a song part %(when)s'))
         return cls._part_participation_base(action, user, part, old_performers)
 
     @classmethod
     def edited_part_participation(cls, user, part, old_performers):
-        action = (ugettext_noop('(f) Edited part participation')
-                  if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Edited part participation'))
+        action = (
+            ugettext_noop('%(who)s (f) edited part participation %(when)s')
+            if user.profile.gender == 'f' else
+            ugettext_noop('%(who)s (m) edited part participation %(when)s')
+        )
         return cls._part_participation_base(action, user, part, old_performers)
 
     @classmethod
     def left_part(cls, user, part, old_performers):
-        action = (ugettext_noop('(f) Left a song part')
+        action = (ugettext_noop('%(who)s (f) left a song part %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Left a song part'))
+                  ugettext_noop('%(who)s (m) left a song part %(when)s'))
         return cls._part_participation_base(action, user, part, old_performers)
 
     @classmethod
@@ -189,16 +194,16 @@ class SongActions:
 
     @classmethod
     def added_part(cls, user, song, old_parts):
-        action = (ugettext_noop('(f) Added a song part')
+        action = (ugettext_noop('%(who) (f) added a song part %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Added a song part'))
+                  ugettext_noop('%(who) (m) added a song part %(when)s'))
         cls._parts_base(action, user, song, old_parts)
 
     @classmethod
     def removed_part(cls, user, song, old_parts):
-        action = (ugettext_noop('(f) Removed a song part')
+        action = (ugettext_noop('%(who)s (f) removed a song part %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Removed a song part'))
+                  ugettext_noop('%(who)s (m) removed a song part %(when)s'))
         cls._parts_base(action, user, song, old_parts)
 
     @classmethod
@@ -214,23 +219,23 @@ class SongActions:
 
     @classmethod
     def added_link(cls, user, song, old_links):
-        action = (ugettext_noop('(f) Added a link')
+        action = (ugettext_noop('%(who)s (f) added a link %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Added a song link'))
+                  ugettext_noop('%(who)s (m) added a song link %(when)s'))
         cls._links_base(action, user, song, old_links)
 
     @classmethod
     def removed_link(cls, user, song, old_links):
-        action = (ugettext_noop('(f) Removed a link')
+        action = (ugettext_noop('%(who)s (f) removed a link %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Removed a link'))
+                  ugettext_noop('%(who)s (m) removed a link %(when)s'))
         cls._links_base(action, user, song, old_links)
 
     @classmethod
     def edited_link(cls, user, song, old_links):
-        action = (ugettext_noop('(f) Edited a link')
+        action = (ugettext_noop('%(who)s (f) edited a link %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('(m) Edited a link'))
+                  ugettext_noop('%(who)s (m) edited a link %(when)s'))
         cls._links_base(action, user, song, old_links)
 
     @classmethod

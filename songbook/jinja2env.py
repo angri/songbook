@@ -1,10 +1,13 @@
 import re
+import json
 
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.urlresolvers import reverse
 from django.utils import translation
+from django.utils import timezone
 import jinja2
 import markdown
+import babel.dates
 
 
 def markdown_safe(text):
@@ -95,15 +98,38 @@ def get_yamusic_embed_link(link):
            m.groupdict()
 
 
+def format_timedelta(dt):
+    td = dt - timezone.now()
+    locale = translation.trans_real.get_language()
+    return babel.dates.format_timedelta(td, add_direction=True,
+                                        locale=locale)
+
+
+def format_datetime(dt, format='medium'):
+    tz = timezone.get_current_timezone()
+    locale = translation.trans_real.get_language()
+    return babel.dates.format_datetime(dt, format=format, locale=locale,
+                                       tzinfo=tz)
+
+
+def decode_json(data):
+    return json.loads(data)
+
+
 def environment(**options):
-    env = jinja2.Environment(**options, extensions=['jinja2.ext.i18n'])
+    extensions = ['jinja2.ext.i18n',
+                  'jinja2.ext.with_']
+    env = jinja2.Environment(**options, extensions=extensions)
+    env.install_gettext_translations(translation, newstyle=True)
     env.globals.update({
         'static': staticfiles_storage.url,
         'url': url,
-        'gettext': translation.gettext,
         'csrf': csrf,
     })
     env.filters.update({
+        'format_timedelta': format_timedelta,
+        'format_datetime': format_datetime,
+        'decode_json': decode_json,
         'markdown_safe': markdown_safe,
         'is_youtube_link': is_youtube_link,
         'get_youtube_embed_link': get_youtube_embed_link,

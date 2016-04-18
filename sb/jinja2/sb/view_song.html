@@ -7,9 +7,7 @@
 <h1>
   {{ song.title }}
   <sup><span class="text-muted small">
-    {%- trans suggested_by=song.suggested_by -%}
-      suggested by {{ suggested_by }}
-    {%- endtrans -%}
+    {{- _("suggested by %(suggested_by)s", suggested_by=song.suggested_by) -}}
   </span></sup>
 </h1>
 
@@ -239,6 +237,13 @@
     </div>
   </div>
 </div>
+
+{% with comments = song.comments.all() %}
+{% if comments %}
+  <hr>
+  {% include "sb/comments.html" %}
+{% endif %}
+{% endwith %}
 
 <style>
   ul#partsinfo,
