@@ -1,0 +1,80 @@
+ul#partsinfo,
+ul#links {
+  padding: 0;
+}
+ul#partsinfo > li,
+ul#links > li {
+  list-style: none;
+  padding: 1em 0;
+}
+ul#partsinfo .controls button,
+ul#links .controls button {
+  display: none;
+  margin: -2px 0;
+}
+ul#partsinfo > li:hover button.not-joined,
+ul#partsinfo > li:hover button.remove-part,
+ul#links > li:hover .controls button {
+  display: inline-block;
+}
+ul#partsinfo .instrument-name,
+ul#links .link-notice {
+  font-size: 120%;
+}
+ul#partsinfo .join-form > *,
+ul#partsinfo .remove-part-form > * {
+  display: inline-block;
+}
+ul#partsinfo button.save-changes,
+ul#partsinfo button.joined,
+ul#partsinfo button.leave-part {
+  display: none;
+}
+ul#partsinfo li.joined button.join-part,
+ul#partsinfo li.joined button.not-joined {
+  display: none;
+}
+ul#partsinfo li.joined button.save-changes,
+ul#partsinfo li.joined:hover button.joined,
+ul#partsinfo li.joined button.leave-part {
+  display: inline-block;
+}
+form.remove-part {
+  display: inline;
+}
+ul#partsinfo .controls {
+  margin-bottom: 1em;
+}
+ul#links .edit-form,
+ul#links .remove-form {
+  margin: 1em 0;
+}
+
+span.songlink .artist {
+  color: #888;
+}
+span.songlink .artist:before {
+  content: " / ";
+}
+a.username {
+    display: inline-block;
+    color: black;
+}
+a.username:first-letter {
+    color: red;
+}
+
+.comments .comment {
+  margin-bottom: 1em;
+}
+.comments .comment-header {
+  background-color: #f6f6fa;
+  line-height: 200%;
+  margin-bottom: 0.5em;
+  color: #888;
+}
+.comments .song-changed-comment-body dd {
+  font-family: monospace;
+  overflow: auto;
+  white-space: nowrap;
+}

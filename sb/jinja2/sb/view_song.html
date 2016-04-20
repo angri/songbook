@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "_macros.html" as macros %}
 
 {% block pagetitle %}{{ song.title }} | {{ super() }}{% endblock %}
 
@@ -7,7 +8,7 @@
 <h1>
   {{ song.title }}
   <sup><span class="text-muted small">
-    {{- _("suggested by %(suggested_by)s", suggested_by=song.suggested_by) -}}
+    {{- _("suggested by %(suggested_by)s", suggested_by=macros.username(song.suggested_by)) -}}
   </span></sup>
 </h1>
 
@@ -238,66 +239,9 @@
   </div>
 </div>
 
-{% with comments = song.comments.all() %}
-{% if comments %}
-  <hr>
-  {% include "sb/comments.html" %}
-{% endif %}
-{% endwith %}
+<hr>
+{{ macros.comments_list(song.comments.all()) }}
 
-<style>
-  ul#partsinfo,
-  ul#links {
-    padding: 0;
-  }
-  ul#partsinfo > li,
-  ul#links > li {
-    list-style: none;
-    padding: 1em 0;
-  }
-  ul#partsinfo .controls button,
-  ul#links .controls button {
-    display: none;
-    margin: -2px 0;
-  }
-  ul#partsinfo > li:hover button.not-joined,
-  ul#partsinfo > li:hover button.remove-part,
-  ul#links > li:hover .controls button {
-    display: inline-block;
-  }
-  ul#partsinfo .instrument-name,
-  ul#links .link-notice {
-    font-size: 120%;
-  }
-  ul#partsinfo .join-form > *,
-  ul#partsinfo .remove-part-form > * {
-    display: inline-block;
-  }
-  ul#partsinfo button.save-changes,
-  ul#partsinfo button.joined,
-  ul#partsinfo button.leave-part {
-    display: none;
-  }
-  ul#partsinfo li.joined button.join-part,
-  ul#partsinfo li.joined button.not-joined {
-    display: none;
-  }
-  ul#partsinfo li.joined button.save-changes,
-  ul#partsinfo li.joined:hover button.joined,
-  ul#partsinfo li.joined button.leave-part {
-    display: inline-block;
-  }
-  form.remove-part {
-    display: inline;
-  }
-  ul#partsinfo .controls {
-    margin-bottom: 1em;
-  }
-  ul#links .edit-form,
-  ul#links .remove-form {
-    margin: 1em 0;
-  }
-</style>
 
 <script>
   function initPartsInfo() {

@@ -8,4 +8,5 @@ class Profile(models.Model):
     gender = models.CharField(max_length=1, choices=[
         ('f', _("Female")),
         ('m', _("Male")),
-    ], default='m')
+    ], default='m', verbose_name=_("Gender"))
+    about_myself = models.TextField(verbose_name=_("About myself"))

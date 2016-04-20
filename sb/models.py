@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_noop
 
 
 class Instrument(models.Model):
-    name = models.CharField(_("Instrument name"),
+    name = models.CharField(verbose_name=_("Instrument name"),
                             max_length=100, null=False, blank=True)
 
     class Meta:
@@ -20,7 +20,8 @@ class Instrument(models.Model):
 
 class UserPlays(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             null=False, blank=False)
+                             null=False, blank=False,
+                             related_name='plays')
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT,
                                    null=False, blank=False)
     notice = models.CharField(max_length=150, null=False, blank=True)
@@ -126,12 +127,14 @@ class SongComment(models.Model):
                                              ('song_changed', 'song edit')],
                                     default='regular')
     author = models.ForeignKey(User, on_delete=models.PROTECT,
-                               null=True, blank=True)
+                               null=True, blank=True,
+                               related_name='song_comments')
     datetime = models.DateTimeField(auto_now_add=True)
     text = models.TextField(null=False, blank=False)
 
     class Meta:
         ordering = ['song', '-datetime']
+        index_together = ['author', 'datetime']
 
 
 class SongActions:

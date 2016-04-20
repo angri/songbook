@@ -1,0 +1,82 @@
+{% macro username(un) -%}
+  <a class="username" href="{{ url('sbuser:view-profile', username=un.username) }}">{{ un }}</a>
+{%- endmacro %}
+
+{% macro when(dt) -%}
+  <span class="datetime" title="{{ dt|format_datetime }}">
+    {{- dt|format_timedelta -}}
+  </span>
+{%- endmacro %}
+
+
+{% macro song(song) -%}
+  <span class="songlink"><a href="{{ url('sb:view-song', song_id=song.id) }}">{#
+    #}<span class="title">{{ song.title }}</span>
+    <span class="artist">{{ song.artist }}</span>{#
+  #}</a></span>
+{%- endmacro %}
+
+
+{% macro comments_list(comments, with_song_names=False) -%}
+<div class="comments">
+{% for comment in comments %}
+{%- with comment_data = comment.text|decode_json if comment.comment_type == 'song_changed' else None -%}
+  <div class="comment">
+    <div class="comment-header">
+      {% if comment.comment_type == 'song_changed' %}
+        {{ _(comment_data['action'],
+             who=username(comment.author),
+             when=when(comment.datetime)) }}
+      {% else %}
+        <span class="comment-author">
+          {{- username(comment.author) -}}
+        </span>
+        <span class="comment-datetime">
+          {{- when(comment.datetime) -}}
+        </span>
+      {% endif %}
+      {% if with_song_names %}
+         / {{ song(comment.song) }}
+      {% endif %}
+    </div>
+    {% if comment.comment_type == 'song_changed' %}
+      <div class="song-changed-comment-body row">
+        <div class="col-sm-6 diff-prev">
+          {% for change in comment_data['changes'] %}
+            <dl>
+              {% if change['title_translatable'] %}
+                <dt>{{ _(change['title']) }}</dt>
+              {% else %}
+                <dt>{{ change['title'] }}</dt>
+              {% endif %}
+              <dd>
+                {{ change['prev']|replace("\n", "<br>"|safe)|default("&ndash;") }}
+              </dd>
+            </dl>
+          {% endfor %}
+        </div>
+        <div class="col-sm-6 diff-new">
+          {% for change in comment_data['changes'] %}
+            <dl>
+              {% if change['title_translatable'] %}
+                <dt>{{ _(change['title']) }}</dt>
+              {% else %}
+                <dt>{{ change['title'] }}</dt>
+              {% endif %}
+              <dd>
+                {{ change['new']|replace("\n", "<br>"|safe)|default("&ndash;") }}
+              </dd>
+            </dl>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="comment-body">
+        {{ comment.text|markdown_safe }}
+      </div>
+    {% endif %}
+  </div>
+{%- endwith %}
+{% endfor %}
+</div>
+{%- endmacro %}
