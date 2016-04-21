@@ -23,7 +23,7 @@ class CustomErrorList(ErrorList):
         super(CustomErrorList, self).__init__(initlist, error_class)
 
 
-class BootstrapModelForm(forms.ModelForm):
+class BootstrapFormMixin:
     error_css_class = 'has-error'
     label_class = 'control-label'
 
@@ -37,11 +37,29 @@ class BootstrapModelForm(forms.ModelForm):
             errors_on_separate_row=False
         )
 
+    def as_bootstrap_form_without_labels(self):
+        return self._html_output(
+            normal_row='<div class="form-group"><div %(html_class_attr)s>'
+                       '%(field)s%(errors)s%(help_text)s</div></div>',
+            error_row='<p class="help-block error-text">%s</p>',
+            row_ender='</div></div>',
+            help_text_html='<p class="help-block">%s</p>',
+            errors_on_separate_row=False
+        )
+
     def __init__(self, *args, **kwargs):
-        super(BootstrapModelForm, self).__init__(*args, **kwargs)
+        super(BootstrapFormMixin, self).__init__(*args, **kwargs)
         self.error_class = CustomErrorList
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
+
+
+class BootstrapModelForm(BootstrapFormMixin, forms.ModelForm):
+    pass
+
+
+class BootstrapForm(BootstrapFormMixin, forms.Form):
+    pass
 
 
 class SongForm(BootstrapModelForm):
@@ -65,7 +83,7 @@ class SongPartForm(BootstrapModelForm):
         }
 
 
-class JoinSongPartForm(forms.ModelForm):
+class JoinSongPartForm(BootstrapModelForm):
     class Meta:
         model = sb.models.SongPerformer
         fields = ['notice']

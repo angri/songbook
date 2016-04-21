@@ -55,3 +55,14 @@ def edit_profile(request, username):
     return render(request, 'sbuser/edit_profile.html',
                   {'user': user, 'all_instruments': all_instruments,
                    'edit_form': edit_form})
+
+
+@login_required
+def change_password(request):
+    form = sbuser.forms.ChangePasswordForm(request.user, request.POST or None)
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect(reverse('sbuser:view-profile',
+                                            args=[request.user.username]))
+    return render(request, 'sbuser/change_password.html',
+                  {'user': request.user, 'form': form})

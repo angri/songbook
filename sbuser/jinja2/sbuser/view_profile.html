@@ -12,6 +12,11 @@
     <a href="{{ url('sbuser:edit-profile', username=user.username) }}" class="btn btn-default">
       {{- _("Edit profile") -}}
     </a>
+    {% if request.user == user %}
+      <a href="{{ url('sbuser:change-password') }}" class="btn btn-default">
+        {{- _("Change password") -}}
+      </a>
+    {% endif %}
   </p>
 {% endif %}
 

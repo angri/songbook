@@ -65,7 +65,7 @@
               data-join-action="{{ url('sb:join-song-part', part_info.part.pk) }}"
               data-leave-action="{{ url('sb:leave-song-part', part_info.part.pk) }}">
               {{ csrf(csrf_token) }}
-              <p>{{ part_info.join_form.notice }}</p>
+              {{ part_info.join_form.as_bootstrap_form_without_labels() }}
               <button type="button" class="btn btn-primary join-part">
                 {% trans %}Join{% endtrans %}
               </button>
