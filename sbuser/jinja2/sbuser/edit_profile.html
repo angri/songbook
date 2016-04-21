@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block pagetitle %}{{ user.username }} | {{ super() }}{% endblock %}
+
+{% block content %}
+
+<h1>{{ _("Edit profile of user %(username)s", username=user.username) }}</h1>
+
+<form action="" method="post">
+  {{ edit_form.as_bootstrap_form() }}
+  {{ csrf(csrf_token) }}
+
+  <hr>
+  <h4>{{ _("I play") }}</h4>
+  {% for instrument, user_plays in all_instruments %}
+    <div class="form-group">
+      <label class="control-label">
+        <input type="checkbox" name="i_play_{{ instrument.id }}"
+               class="i_play" {% if user_plays %} checked{% endif %}>
+        {{ instrument }}
+      </label>
+      <span class="form-inline">
+        <input type="text" name="i_play_{{ instrument.id}}_notice" maxlength="150"
+               class="form-control" placeholder="{{ _("Optional notice") }}"
+               value="{% if user_plays %}{{ user_plays.notice }}{% endif %}">
+      </span>
+    </div>
+  {% endfor %}
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">
+      {{ _("Save") }}
+    </button>
+    <a href="{{ url('sbuser:view-profile', username=user.username) }}" class="btn btn-default">
+      {{- _("Cancel") -}}
+    </a>
+  </div>
+</form>
+
+
+<script>
+  $(function() {
+    $('input.i_play').on('change', function() {
+      $('input[name=' + this.name + '_notice')
+        .css('visibility', this.checked ? '' : 'hidden');
+    }).change();
+  });
+</script>
+
+{% endblock %}
