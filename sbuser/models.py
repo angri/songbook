@@ -12,3 +12,6 @@ class Profile(models.Model):
     about_myself = models.TextField(verbose_name=_("About myself"),
                                     blank=True, null=False)
     password_change_required = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "%s (%s)" % (self.user, self.gender)
