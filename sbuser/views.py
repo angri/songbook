@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext_lazy as _
+from django.contrib import messages
 
 import sb.models
 import sbuser.forms
@@ -50,6 +52,8 @@ def edit_profile(request, username):
                     user_plays.save()
             elif user_plays is not None:
                 user_plays.delete()
+        messages.add_message(request, messages.INFO,
+                             _('Profile successfully saved'))
         return HttpResponseRedirect(reverse('sbuser:view-profile',
                                             args=[username]))
     return render(request, 'sbuser/edit_profile.html',
@@ -62,6 +66,8 @@ def change_password(request):
     form = sbuser.forms.ChangePasswordForm(request.user, request.POST or None)
     if form.is_valid():
         form.save()
+        messages.add_message(request, messages.INFO,
+                             _('Password successfully changed'))
         return HttpResponseRedirect(reverse('sbuser:view-profile',
                                             args=[request.user.username]))
     return render(request, 'sbuser/change_password.html',

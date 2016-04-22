@@ -1,6 +1,8 @@
 from django.conf.urls import url
+from django.contrib.auth import views as auth_views
 
 from . import views
+from . import forms
 
 
 urlpatterns = [
@@ -9,4 +11,11 @@ urlpatterns = [
     url(r'^edit-profile/(?P<username>.+)$',
         views.edit_profile, name='edit-profile'),
     url(r'^change-password$', views.change_password, name='change-password'),
+    url(r'^login$', auth_views.login,
+        {'authentication_form': forms.AuthenticationForm,
+         'template_name': 'sbuser/login.html'},
+        name='login'),
+    url(r'^logout$', auth_views.logout,
+        {'template_name': 'sbuser/logged_out.html'},
+        name='logout'),
 ]

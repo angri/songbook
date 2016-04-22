@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 
-{% block pagetitle %}{{ _("Change password") }} | {{ super() }}{% endblock %}
-
 {% block content %}
 
-<h1>{{ _("Change password") }}</h1>
+<h1>{% trans %}Log in to songbook{% endtrans %}</h1>
 
 <hr>
 
 <form action="" method="post" class="form-horizontal">
+  {{ csrf(csrf_token) }}
   {% for field in form %}
     <div class="form-group">
       <label class="col-sm-2 control-label">{{ field.label }}</label>
@@ -25,20 +24,11 @@
       </div>
     </div>
   {% endfor %}
-  {{ csrf(csrf_token) }}
-
   <div class="form-group">
     <div class="col-sm-10 col-sm-offset-2">
-      <button type="submit" class="btn btn-primary">
-        {{ _("Change password") }}
-      </button>
-      <a href="{{ url('sbuser:view-profile', username=user.username) }}" class="btn btn-default">
-        {{- _("Cancel") -}}
-      </a>
+      <button type="submit" class="btn btn-primary">{{ _("Log in") }}</button>
     </div>
   </div>
 </form>
 
-
 {% endblock %}
-

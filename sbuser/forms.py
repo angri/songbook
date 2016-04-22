@@ -2,10 +2,10 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.password_validation import validate_password
 from django.conf import settings
-from django.contrib.auth import authenticate
+from django.contrib.auth import forms as auth_forms
 
 import sbuser.models
-from sb.forms import BootstrapModelForm, BootstrapForm
+from sb.forms import BootstrapModelForm, BootstrapForm, BootstrapFormMixin
 
 
 class EditProfileForm(BootstrapModelForm):
@@ -47,7 +47,7 @@ class ChangePasswordForm(BootstrapForm):
         npwd2 = cleaned_data.get('repeat_password')
 
         if opwd:
-            if not authenticate(username=self.user.username, password=opwd):
+            if not self.user.check_password(opwd):
                 self.add_error('old_password', _("Password is incorrect"))
                 return
 
@@ -68,3 +68,7 @@ class ChangePasswordForm(BootstrapForm):
         new_password = self.cleaned_data['new_password']
         self.user.set_password(new_password)
         self.user.save()
+
+
+class AuthenticationForm(BootstrapFormMixin, auth_forms.AuthenticationForm):
+    pass

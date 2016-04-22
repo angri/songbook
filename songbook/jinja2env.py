@@ -1,6 +1,7 @@
 import re
 import json
 
+from django.contrib.messages.api import get_messages
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.urlresolvers import reverse
 from django.utils import translation
@@ -122,6 +123,7 @@ def environment(**options):
     env = jinja2.Environment(**options, extensions=extensions)
     env.install_gettext_translations(translation, newstyle=True)
     env.globals.update({
+        'messages': get_messages,
         'static': staticfiles_storage.url,
         'url': url,
         'csrf': csrf,

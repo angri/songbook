@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{% trans %}Logged out from songbook{% endtrans %}</h1>
+
+<p class="lead">
+  {{ _("See ya!") }}
+</p>
+
+<p>
+  <a href="{{ url('sbuser:login') }}" class="btn btn-default">
+    {{- _("Log in") -}}
+  </a>
+</p>
+
+{% endblock %}

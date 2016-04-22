@@ -103,6 +103,9 @@ DATABASES = {
 
 MIN_PASSWORD_LENGTH = 5
 
+LOGIN_URL = 'sbuser:login'
+LOGIN_REDIRECT_URL = 'sb:index'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

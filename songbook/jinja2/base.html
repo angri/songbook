@@ -1,3 +1,4 @@
+{% import "_macros.html" as macros %}
 <!doctype html>
 <head>{% block head %}
   <meta charset="utf-8">
@@ -20,6 +21,16 @@
       </div>
       <div class="collapse navbar-collapse">
         {% block breadcrumbs %}{% endblock %}
+        {% if request.user.is_authenticated() %}
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="{{ url('sbuser:logout') }}">
+                {{- _("Log out") -}}
+              </a>
+            </li>
+            <li>{{ macros.username(request.user) }}</li>
+          </ul>
+        {% endif %}
       </div>
     </div>
   </nav>
@@ -29,7 +40,7 @@
   {% block flashes %}
     {% if messages %}
       <div id="flashes">
-        {% for message in messages %}
+        {% for message in messages(request) %}
           <p class="alert alert-dismissible alert-{{ message.tags }}">
             <span>{{ message }}</span>
             <button type="button" class="close" data-dismiss="alert" title="{{ _("Dismiss") }}">
