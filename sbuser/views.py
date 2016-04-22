@@ -35,10 +35,13 @@ def edit_profile(request, username):
         (instrument, user_plays.get(instrument.id))
         for instrument in sb.models.Instrument.objects.all()
     ]
-    edit_form = sbuser.forms.EditProfileForm(request.POST or None,
-                                             instance=user.profile)
+    edit_form = sbuser.forms.EditProfileForm(
+        request.POST or None, instance=getattr(user, 'profile', None)
+    )
     if edit_form.is_valid():
-        edit_form.save()
+        profile = edit_form.save(commit=False)
+        profile.user = user
+        profile.save()
         for instrument, user_plays in all_instruments:
             if request.POST.get('i_play_%d' % (instrument.id, )):
                 notice = request.POST.get('i_play_%d_notice' %
@@ -56,6 +59,10 @@ def edit_profile(request, username):
                              _('Profile successfully saved'))
         return HttpResponseRedirect(reverse('sbuser:view-profile',
                                             args=[username]))
+    if not hasattr(user, 'profile'):
+        messages.add_message(request, messages.WARNING,
+                             _("Your profile is empty, please fill it below. "
+                               "Than you can continue to songbook."))
     return render(request, 'sbuser/edit_profile.html',
                   {'user': user, 'all_instruments': all_instruments,
                    'edit_form': edit_form})
