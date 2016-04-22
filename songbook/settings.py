@@ -57,6 +57,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'sbuser.middleware.EmptyProfileMiddleware',
+    'sbuser.middleware.PasswordChangeRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'songbook.urls'

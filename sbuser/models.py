@@ -11,3 +11,4 @@ class Profile(models.Model):
     ], default='m', verbose_name=_("Gender"))
     about_myself = models.TextField(verbose_name=_("About myself"),
                                     blank=True, null=False)
+    password_change_required = models.BooleanField(default=True)

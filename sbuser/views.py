@@ -73,9 +73,15 @@ def change_password(request):
     form = sbuser.forms.ChangePasswordForm(request.user, request.POST or None)
     if form.is_valid():
         form.save()
+        request.user.profile.password_change_required = False
+        request.user.profile.save()
         messages.add_message(request, messages.INFO,
                              _('Password successfully changed'))
         return HttpResponseRedirect(reverse('sbuser:view-profile',
                                             args=[request.user.username]))
+    if request.user.profile.password_change_required:
+        messages.add_message(request, messages.WARNING,
+                             _("In order to continue you have to change your "
+                               "password"))
     return render(request, 'sbuser/change_password.html',
                   {'user': request.user, 'form': form})
