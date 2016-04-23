@@ -238,129 +238,13 @@
   </div>
 </div>
 
+<script>$(sb.songInlineEdit);</script>
+
 <hr>
 
 {{ macros.song_comment_form(song, csrf_token) }}
 
 {{ macros.comments_list(song.comments.all()) }}
-
-
-<script>
-  function updatePagePart(target) {
-    return $.get(window.location.href, function(html) {
-      html = $(html);
-      if (target)
-        target.replaceWith(html.find('#' + target.attr('id')));
-      var lastCommentId = Number($('div.comment').eq(0).data('comment-id'));
-      var newComments = $('<div></div>');
-      html.find('div.comment').each(function(idx, elem) {
-        var commentId = Number($(this).data('comment-id'));
-        if (commentId <= lastCommentId)
-          return false;
-        newComments.append(elem);
-      });
-      newComments = newComments.find('.comment');
-      $('div.comments').prepend(newComments.addClass('collapse'));
-      setTimeout(function() { newComments.collapse('show'); }, 0);
-    });
-  }
-
-  function initPartsInfo() {
-    $('#partsinfo button.join-part, #partsinfo button.save-changes').click(function() {
-      var joinFormContainer = $(this).parents('li').find('.join-form');
-      var joinForm = joinFormContainer.find('> form');
-      var partContainer = joinFormContainer.parents('ul#partsinfo > li');
-      var data = joinForm.serialize();
-      var action = joinForm.data('join-action');
-      $.post(action, data, function(result) {
-        joinFormContainer
-          .collapse('hide')
-          .one('hidden.bs.collapse', function() {
-            partContainer.addClass('joined');
-          });
-        updatePagePart(partContainer.find('.performers'));
-      });
-    });
-    $('#partsinfo button.leave-part').click(function() {
-      var joinFormContainer = $(this).parents('li').find('.join-form');
-      var joinForm = joinFormContainer.find('> form');
-      var partContainer = joinFormContainer.parents('ul#partsinfo > li');
-      var data = joinForm.serialize();
-      var action = joinForm.data('leave-action');
-      $.post(action, data, function(result) {
-        joinFormContainer
-          .collapse('hide')
-          .one('hidden.bs.collapse', function() {
-            partContainer.removeClass('joined')
-          });
-        updatePagePart(partContainer.find('.performers'));
-      });
-    });
-    $('#partsinfo .remove-part-form form').on("submit", function(event) {
-      event.preventDefault();
-      var form = $(this);
-      $.post(form.attr('action'), form.serialize(), function(result) {
-        form.parents('ul#partsinfo > li').slideUp(function() {
-          $(this).remove();
-          updatePagePart(null);
-        });
-      });
-    });
-  };
-
-  function initLinks() {
-    $('#add-a-link form').on('submit', function(event) {
-      event.preventDefault();
-      $.post($(this).attr('action'), $(this).serialize(), function(result) {
-        updatePagePart($('#links')).done(function() {
-          initLinks();
-          $('#add-a-link').collapse('hide');
-        });
-      });
-    });
-
-    $('#links .remove-form form').on('submit', function(event) {
-      event.preventDefault();
-      var form = $(this);
-      $.post(form.attr('action'), form.serialize(), function(result) {
-        form.parents('ul#links > li').slideUp(function() {
-          updatePagePart($('#links'));
-          $(this).remove();
-        });
-      });
-    });
-
-    $('#links .edit-form form').on('submit', function(event) {
-      event.preventDefault();
-      var form = $(this);
-      $.post(form.attr('action'), form.serialize(), function(result) {
-        updatePagePart($('#links')).done(function() {
-          initLinks();
-          form.parents('ul#links .edit-form').collapse('hide');
-        });
-      });
-    });
-  };
-
-  $(function() {
-    initPartsInfo();
-    initLinks();
-
-    var addAPartForm = $('#add-a-part form');
-
-    addAPartForm.on("submit", function(event) {
-      event.preventDefault();
-      var data = addAPartForm.serialize();
-      var action = addAPartForm.attr('action');
-      $.post(action, data, function(result) {
-        updatePagePart($('#partsinfo')).done(function() {
-          initPartsInfo();
-          addAPartForm.parent().collapse('hide');
-        });
-      });
-    });
-  });
-</script>
 
 
 {% endblock %}

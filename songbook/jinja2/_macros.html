@@ -115,27 +115,7 @@
       </div>
     </form>
   </div>
-  <script>
-    $(function() {
-      function reset() {
-        $('#commentform textarea').val('');
-        $('#commentform .submit-formgroup').collapse('hide');
-        $('#commentform textarea').one('input', function() {
-          $('#commentform .submit-formgroup').collapse('show');
-        });
-      }
-      reset();
-      $('#commentform form').on('submit', function(event) {
-        event.preventDefault();
-        var data = $(this).serialize();
-        var url = this.action;
-        $.post(url, data, function(result) {
-          console.log(result);
-          reset();
-        });
-      });
-    });
-  </script>
+  <script>$(function() { sb.commentForm($('#commentform')); });</script>
 {%- endmacro %}
 
 
