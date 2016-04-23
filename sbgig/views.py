@@ -33,6 +33,7 @@ def edit_gig(request, slug):
     form = sbgig.forms.GigForm(request.POST or None, instance=gig)
     if form.is_valid():
         form.save()
+        gig.track_changes(request.user)
         messages.add_message(request, messages.INFO,
                              _("Gig successfully saved"))
         return HttpResponseRedirect(reverse('sbgig:view-gig', args=[slug]))

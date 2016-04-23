@@ -51,10 +51,10 @@
 {% macro comments_list(comments, with_song_names=False, with_gig_names=False) -%}
 <div class="comments">
 {% for comment in comments %}
-{%- with comment_data = comment.text|decode_json if comment.comment_type == comment.CT_SONG_EDIT else None -%}
+{%- with comment_data = comment.text|decode_json if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) else None -%}
   <div class="comment">
     <div class="comment-header">
-      {% if comment.comment_type == 'song_changed' %}
+      {% if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) %}
         {{ _(comment_data['action'],
              who=username(comment.author),
              when=when(comment.datetime)) }}
@@ -70,10 +70,10 @@
          / {{ song(comment.song) }}
       {% endif %}
       {% if with_gig_names %}
-         / {{ gig(comment.song.gig) }}
+         / {{ gig(comment.gig) }}
       {% endif %}
     </div>
-    {% if comment.comment_type == comment.CT_SONG_EDIT %}
+    {% if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) %}
       <div class="song-changed-comment-body row">
         <div class="col-sm-6 diff-prev">
           {% for change in comment_data['changes'] %}

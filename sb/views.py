@@ -47,8 +47,10 @@ def view_song(request, song_id):
                            'performers': [],
                            'join_form': empty_join_form,
                            'has_joined': False}
-                 for part in song.parts.all()}
+                 for part in song.parts.select_related('instrument')}
     all_performers = models.SongPerformer.objects.filter(part__song=song_id)
+    all_performers = all_performers.select_related('part', 'part__instrument',
+                                                   'performer')
     for part_perf in all_performers:
         all_parts[part_perf.part.pk]['performers'].append(part_perf)
         if part_perf.performer == request.user:

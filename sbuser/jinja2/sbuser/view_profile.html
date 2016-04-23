@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<h1>{{ _("Profile of user %(username)s", username=user.username) }}</h1>
+<h1>{{ _("Profile of user %(username)s", username=macros.username(user)) }}</h1>
 
 {% if is_editable %}
   <p>
