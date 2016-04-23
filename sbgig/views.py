@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.db.models import Count
 
 import sbgig.models
 import sbgig.forms
@@ -12,7 +13,18 @@ import sbgig.forms
 @login_required
 def view_gig(request, slug):
     gig = get_object_or_404(sbgig.models.Gig, slug=slug)
-    return render(request, 'sbgig/view_gig.html', {'gig': gig})
+    staffed_songs = list(gig.songs.filter(staffed=True))
+    unstaffed_songs = list(gig.songs.filter(staffed=False))
+    for song in unstaffed_songs:
+        song.unstaffed_parts = (
+            song.parts.filter(required=True)
+                      .annotate(num_perf=Count('songperformer'))
+                      .filter(num_perf=0)
+                      .select_related('instrument')
+        )
+    return render(request, 'sbgig/view_gig.html',
+                  {'gig': gig, 'unstaffed_songs': unstaffed_songs,
+                   'staffed_songs': staffed_songs})
 
 
 @login_required

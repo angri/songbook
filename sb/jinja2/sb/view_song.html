@@ -30,10 +30,7 @@
       {% for part_info in parts %}
         <li {% if part_info.has_joined %}class="joined"{% endif %}>
           <div class="controls">
-            <span class="instrument-name">{{ part_info.part.instrument.name }}</span>
-            {% if part_info.part.notice %}
-              <span class="text-muted">({{ part_info.part.notice }})</span>
-            {% endif %}
+            {{ macros.part(part_info.part) }}
             <button type="button" class="btn btn-default btn-xs show-join-form not-joined"
               title="{{ _("Join this part") }}"
               data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">

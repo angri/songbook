@@ -15,7 +15,15 @@ class Gig(models.Model):
         return "%s (%s)" % (self.title, self.date)
 
 
+class CommentManager(models.Manager):
+    def get_queryset(self):
+        qs = super(CommentManager, self).get_queryset()
+        return qs.select_related('song', 'author', 'gig')
+
+
 class Comment(models.Model):
+    objects = CommentManager()
+
     CT_SONG_COMMENT = 'song_comment'
     CT_SONG_EDIT = 'song_changed'
     CT_GIG_COMMENT = 'gig_comment'

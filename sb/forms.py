@@ -76,7 +76,7 @@ class SongPartForm(BootstrapModelForm):
     class Meta:
         model = sb.models.SongPart
         fields = [
-            'instrument', 'notice'
+            'instrument', 'notice', 'required',
         ]
         widgets = {
             'instrument': forms.Select(attrs={'required': 'true'})

@@ -49,6 +49,12 @@ class Song(models.Model):
     artist = models.CharField(max_length=100, null=False, blank=True)
     description = models.TextField(null=False, blank=True)
     lyrics = models.TextField(null=False, blank=True)
+    staffed = models.BooleanField(null=False, blank=False, default=False)
+
+    class Meta:
+        index_together = [
+            ('gig', 'staffed'),
+        ]
 
     def __str__(self):
         if self.artist:
@@ -96,12 +102,17 @@ class SongPart(models.Model):
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT,
                                    null=False, blank=False)
     notice = models.CharField(max_length=200, null=False, blank=True)
+    required = models.BooleanField(blank=False, null=False, default=True)
 
     def __str__(self):
         if self.notice:
-            return "%s (%s)" % (self.instrument.name, self.notice)
+            res = "%s (%s)" % (self.instrument.name, self.notice)
         else:
-            return self.instrument.name
+            res = self.instrument.name
+        if self.required:
+            return res + "*"
+        else:
+            return res
 
 
 class SongPerformer(models.Model):
@@ -179,13 +190,13 @@ class SongActions:
              'new': '\n'.join(sorted(str(songperformer)
                                      for songperformer in new_performers))}
         ]
-        cls._song_changed(part.song, action, user, changes)
+        cls._song_changed(part.song, action, user, changes, check_staffed=True)
 
     @classmethod
     def added_part(cls, user, song, old_parts):
-        action = (ugettext_noop('%(who) (f) added a song part %(when)s')
+        action = (ugettext_noop('%(who)s (f) added a song part %(when)s')
                   if user.profile.gender == 'f' else
-                  ugettext_noop('%(who) (m) added a song part %(when)s'))
+                  ugettext_noop('%(who)s (m) added a song part %(when)s'))
         cls._parts_base(action, user, song, old_parts)
 
     @classmethod
@@ -204,7 +215,7 @@ class SongActions:
              'prev': '\n'.join(sorted(str(part) for part in old_parts)),
              'new': '\n'.join(sorted(str(part) for part in new_parts))}
         ]
-        cls._song_changed(song, action, user, changes)
+        cls._song_changed(song, action, user, changes, check_staffed=True)
 
     @classmethod
     def added_link(cls, user, song, old_links):
@@ -239,7 +250,10 @@ class SongActions:
         cls._song_changed(song, action, user, changes)
 
     @classmethod
-    def _song_changed(cls, song, action, user, changes):
+    def _song_changed(cls, song, action, user, changes, *,
+                      check_staffed=False):
+        if check_staffed:
+            changes = cls._check_staffed(song, changes)
         changes = [
             change
             for change in changes
@@ -252,3 +266,27 @@ class SongActions:
             gig=song.gig, song=song, author=user, text=json.dumps(info),
             comment_type=sbgig.models.Comment.CT_SONG_EDIT,
         )
+
+    @classmethod
+    def _check_staffed(cls, song, changes):
+        new_staffed = False
+        parts = song.parts.filter(required=True)
+        if parts.exists():
+            new_staffed = not (
+                parts.annotate(num_perf=models.Count('songperformer'))
+                     .filter(num_perf=0).exists()
+            )
+            new_changes = changes
+        if song.staffed != new_staffed:
+            bools_txt = {True: ugettext_noop('Yes'),
+                         False: ugettext_noop('No')}
+            new_changes = changes[:]
+            new_changes.append(
+                {'title': ugettext_noop('Song staffed'),
+                 'title_translatable': True,
+                 'prev': bools_txt[song.staffed],
+                 'new': bools_txt[new_staffed]}
+            )
+            song.staffed = new_staffed
+            song.save()
+        return new_changes

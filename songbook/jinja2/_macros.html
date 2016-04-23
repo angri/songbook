@@ -25,6 +25,29 @@
 {%- endmacro %}
 
 
+{% macro part(part) -%}
+  <span class="partinfo"><span class="instrument-name">{{ part.instrument }}</span>
+    {%- if part.required -%}
+      <span class="part-required">*</span>
+    {%- endif -%}
+    {%- if part.notice %}
+      <span class="part-notice">{{ part.notice }}</span>
+    {%- endif -%}
+  </span>
+{%- endmacro %}
+
+
+{% macro csparts(parts) -%}
+  {% for p in parts[:5] -%}
+    {% if loop.index == 5 -%}
+      &hellip;
+    {%- else -%}
+      {{ part(p) }}{% if not loop.last %}, {% endif %}
+    {% endif %}
+  {%- endfor %}
+{% endmacro %}
+
+
 {% macro comments_list(comments, with_song_names=False, with_gig_names=False) -%}
 <div class="comments">
 {% for comment in comments %}

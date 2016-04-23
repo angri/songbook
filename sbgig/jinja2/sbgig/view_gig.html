@@ -22,16 +22,38 @@
 
 <hr>
 
-<div class="songs-in-gig">
-  {% for song in gig.songs.all() %}
-    <p>
-      {{ macros.song(song) }}
-    </p>
-  {% endfor %}
-  <a class="btn btn-default" href="{{ url('sb:suggest-song', gigslug=gig.slug) }}">
-    {{- _("Suggest a song") -}}
-  </a>
+<div class="row songs-in-gig">
+  <div class="col-sm-6">
+    <h3>{{ _("Staffed songs") }}</h3>
+    <div class="songs-in-gig">
+      <ol>
+        {% for song in staffed_songs %}
+          <li>{{ macros.song(song) }}</li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <h3>{{ _("Unstaffed songs") }}</h3>
+    <div class="songs-in-gig">
+      <ul>
+        {% for song in unstaffed_songs %}
+          <li>
+            {{ macros.song(song) }}
+            <br>
+            {% if song.unstaffed_parts %}
+              {{ _("Wanted: %(parts)s", parts=macros.csparts(song.unstaffed_parts)) }}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 </div>
+
+<a class="btn btn-default" href="{{ url('sb:suggest-song', gigslug=gig.slug) }}">
+  {{- _("Suggest a song") -}}
+</a>
 
 <hr>
 
