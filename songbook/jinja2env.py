@@ -1,5 +1,6 @@
 import re
 import json
+import difflib
 
 from django.contrib.messages.api import get_messages
 from django.contrib.staticfiles.storage import staticfiles_storage
@@ -129,6 +130,45 @@ def decode_json(data):
     return json.loads(data)
 
 
+_words_re = re.compile('\S+|\s+')
+
+
+def textdiff(prev, new):
+    same_fmt = '<span class="same">%s</span>'
+    removed_fmt = '<span class="removed">%s</span>'
+    added_fmt = '<span class="added">%s</span>'
+    result = []
+
+    prev = prev.splitlines(True)
+    new = new.splitlines(True)
+    sm = difflib.SequenceMatcher(a=prev, b=new)
+    opcodes_stack = [(iter(sm.get_opcodes()), prev, new, 'lines')]
+    while opcodes_stack:
+        opcodes, prev, new, scope = opcodes_stack[-1]
+        for opcode, i1, i2, j1, j2 in opcodes:
+            if opcode == 'equal':
+                result.append(same_fmt % (''.join(new[j1:j2])))
+            elif opcode == 'delete':
+                result.append(removed_fmt % (''.join(prev[i1:i2])))
+            elif opcode == 'insert':
+                result.append(added_fmt % (''.join(new[j1:j2])))
+            elif opcode == 'replace':
+                if scope == 'lines':
+                    prevwords = _words_re.findall(''.join(prev[i1:i2]))
+                    newwords = _words_re.findall(''.join(new[j1:j2]))
+                    opcodes = difflib.SequenceMatcher(a=prevwords,
+                                                      b=newwords).get_opcodes()
+                    opcodes_stack.append((iter(opcodes), prevwords,
+                                          newwords, 'words'))
+                    break
+                else:
+                    result.append(removed_fmt % (''.join(prev[i1:i2])))
+                    result.append(added_fmt % (''.join(new[j1:j2])))
+        else:
+            opcodes_stack.pop()
+    return jinja2.Markup(''.join(result))
+
+
 def environment(**options):
     extensions = ['jinja2.ext.i18n',
                   'jinja2.ext.with_']
@@ -141,6 +181,7 @@ def environment(**options):
         'csrf': csrf,
     })
     env.filters.update({
+        'textdiff': textdiff,
         'format_datedelta': format_datedelta,
         'format_timedelta': format_timedelta,
         'format_datetime': format_datetime,

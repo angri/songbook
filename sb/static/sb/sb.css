@@ -1,3 +1,15 @@
+.textdiff .added,
+.textdiff .removed {
+  margin-right: 0.3em;
+}
+.textdiff .added {
+  background-color: #dfd;
+}
+.textdiff .removed {
+  background-color: #fdd;
+  text-decoration: line-through;
+}
+
 ul#partsinfo,
 ul#links {
   padding: 0;

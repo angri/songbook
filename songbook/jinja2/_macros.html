@@ -74,35 +74,19 @@
       {% endif %}
     </div>
     {% if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) %}
-      <div class="song-changed-comment-body row">
-        <div class="col-sm-6 diff-prev">
-          {% for change in comment_data['changes'] %}
-            <dl>
-              {% if change['title_translatable'] %}
-                <dt>{{ _(change['title']) }}</dt>
-              {% else %}
-                <dt>{{ change['title'] }}</dt>
-              {% endif %}
-              <dd>
-                {{ change['prev']|replace("\n", "<br>"|safe)|default("&ndash;") }}
-              </dd>
-            </dl>
-          {% endfor %}
-        </div>
-        <div class="col-sm-6 diff-new">
-          {% for change in comment_data['changes'] %}
-            <dl>
-              {% if change['title_translatable'] %}
-                <dt>{{ _(change['title']) }}</dt>
-              {% else %}
-                <dt>{{ change['title'] }}</dt>
-              {% endif %}
-              <dd>
-                {{ change['new']|replace("\n", "<br>"|safe)|default("&ndash;") }}
-              </dd>
-            </dl>
-          {% endfor %}
-        </div>
+      <div class="song-changed-comment-body textdiff">
+        {% for change in comment_data['changes'] %}
+          <dl>
+            {% if change['title_translatable'] %}
+              <dt>{{ _(change['title']) }}</dt>
+            {% else %}
+              <dt>{{ change['title'] }}</dt>
+            {% endif %}
+            <dd>
+              {{ change['prev']|textdiff(change['new'])|replace("\n", "<br>"|safe) }}
+            </dd>
+          </dl>
+        {% endfor %}
       </div>
     {% else %}
       <div class="comment-body">
