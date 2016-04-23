@@ -51,7 +51,11 @@ class BootstrapFormMixin:
         super(BootstrapFormMixin, self).__init__(*args, **kwargs)
         self.error_class = CustomErrorList
         for field in self.fields:
-            self.fields[field].widget.attrs['class'] = 'form-control'
+            widget = self.fields[field].widget
+            if isinstance(widget, forms.CheckboxInput):
+                widget.attrs['class'] = 'checkbox'
+            else:
+                widget.attrs['class'] = 'form-control'
 
 
 class BootstrapModelForm(BootstrapFormMixin, forms.ModelForm):
