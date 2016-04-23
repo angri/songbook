@@ -115,11 +115,9 @@ def add_song_part(request, song_id):
     form = forms.SongPartForm(request.POST)
     if form.is_valid():
         old_parts = list(models.SongPart.objects.filter(song_id=song_id))
-        new_part = models.SongPart.objects.create(
-            song_id=song_id,
-            notice=form.cleaned_data['notice'],
-            instrument=form.cleaned_data['instrument']
-        )
+        new_part = form.save(commit=False)
+        new_part.song_id = song_id
+        new_part.save()
         models.SongActions.added_part(request.user, new_part.song, old_parts)
     return JsonResponse({'result': 'ok'})
 

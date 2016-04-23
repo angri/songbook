@@ -246,6 +246,25 @@
 
 
 <script>
+  function updatePagePart(target) {
+    return $.get(window.location.href, function(html) {
+      html = $(html);
+      if (target)
+        target.replaceWith(html.find('#' + target.attr('id')));
+      var lastCommentId = Number($('div.comment').eq(0).data('comment-id'));
+      var newComments = $('<div></div>');
+      html.find('div.comment').each(function(idx, elem) {
+        var commentId = Number($(this).data('comment-id'));
+        if (commentId <= lastCommentId)
+          return false;
+        newComments.append(elem);
+      });
+      newComments = newComments.find('.comment');
+      $('div.comments').prepend(newComments.addClass('collapse'));
+      setTimeout(function() { newComments.collapse('show'); }, 0);
+    });
+  }
+
   function initPartsInfo() {
     $('#partsinfo button.join-part, #partsinfo button.save-changes').click(function() {
       var joinFormContainer = $(this).parents('li').find('.join-form');
@@ -259,10 +278,7 @@
           .one('hidden.bs.collapse', function() {
             partContainer.addClass('joined');
           });
-        var performersContainer = partContainer.find('.performers');
-        performersContainer.load(
-          window.location.href + ' #' + performersContainer.attr('id') + ' > *'
-        );
+        updatePagePart(partContainer.find('.performers'));
       });
     });
     $('#partsinfo button.leave-part').click(function() {
@@ -277,10 +293,7 @@
           .one('hidden.bs.collapse', function() {
             partContainer.removeClass('joined')
           });
-        var performersContainer = partContainer.find('.performers');
-        performersContainer.load(
-          window.location.href + ' #' + performersContainer.attr('id') + ' > *'
-        );
+        updatePagePart(partContainer.find('.performers'));
       });
     });
     $('#partsinfo .remove-part-form form').on("submit", function(event) {
@@ -289,6 +302,7 @@
       $.post(form.attr('action'), form.serialize(), function(result) {
         form.parents('ul#partsinfo > li').slideUp(function() {
           $(this).remove();
+          updatePagePart(null);
         });
       });
     });
@@ -298,7 +312,7 @@
     $('#add-a-link form').on('submit', function(event) {
       event.preventDefault();
       $.post($(this).attr('action'), $(this).serialize(), function(result) {
-        $('#links').load(window.location.href + ' #links > *', function() {
+        updatePagePart($('#links')).done(function() {
           initLinks();
           $('#add-a-link').collapse('hide');
         });
@@ -310,6 +324,7 @@
       var form = $(this);
       $.post(form.attr('action'), form.serialize(), function(result) {
         form.parents('ul#links > li').slideUp(function() {
+          updatePagePart($('#links'));
           $(this).remove();
         });
       });
@@ -319,7 +334,7 @@
       event.preventDefault();
       var form = $(this);
       $.post(form.attr('action'), form.serialize(), function(result) {
-        $('#links').load(window.location.href + ' #links > *', function() {
+        updatePagePart($('#links')).done(function() {
           initLinks();
           form.parents('ul#links .edit-form').collapse('hide');
         });
@@ -338,7 +353,7 @@
       var data = addAPartForm.serialize();
       var action = addAPartForm.attr('action');
       $.post(action, data, function(result) {
-        $('#partsinfo').load(window.location.href + ' #partsinfo > *', function() {
+        updatePagePart($('#partsinfo')).done(function() {
           initPartsInfo();
           addAPartForm.parent().collapse('hide');
         });
