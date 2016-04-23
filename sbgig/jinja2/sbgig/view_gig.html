@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block pagetitle %}{{ gig.title }} | {{ super() }}{% endblock %}A
+
+
+{% block content %}
+<h1>
+  {{ gig.title }}
+  <sup><span class="text-muted small" title="{{ gig.date|format_date }}">
+    {{- gig.date|format_datedelta -}}
+  </span></sup>
+  <a class="btn btn-default btn-xs" href="{{ url('sbgig:edit-gig', slug=gig.slug) }}"
+     title="{{ _("Edit this gig") }}">
+    <span class="glyphicon glyphicon-pencil"></span>
+  </a>
+</h1>
+
+<div class="lead">
+  {{ gig.description|markdown_safe }}
+</div>
+
+<hr>
+
+<div class="songs-in-gig">
+  {% for song in gig.songs.all() %}
+    <p>
+      {{ macros.song(song) }}
+    </p>
+  {% endfor %}
+  <a class="btn btn-default" href="{{ url('sb:suggest-song', gigslug=gig.slug) }}">
+    {{- _("Suggest a song") -}}
+  </a>
+</div>
+
+<hr>
+
+{{ macros.comments_list(gig.comments.all(), with_song_names=True) }}
+
+
+{% endblock %}

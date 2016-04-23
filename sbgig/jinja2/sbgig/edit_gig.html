@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block pagetitle %}{{ _("Edit gig \"%(title)s\"", title=gig.title) }} | {{ super() }}{% endblock %}
+
+{% block content %}
+
+<h1>{{ _("Edit gig \"%(title)s\"", title=gig.title) }}</h1>
+
+<form action="" method="post">
+  {{ form.as_bootstrap_form() }}
+  {{ csrf(csrf_token) }}
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">
+      {{ _("Save") }}
+    </button>
+    <a href="{{ url('sbgig:view-gig', slug=gig.slug) }}" class="btn btn-default">
+      {{- _("Cancel") -}}
+    </a>
+  </div>
+</form>
+
+{% endblock %}

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'sb',
     'sbuser',
+    'sbgig',
 ]
 
 MIDDLEWARE_CLASSES = [

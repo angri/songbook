@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^sb/', include('sb.urls', namespace='sb')),
     url(r'^user/', include('sbuser.urls', namespace='sbuser')),
+    url(r'^gig/', include('sbgig.urls', namespace='sbgig')),
 ]

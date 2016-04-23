@@ -17,10 +17,18 @@
 {%- endmacro %}
 
 
-{% macro comments_list(comments, with_song_names=False) -%}
+{% macro gig(gig) -%}
+  <span class="giglink"><a href="{{ url('sbgig:view-gig', slug=gig.slug) }}">{#
+    #}<span class="title">{{ gig.title }}</span>
+    <span class="date">{{ gig.date|format_date("short") }}</span>{#
+  #}</a></span>
+{%- endmacro %}
+
+
+{% macro comments_list(comments, with_song_names=False, with_gig_names=False) -%}
 <div class="comments">
 {% for comment in comments %}
-{%- with comment_data = comment.text|decode_json if comment.comment_type == 'song_changed' else None -%}
+{%- with comment_data = comment.text|decode_json if comment.comment_type == comment.CT_SONG_EDIT else None -%}
   <div class="comment">
     <div class="comment-header">
       {% if comment.comment_type == 'song_changed' %}
@@ -35,11 +43,14 @@
           {{- when(comment.datetime) -}}
         </span>
       {% endif %}
-      {% if with_song_names %}
+      {% if with_song_names and comment.song %}
          / {{ song(comment.song) }}
       {% endif %}
+      {% if with_gig_names %}
+         / {{ gig(comment.song.gig) }}
+      {% endif %}
     </div>
-    {% if comment.comment_type == 'song_changed' %}
+    {% if comment.comment_type == comment.CT_SONG_EDIT %}
       <div class="song-changed-comment-body row">
         <div class="col-sm-6 diff-prev">
           {% for change in comment_data['changes'] %}

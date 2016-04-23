@@ -44,7 +44,7 @@
     {% if comments %}
       <h3>{{ _("My last comments") }}</h3>
 
-      {{ macros.comments_list(comments, with_song_names=True) }}
+      {{ macros.comments_list(comments, with_song_names=True, with_gig_names=True) }}
     {% endif %}
   </div>
 </div>

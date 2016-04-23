@@ -99,11 +99,23 @@ def get_yamusic_embed_link(link):
            m.groupdict()
 
 
+def format_datedelta(date):
+    td = date - timezone.now().date()
+    locale = translation.trans_real.get_language()
+    return babel.dates.format_timedelta(td, add_direction=True,
+                                        locale=locale)
+
+
 def format_timedelta(dt):
     td = dt - timezone.now()
     locale = translation.trans_real.get_language()
     return babel.dates.format_timedelta(td, add_direction=True,
                                         locale=locale)
+
+
+def format_date(date, format='medium'):
+    locale = translation.trans_real.get_language()
+    return babel.dates.format_date(date, format=format, locale=locale)
 
 
 def format_datetime(dt, format='medium'):
@@ -129,8 +141,10 @@ def environment(**options):
         'csrf': csrf,
     })
     env.filters.update({
+        'format_datedelta': format_datedelta,
         'format_timedelta': format_timedelta,
         'format_datetime': format_datetime,
+        'format_date': format_date,
         'decode_json': decode_json,
         'markdown_safe': markdown_safe,
         'is_youtube_link': is_youtube_link,

@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_noop
 
+import sbgig.models
+
 
 class Instrument(models.Model):
     name = models.CharField(verbose_name=_("Instrument name"),
@@ -33,6 +35,8 @@ class UserPlays(models.Model):
 
 
 class Song(models.Model):
+    gig = models.ForeignKey(sbgig.models.Gig, on_delete=models.CASCADE,
+                            blank=False, related_name='songs')
     suggested_by = models.ForeignKey(User, on_delete=models.PROTECT,
                                      null=False, blank=False,
                                      related_name='suggested_songs')
@@ -117,24 +121,6 @@ class SongPerformer(models.Model):
             return "%s (%s)" % (self.performer.username, self.notice)
         else:
             return self.performer.username
-
-
-class SongComment(models.Model):
-    song = models.ForeignKey(Song, on_delete=models.CASCADE,
-                             blank=False, null=False, related_name='comments')
-    comment_type = models.CharField(max_length=20, null=False, blank=False,
-                                    choices=[('regular', 'regular comment'),
-                                             ('song_changed', 'song edit')],
-                                    default='regular')
-    author = models.ForeignKey(User, on_delete=models.PROTECT,
-                               null=True, blank=True,
-                               related_name='song_comments')
-    datetime = models.DateTimeField(auto_now_add=True)
-    text = models.TextField(null=False, blank=False)
-
-    class Meta:
-        ordering = ['song', '-datetime']
-        index_together = ['author', 'datetime']
 
 
 class SongActions:
@@ -262,5 +248,7 @@ class SongActions:
         if not changes:
             return
         info = {'action': action, 'changes': changes}
-        SongComment.objects.create(song=song, comment_type='song_changed',
-                                   author=user, text=json.dumps(info))
+        sbgig.models.Comment.objects.create(
+            gig=song.gig, song=song, author=user, text=json.dumps(info),
+            comment_type=sbgig.models.Comment.CT_SONG_EDIT,
+        )

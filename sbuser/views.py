@@ -18,7 +18,7 @@ def view_profile(request, username):
         (instrument, user_plays.get(instrument.id))
         for instrument in sb.models.Instrument.objects.all()
     ]
-    comments = user.song_comments.order_by('-datetime')[:5]
+    comments = user.comments.order_by('-datetime')[:5]
     is_editable = (user == request.user or request.user.is_superuser)
     return render(request, 'sbuser/view_profile.html',
                   {'user': user, 'all_instruments': all_instruments,

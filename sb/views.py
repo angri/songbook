@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 
 from sb import forms
 from sb import models
+import sbgig.models
 
 
 @login_required
@@ -13,13 +14,15 @@ def index(request):
 
 
 @login_required
-def suggest_a_song(request):
+def suggest_a_song(request, gigslug):
+    gig = get_object_or_404(sbgig.models.Gig, slug=gigslug)
     if request.method == 'POST':
         form = forms.SongForm(request.POST)
         if form.is_valid():
             new_song = form.save(commit=False)
             new_song.suggested_by = request.user
             new_song.changed_by = request.user
+            new_song.gig = gig
             new_song.save()
             models.SongActions.suggested_song(request.user, new_song)
             models.SongWatcher.objects.create(song=new_song,
@@ -28,7 +31,8 @@ def suggest_a_song(request):
                                                 args=[new_song.pk]))
     else:
         form = forms.SongForm()
-    return render(request, 'sb/suggest_a_song.html', {'form': form})
+    return render(request, 'sb/suggest_a_song.html',
+                  {'form': form, 'gig': gig})
 
 
 @login_required

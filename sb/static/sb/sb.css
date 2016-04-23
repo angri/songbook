@@ -50,12 +50,26 @@ ul#links .remove-form {
   margin: 1em 0;
 }
 
+span.giglink .date {
+  color: gray;
+}
+span.giglink .date:before {
+  content: "(";
+}
+span.giglink .date:after {
+  content: ")";
+}
+
 span.songlink .artist {
-  color: #888;
+  color: gray;
 }
 span.songlink .artist:before {
-  content: " / ";
+  content: "(";
 }
+span.songlink .artist:after {
+  content: ")";
+}
+
 a.username {
     display: inline-block;
     color: black;
@@ -69,7 +83,7 @@ a.username:first-letter {
 }
 .comments .comment-header {
   background-color: #f6f6fa;
-  line-height: 200%;
+  padding: 0.8ex 0.2ex;
   margin-bottom: 0.5em;
   color: #888;
 }
@@ -77,4 +91,12 @@ a.username:first-letter {
   font-family: monospace;
   overflow: auto;
   white-space: nowrap;
+}
+
+.songs-in-gig .songlink {
+  font-size: 120%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0.6em;
 }

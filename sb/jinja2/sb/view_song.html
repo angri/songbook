@@ -8,7 +8,9 @@
 <h1>
   {{ song.title }}
   <sup><span class="text-muted small">
-    {{- _("suggested by %(suggested_by)s", suggested_by=macros.username(song.suggested_by)) -}}
+    {{- _("suggested by %(suggested_by)s for %(gig)s",
+          suggested_by=macros.username(song.suggested_by),
+          gig=macros.gig(song.gig)) -}}
   </span></sup>
 </h1>
 
