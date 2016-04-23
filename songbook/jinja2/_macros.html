@@ -98,3 +98,52 @@
 {% endfor %}
 </div>
 {%- endmacro %}
+
+
+{% macro _comment_form(url, csrf_token) -%}
+  <div id="commentform">
+    <form action="{{ url }}" method="post">
+      {{ csrf(csrf_token) }}
+      <div class="form-group">
+        <textarea name="body" required rows="3" class="form-control"
+          placeholder="{{ _("Your comment") }}"></textarea>
+      </div>
+      <div class="form-group collapse submit-formgroup">
+        <button type="submit" class="btn btn-primary">
+          {{ _("Send comment") }}
+        </button>
+      </div>
+    </form>
+  </div>
+  <script>
+    $(function() {
+      function reset() {
+        $('#commentform textarea').val('');
+        $('#commentform .submit-formgroup').collapse('hide');
+        $('#commentform textarea').one('input', function() {
+          $('#commentform .submit-formgroup').collapse('show');
+        });
+      }
+      reset();
+      $('#commentform form').on('submit', function(event) {
+        event.preventDefault();
+        var data = $(this).serialize();
+        var url = this.action;
+        $.post(url, data, function(result) {
+          console.log(result);
+          reset();
+        });
+      });
+    });
+  </script>
+{%- endmacro %}
+
+
+{% macro song_comment_form(song, csrf_token) -%}
+  {{ _comment_form(url('sbgig:add-song-comment', song_id=song.pk), csrf_token) }}
+{%- endmacro %}
+
+
+{% macro gig_comment_form(gig, csrf_token) -%}
+  {{ _comment_form(url('sbgig:add-gig-comment', slug=gig.slug), csrf_token) }}
+{%- endmacro %}

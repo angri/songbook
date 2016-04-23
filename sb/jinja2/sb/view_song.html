@@ -239,6 +239,9 @@
 </div>
 
 <hr>
+
+{{ macros.song_comment_form(song, csrf_token) }}
+
 {{ macros.comments_list(song.comments.all()) }}
 
 
