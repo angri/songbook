@@ -81,22 +81,12 @@ sb.initPartsInfo = function() {
 };
 
 sb.initLinks = function() {
-  $('#add-a-link form').on('submit', function(event) {
-    event.preventDefault();
-    $.post($(this).attr('action'), $(this).serialize(), function(result) {
-      sb.updatePagePart($('#links')).done(function() {
-        sb.initLinks();
-        $('#add-a-link').collapse('hide');
-      });
-    });
-  });
-
   $('#links .remove-form form').on('submit', function(event) {
     event.preventDefault();
     var form = $(this);
     $.post(form.attr('action'), form.serialize(), function(result) {
       form.parents('ul#links > li').slideUp(function() {
-        sb.updatePagePart($('#links'));
+        sb.updatePagePart(null);
         $(this).remove();
       });
     });
@@ -106,9 +96,9 @@ sb.initLinks = function() {
     event.preventDefault();
     var form = $(this);
     $.post(form.attr('action'), form.serialize(), function(result) {
-      sb.updatePagePart($('#links')).done(function() {
-        sb.initLinks();
-        form.parents('ul#links .edit-form').collapse('hide');
+      var container = form.parents('ul#links > li');
+      sb.updatePagePart(container.find('div.link-content')).done(function() {
+        container.find('.edit-form').collapse('hide');
       });
     });
   });
@@ -128,6 +118,16 @@ sb.songInlineEdit = function() {
       sb.updatePagePart($('#partsinfo')).done(function() {
         sb.initPartsInfo();
         addAPartForm.parent().collapse('hide');
+      });
+    });
+  });
+
+  $('#add-a-link form').on('submit', function(event) {
+    event.preventDefault();
+    $.post($(this).attr('action'), $(this).serialize(), function(result) {
+      sb.updatePagePart($('#links')).done(function() {
+        sb.initLinks();
+        $('#add-a-link').collapse('hide').find('form').get(0).reset();
       });
     });
   });

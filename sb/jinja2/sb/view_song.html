@@ -132,6 +132,7 @@
 
       {% for link, link_edit_form in links %}
         <li>
+          <div class="link-content" id="link-content-{{ link.id }}">
           {% if link.notice %}
             <p>
               <span class="link-notice">{{ link.notice }}</span>
@@ -172,6 +173,21 @@
             </p>
           {% endif %}
 
+          {% if link.link|is_yamusic_link %}
+            <div class="embedded-player">
+              <iframe style="border:none; width: 600px; height: 100px;"
+                src="{{ link.link|get_yamusic_embed_link }}"></iframe>
+              {{ link_controls(link.pk) }}
+            </div>
+          {% elif link.link|is_youtube_link %}
+            <div class="embedded-player collapse" id="youtube-{{ link.pk }}">
+              <iframe width="600" height="{{ 600 / (1 + 1/3) }}"
+                src="{{ link.link|get_youtube_embed_link }}"
+                frameborder="0" allowfullscreen></iframe>
+            </div>
+          {% endif %}
+          </div>
+
           <div id="edit-link-{{ link.pk }}-form" class="collapse edit-form">
             <form class="well well-sm" method="post"
               action="{{ url('sb:edit-song-link', link.pk) }}">
@@ -196,20 +212,6 @@
               {% trans %}This action can not be undone.{% endtrans %}
             </form>
           </div>
-
-          {% if link.link|is_yamusic_link %}
-            <div class="embedded-player">
-              <iframe style="border:none; width: 600px; height: 100px;"
-                src="{{ link.link|get_yamusic_embed_link }}"></iframe>
-              {{ link_controls(link.pk) }}
-            </div>
-          {% elif link.link|is_youtube_link %}
-            <div class="embedded-player collapse" id="youtube-{{ link.pk }}">
-              <iframe width="600" height="{{ 600 / (1 + 1/3) }}"
-                src="{{ link.link|get_youtube_embed_link }}"
-                frameborder="0" allowfullscreen></iframe>
-            </div>
-          {% endif %}
         </li>
       {% endfor %}
     </ul>
