@@ -63,28 +63,11 @@ class Song(models.Model):
             return self.title
 
 
-class SongWatcher(models.Model):
-    song = models.ForeignKey(Song, on_delete=models.CASCADE,
-                             null=False, blank=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             null=False, blank=False)
-
-    class Meta:
-        unique_together = [
-            ('user', 'song'),
-        ]
-
-
 class SongLink(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
                              null=False, blank=False, related_name='links')
     link = models.URLField(null=False, blank=False)
     notice = models.CharField(max_length=150, null=False, blank=True)
-
-    class Meta:
-        unique_together = [
-            ('song', 'link'),
-        ]
 
     def __str__(self):
         link = self.link
