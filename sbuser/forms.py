@@ -5,7 +5,9 @@ from django.conf import settings
 from django.contrib.auth import forms as auth_forms
 
 import sbuser.models
-from sb.forms import BootstrapModelForm, BootstrapForm, BootstrapFormMixin
+from songbook.forms import (
+    BootstrapModelForm, BootstrapForm, BootstrapFormMixin,
+)
 
 
 class EditProfileForm(BootstrapModelForm):

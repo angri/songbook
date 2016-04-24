@@ -1,6 +1,6 @@
 from django import forms
 
-from sb.forms import BootstrapModelForm
+from songbook.forms import BootstrapModelForm
 
 import sbgig.models
 
