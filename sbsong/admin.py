@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from sb import models
+from sbsong import models
 
 
 class SongLinkInline(admin.TabularInline):

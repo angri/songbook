@@ -3,8 +3,8 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
-from sb import forms
-from sb import models
+from sbsong import forms
+from sbsong import models
 import sbgig.models
 
 
@@ -20,11 +20,11 @@ def suggest_a_song(request, gigslug):
             new_song.gig = gig
             new_song.save()
             models.SongActions.suggested_song(request.user, new_song)
-            return HttpResponseRedirect(reverse('sb:view-song',
+            return HttpResponseRedirect(reverse('sbsong:view-song',
                                                 args=[new_song.pk]))
     else:
         form = forms.SongForm()
-    return render(request, 'sb/suggest_a_song.html',
+    return render(request, 'sbsong/suggest_a_song.html',
                   {'form': form, 'gig': gig})
 
 
@@ -58,7 +58,7 @@ def view_song(request, song_id):
         for link in song.links.all()
     ]
 
-    return render(request, 'sb/view_song.html',
+    return render(request, 'sbsong/view_song.html',
                   {'song': song,
                    'parts': all_parts,
                    'links': all_links,

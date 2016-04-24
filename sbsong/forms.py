@@ -1,12 +1,12 @@
 from django import forms
 
 from songbook.forms import BootstrapModelForm
-import sb.models
+import sbsong.models
 
 
 class SongForm(BootstrapModelForm):
     class Meta:
-        model = sb.models.Song
+        model = sbsong.models.Song
         fields = [
             'title',
             'artist',
@@ -20,7 +20,7 @@ class SongForm(BootstrapModelForm):
 
 class SongPartForm(BootstrapModelForm):
     class Meta:
-        model = sb.models.SongPart
+        model = sbsong.models.SongPart
         fields = [
             'instrument', 'notice', 'required',
         ]
@@ -31,7 +31,7 @@ class SongPartForm(BootstrapModelForm):
 
 class JoinSongPartForm(BootstrapModelForm):
     class Meta:
-        model = sb.models.SongPerformer
+        model = sbsong.models.SongPerformer
         fields = ['notice']
         widgets = {
             'notice': forms.TextInput(attrs={'placeholder': 'Optional notice'})
@@ -40,7 +40,7 @@ class JoinSongPartForm(BootstrapModelForm):
 
 class SongLinkForm(BootstrapModelForm):
     class Meta:
-        model = sb.models.SongLink
+        model = sbsong.models.SongLink
         fields = ['link', 'notice']
         widgets = {
             'link': forms.TextInput(attrs={'required': 'true', 'type': 'url'})

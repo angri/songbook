@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 
-import sb.models
+import sbsong.models
 import sbuser.forms
 import sbuser.models
 
@@ -17,7 +17,7 @@ def view_profile(request, username):
     user_plays = {up.instrument_id: up for up in user.plays.all()}
     all_instruments = [
         (instrument, user_plays.get(instrument.id))
-        for instrument in sb.models.Instrument.objects.all()
+        for instrument in sbsong.models.Instrument.objects.all()
     ]
     comments = user.comments.order_by('-datetime')[:5]
     is_editable = (user == request.user or request.user.is_superuser)
@@ -34,7 +34,7 @@ def edit_profile(request, username):
     user_plays = {up.instrument_id: up for up in user.plays.all()}
     all_instruments = [
         (instrument, user_plays.get(instrument.id))
-        for instrument in sb.models.Instrument.objects.all()
+        for instrument in sbsong.models.Instrument.objects.all()
     ]
     edit_form = sbuser.forms.EditProfileForm(
         request.POST or None, instance=getattr(user, 'profile', None)

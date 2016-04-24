@@ -73,7 +73,7 @@ class Comment(models.Model):
     )
     gig = models.ForeignKey(Gig, on_delete=models.CASCADE,
                             blank=False, related_name='comments')
-    song = models.ForeignKey('sb.Song', on_delete=models.CASCADE,
+    song = models.ForeignKey('sbsong.Song', on_delete=models.CASCADE,
                              blank=True, null=True, related_name='comments')
     comment_type = models.CharField(max_length=20, null=False, blank=False,
                                     choices=COMMENT_TYPE_CHOICES)

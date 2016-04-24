@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import messages
 from django.db.models import Count
 
-import sb.models
+import sbsong.models
 import sbgig.models
 import sbgig.forms
 
@@ -64,5 +64,5 @@ def add_gig_comment(request, slug):
 
 @login_required
 def add_song_comment(request, song_id):
-    song = get_object_or_404(sb.models.Song, pk=song_id)
+    song = get_object_or_404(sbsong.models.Song, pk=song_id)
     return _add_comment(request, song.gig, song)
