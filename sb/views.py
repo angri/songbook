@@ -1,16 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
 from sb import forms
 from sb import models
 import sbgig.models
-
-
-@login_required
-def index(request):
-    return HttpResponse("Hello, world. You're at the sb index.")
 
 
 @login_required
@@ -25,8 +20,6 @@ def suggest_a_song(request, gigslug):
             new_song.gig = gig
             new_song.save()
             models.SongActions.suggested_song(request.user, new_song)
-            models.SongWatcher.objects.create(song=new_song,
-                                              user=request.user).save()
             return HttpResponseRedirect(reverse('sb:view-song',
                                                 args=[new_song.pk]))
     else:
