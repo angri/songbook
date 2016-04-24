@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'sb',
     'sbuser',
     'sbgig',
+    'sbdashboard',
 ]
 
 MIDDLEWARE_CLASSES = [
