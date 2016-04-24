@@ -8,10 +8,14 @@ class SongForm(BootstrapModelForm):
     class Meta:
         model = sb.models.Song
         fields = [
-            'artist',
             'title',
+            'artist',
             'description',
         ]
+        widgets = {
+            'title': forms.TextInput(attrs={'required': 'true'}),
+            'artist': forms.TextInput(attrs={'required': 'true'}),
+        }
 
 
 class SongPartForm(BootstrapModelForm):
