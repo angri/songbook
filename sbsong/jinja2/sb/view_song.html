@@ -49,7 +49,7 @@
           </div>
 
           <div id="remove-part-{{ part_info.part.pk }}-form" class="remove-part-form collapse">
-            <form method="post" action="{{ url('sb:remove-song-part', part_info.part.pk) }}"
+            <form method="post" action="{{ url('sbsong:remove-song-part', part_info.part.pk) }}"
               class="well well-sm">
               {{ csrf(csrf_token) }}
               <p>{% trans %}This action can not be undone.{% endtrans %}</p>
@@ -61,8 +61,8 @@
 
           <div id="join-part-{{ part_info.part.pk }}-form" class="join-form collapse">
             <form class="well well-sm"
-              data-join-action="{{ url('sb:join-song-part', part_info.part.pk) }}"
-              data-leave-action="{{ url('sb:leave-song-part', part_info.part.pk) }}">
+              data-join-action="{{ url('sbsong:join-song-part', part_info.part.pk) }}"
+              data-leave-action="{{ url('sbsong:leave-song-part', part_info.part.pk) }}">
               {{ csrf(csrf_token) }}
               {{ part_info.join_form.as_bootstrap_form_without_labels() }}
               <button type="button" class="btn btn-primary join-part">
@@ -98,7 +98,7 @@
       <div id="add-a-part" class="collapse">
         <p>
           <form class="well well-sm" method="post"
-            action="{{ url('sb:add-song-part', song.pk) }}">
+            action="{{ url('sbsong:add-song-part', song.pk) }}">
             {{ csrf(csrf_token) }}
             {{ new_part_form.as_bootstrap_form() }}
             <button type="submit" class="btn btn-primary submit">
@@ -190,7 +190,7 @@
 
           <div id="edit-link-{{ link.pk }}-form" class="collapse edit-form">
             <form class="well well-sm" method="post"
-              action="{{ url('sb:edit-song-link', link.pk) }}">
+              action="{{ url('sbsong:edit-song-link', link.pk) }}">
               {{ csrf(csrf_token) }}
               {{ link_edit_form.as_bootstrap_form() }}
               <button type="submit" class="btn btn-primary submit">
@@ -203,7 +203,7 @@
             </form>
           </div>
           <div id="remove-link-{{ link.pk }}-form" class="collapse remove-form">
-            <form method="post" action="{{ url('sb:remove-song-link', link.pk) }}"
+            <form method="post" action="{{ url('sbsong:remove-song-link', link.pk) }}"
               class="well well-sm">
               {{ csrf(csrf_token) }}
               <button type="submit" class="btn btn-danger">
@@ -223,7 +223,7 @@
       <div id="add-a-link" class="collapse">
         <p>
           <form class="well well-sm" method="post"
-            action="{{ url('sb:add-song-link', song.pk) }}">
+            action="{{ url('sbsong:add-song-link', song.pk) }}">
             {{ csrf(csrf_token) }}
             {{ new_link_form.as_bootstrap_form() }}
             <button type="submit" class="btn btn-primary submit">

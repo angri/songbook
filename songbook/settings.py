@@ -109,7 +109,7 @@ DATABASES = {
 MIN_PASSWORD_LENGTH = 5
 
 LOGIN_URL = 'sbuser:login'
-LOGIN_REDIRECT_URL = 'sb:index'
+LOGIN_REDIRECT_URL = 'sbdashboard:dashboard'
 
 AUTH_PASSWORD_VALIDATORS = [
     {

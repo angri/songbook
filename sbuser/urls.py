@@ -6,9 +6,9 @@ from . import forms
 
 
 urlpatterns = [
-    url(r'^profile/(?P<username>.+)$',
+    url(r'^(?P<username>.+)/profile$',
         views.view_profile, name='view-profile'),
-    url(r'^edit-profile/(?P<username>.+)$',
+    url(r'^(?P<username>.+)/edit-profile$',
         views.edit_profile, name='edit-profile'),
     url(r'^change-password$', views.change_password, name='change-password'),
     url(r'^login$', auth_views.login,
