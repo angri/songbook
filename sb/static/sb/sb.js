@@ -14,11 +14,12 @@ sb.commentForm = function(container) {
     var url = this.action;
     $.post(url, data, function(result) {
       reset();
+      sb.updatePagePartLoadComments(null);
     });
   });
 };
 
-sb.updatePagePart = function(target) {
+sb.updatePagePartLoadComments = function(target) {
   return $.get(window.location.href, function(html) {
     html = $(html);
     if (target)
@@ -50,7 +51,7 @@ sb.initPartsInfo = function() {
         .one('hidden.bs.collapse', function() {
           partContainer.addClass('joined');
         });
-      sb.updatePagePart(partContainer.find('.performers'));
+      sb.updatePagePartLoadComments(partContainer.find('.performers'));
     });
   });
   $('#partsinfo button.leave-part').click(function() {
@@ -65,7 +66,7 @@ sb.initPartsInfo = function() {
         .one('hidden.bs.collapse', function() {
           partContainer.removeClass('joined')
         });
-      sb.updatePagePart(partContainer.find('.performers'));
+      sb.updatePagePartLoadComments(partContainer.find('.performers'));
     });
   });
   $('#partsinfo .remove-part-form form').on("submit", function(event) {
@@ -74,7 +75,7 @@ sb.initPartsInfo = function() {
     $.post(form.attr('action'), form.serialize(), function(result) {
       form.parents('ul#partsinfo > li').slideUp(function() {
         $(this).remove();
-        sb.updatePagePart(null);
+        sb.updatePagePartLoadComments(null);
       });
     });
   });
@@ -86,7 +87,7 @@ sb.initLinks = function() {
     var form = $(this);
     $.post(form.attr('action'), form.serialize(), function(result) {
       form.parents('ul#links > li').slideUp(function() {
-        sb.updatePagePart(null);
+        sb.updatePagePartLoadComments(null);
         $(this).remove();
       });
     });
@@ -97,7 +98,7 @@ sb.initLinks = function() {
     var form = $(this);
     $.post(form.attr('action'), form.serialize(), function(result) {
       var container = form.parents('ul#links > li');
-      sb.updatePagePart(container.find('div.link-content')).done(function() {
+      sb.updatePagePartLoadComments(container.find('div.link-content')).done(function() {
         container.find('.edit-form').collapse('hide');
       });
     });
@@ -115,7 +116,7 @@ sb.songInlineEdit = function() {
     var data = addAPartForm.serialize();
     var action = addAPartForm.attr('action');
     $.post(action, data, function(result) {
-      sb.updatePagePart($('#partsinfo')).done(function() {
+      sb.updatePagePartLoadComments($('#partsinfo')).done(function() {
         sb.initPartsInfo();
         addAPartForm.parent().collapse('hide');
       });
@@ -125,7 +126,7 @@ sb.songInlineEdit = function() {
   $('#add-a-link form').on('submit', function(event) {
     event.preventDefault();
     $.post($(this).attr('action'), $(this).serialize(), function(result) {
-      sb.updatePagePart($('#links')).done(function() {
+      sb.updatePagePartLoadComments($('#links')).done(function() {
         sb.initLinks();
         $('#add-a-link').collapse('hide').find('form').get(0).reset();
       });
