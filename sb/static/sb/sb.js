@@ -19,22 +19,21 @@ sb.commentForm = function(container) {
   });
 };
 
+sb.commentsList = function() {
+  var updateEvery = 5 * 60 * 1000;
+  function autoupdate() {
+    sb.updatePagePartLoadComments(null);
+    setTimeout(autoupdate, updateEvery);
+  }
+  setTimeout(autoupdate, updateEvery);
+}
+
 sb.updatePagePartLoadComments = function(target) {
   return $.get(window.location.href, function(html) {
     html = $(html);
     if (target)
       target.replaceWith(html.find('#' + target.attr('id')));
-    var lastCommentId = Number($('div.comment').eq(0).data('comment-id'));
-    var newComments = $('<div></div>');
-    html.find('div.comment').each(function(idx, elem) {
-      var commentId = Number($(this).data('comment-id'));
-      if (commentId <= lastCommentId)
-        return false;
-      newComments.append(elem);
-    });
-    newComments = newComments.find('.comment');
-    $('div.comments').prepend(newComments.addClass('collapse'));
-    setTimeout(function() { newComments.collapse('show'); }, 0);
+    $('div#comments').replaceWith(html.find('div#comments'));
   });
 }
 

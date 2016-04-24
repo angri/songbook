@@ -49,7 +49,7 @@
 
 
 {% macro comments_list(comments, with_song_names=False, with_gig_names=False) -%}
-<div class="comments">
+<div class="comments" id="comments">
 {% for comment in comments %}
 {%- with comment_data = comment.text|decode_json if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) else None -%}
   <div class="comment" data-comment-id="{{ comment.id }}">
@@ -96,6 +96,7 @@
   </div>
 {%- endwith %}
 {% endfor %}
+<script>$(sb.commentsList);</script>
 </div>
 {%- endmacro %}
 
