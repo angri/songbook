@@ -80,7 +80,7 @@
           <ul id="part-{{ part_info.part.id }}-performers" class="performers">
             {% for performer in part_info.performers %}
               <li>
-                {{- performer.performer -}}
+                {{- macros.username(performer.performer) -}}
                 {% if performer.notice %} <span class="text-muted">({{ performer.notice }}){% endif -%}
               </li>
             {% else %}
