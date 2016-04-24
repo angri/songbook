@@ -8,6 +8,7 @@ from django.contrib import messages
 
 import sb.models
 import sbuser.forms
+import sbuser.models
 
 
 @login_required
@@ -47,7 +48,7 @@ def edit_profile(request, username):
                 notice = request.POST.get('i_play_%d_notice' %
                                           (instrument.id, ))
                 if user_plays is None:
-                    sb.models.UserPlays.objects.create(
+                    sbuser.models.UserPlays.objects.create(
                         user=user, instrument=instrument, notice=notice
                     )
                 elif user_plays.notice != notice:

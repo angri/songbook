@@ -20,20 +20,6 @@ class Instrument(models.Model):
         return self.name
 
 
-class UserPlays(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             null=False, blank=False,
-                             related_name='plays')
-    instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT,
-                                   null=False, blank=False)
-    notice = models.CharField(max_length=150, null=False, blank=True)
-
-    class Meta:
-        unique_together = [
-            ('user', 'instrument'),
-        ]
-
-
 class Song(models.Model):
     gig = models.ForeignKey(sbgig.models.Gig, on_delete=models.CASCADE,
                             blank=False, related_name='songs')

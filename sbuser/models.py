@@ -2,6 +2,23 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+import sb.models
+
+
+class UserPlays(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             null=False, blank=False,
+                             related_name='plays')
+    instrument = models.ForeignKey(sb.models.Instrument,
+                                   on_delete=models.PROTECT,
+                                   null=False, blank=False)
+    notice = models.CharField(max_length=150, null=False, blank=True)
+
+    class Meta:
+        unique_together = [
+            ('user', 'instrument'),
+        ]
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
