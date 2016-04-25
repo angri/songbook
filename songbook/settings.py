@@ -19,11 +19,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9#=vw8_eg*u%a%u%l@wnvlu=d#()v5g-qegu!i!nkd9j7db7kt'
+# set SECRET_KEY in local settings (see in the end of this file)
+# SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -152,3 +152,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'songbook', 'static'),
 ]
+
+
+if 'SONGBOOK_LOCAL_SETTINGS' in os.environ:
+    exec(open(os.environ['SONGBOOK_LOCAL_SETTINGS']).read(), globals())
