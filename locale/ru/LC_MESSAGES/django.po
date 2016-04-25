@@ -1,0 +1,429 @@
+# Russian translations for PROJECT.
+# Copyright (C) 2016 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2016-04-25 03:00+0300\n"
+"PO-Revision-Date: 2016-04-10 17:46+0300\n"
+"Last-Translator: Anton Gritsay <anton@angri.ru>\n"
+"Language-Team: ru <LL@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"Generated-By: Babel 2.3.2\n"
+
+#: sbgig/models.py:9 sbgig/models.py:29
+msgid "Gig name"
+msgstr "Название"
+
+#: sbgig/models.py:11
+msgid "Slug"
+msgstr "Слаг"
+
+#: sbgig/models.py:12 sbgig/models.py:30
+msgid "Gig date"
+msgstr "Дата"
+
+#: sbgig/models.py:13 sbgig/models.py:31 sbsong/models.py:38
+#: sbsong/models.py:127
+msgid "Description"
+msgstr "Описание"
+
+#: sbgig/models.py:45
+#, python-format
+msgid "%(who)s (f) edited gig %(when)s"
+msgstr "%(who)s отредактировала выступление %(when)s"
+
+#: sbgig/models.py:47
+#, python-format
+msgid "%(who)s (m) edited gig %(when)s"
+msgstr "%(who)s отредактировал выступление %(when)s"
+
+#: sbgig/views.py:39
+msgid "Gig successfully saved"
+msgstr "Выступление успешно сохранено"
+
+#: sbgig/jinja2/sbgig/edit_gig.html:4 sbgig/jinja2/sbgig/edit_gig.html:8
+#, python-format
+msgid "Edit gig \"%(title)s\""
+msgstr "Редактировать выступление «%(title)s»"
+
+#: sbgig/jinja2/sbgig/edit_gig.html:16 sbsong/jinja2/sbsong/view_song.html:72
+#: sbsong/jinja2/sbsong/view_song.html:197
+#: sbuser/jinja2/sbuser/edit_profile.html:33
+msgid "Save"
+msgstr "Сохранить"
+
+#: sbgig/jinja2/sbgig/edit_gig.html:19
+#: sbsong/jinja2/sbsong/suggest_a_song.html:12
+#: sbsong/jinja2/sbsong/view_song.html:109
+#: sbsong/jinja2/sbsong/view_song.html:201
+#: sbsong/jinja2/sbsong/view_song.html:234
+#: sbuser/jinja2/sbuser/change_password.html:36
+#: sbuser/jinja2/sbuser/edit_profile.html:36
+msgid "Cancel"
+msgstr "Отмена"
+
+#: sbgig/jinja2/sbgig/view_gig.html:14
+msgid "Edit this gig"
+msgstr "Редактировать"
+
+#: sbgig/jinja2/sbgig/view_gig.html:27
+msgid "Staffed songs"
+msgstr "Укомплектованные песни"
+
+#: sbgig/jinja2/sbgig/view_gig.html:37
+msgid "Unstaffed songs"
+msgstr "Песни без кворума"
+
+#: sbgig/jinja2/sbgig/view_gig.html:45
+#, python-format
+msgid "Wanted: %(parts)s"
+msgstr "Нужны: %(parts)s"
+
+#: sbgig/jinja2/sbgig/view_gig.html:55
+#: sbsong/jinja2/sbsong/suggest_a_song.html:5
+msgid "Suggest a song"
+msgstr "Предложить песню"
+
+#: sbsong/forms.py:39 sbuser/jinja2/sbuser/edit_profile.html:25
+msgid "Optional notice"
+msgstr "Примечание"
+
+#: sbsong/models.py:12
+msgid "Instrument name"
+msgstr "Название"
+
+#: sbsong/models.py:17
+msgid "instrument"
+msgstr "Инструмент"
+
+#: sbsong/models.py:34 sbsong/models.py:123
+msgid "Title"
+msgstr "Название"
+
+#: sbsong/models.py:36 sbsong/models.py:119
+msgid "Artist"
+msgstr "Исполнитель"
+
+#: sbsong/models.py:75
+msgid "Instrument"
+msgstr "Инструмент"
+
+#: sbsong/models.py:77
+msgid "Notice"
+msgstr "Примечание"
+
+#: sbsong/models.py:79
+msgid "Required"
+msgstr "Обязательная"
+
+#: sbsong/models.py:115
+#, python-format
+msgid "%(who)s (f) suggested a song %(when)s"
+msgstr "%(who)s предложила песню %(when)s"
+
+#: sbsong/models.py:117
+#, python-format
+msgid "%(who)s (m) suggested a song %(when)s"
+msgstr "%(who)s предложил песню %(when)s"
+
+#: sbsong/models.py:136
+#, python-format
+msgid "%(who)s (f) joined a song part %(when)s"
+msgstr "%(who)s присоединилась к партии %(when)s"
+
+#: sbsong/models.py:138
+#, python-format
+msgid "%(who)s (m) joined a song part %(when)s"
+msgstr "%(who)s присоединился к партии %(when)s"
+
+#: sbsong/models.py:144
+#, python-format
+msgid "%(who)s (f) edited part participation %(when)s"
+msgstr "%(who)s изменила примечание участия в партии %(when)s"
+
+#: sbsong/models.py:146
+#, python-format
+msgid "%(who)s (m) edited part participation %(when)s"
+msgstr "%(who)s изменил примечание участия в партии %(when)s"
+
+#: sbsong/models.py:152
+#, python-format
+msgid "%(who)s (f) left a song part %(when)s"
+msgstr "%(who)s покинула партию %(when)s"
+
+#: sbsong/models.py:154
+#, python-format
+msgid "%(who)s (m) left a song part %(when)s"
+msgstr "%(who)s покинул партию %(when)s"
+
+#: sbsong/models.py:172
+#, python-format
+msgid "%(who)s (f) added a song part %(when)s"
+msgstr "%(who)s добавила в песню партию %(when)s"
+
+#: sbsong/models.py:174
+#, python-format
+msgid "%(who)s (m) added a song part %(when)s"
+msgstr "%(who)s добавил в песню партию %(when)s"
+
+#: sbsong/models.py:179
+#, python-format
+msgid "%(who)s (f) removed a song part %(when)s"
+msgstr "%(who)s удалила партию из песни %(when)s"
+
+#: sbsong/models.py:181
+#, python-format
+msgid "%(who)s (m) removed a song part %(when)s"
+msgstr "%(who)s удалил партию из песни %(when)s"
+
+#: sbsong/models.py:188
+msgid "Parts"
+msgstr "Партии"
+
+#: sbsong/models.py:197
+#, python-format
+msgid "%(who)s (f) added a link %(when)s"
+msgstr "%(who)s добавила ссылку %(when)s"
+
+#: sbsong/models.py:199
+#, python-format
+msgid "%(who)s (m) added a song link %(when)s"
+msgstr "%(who)s добавил ссылку %(when)s"
+
+#: sbsong/models.py:204
+#, python-format
+msgid "%(who)s (f) removed a link %(when)s"
+msgstr "%(who)s удалила ссылку %(when)s"
+
+#: sbsong/models.py:206
+#, python-format
+msgid "%(who)s (m) removed a link %(when)s"
+msgstr "%(who)s удалил ссылку %(when)s"
+
+#: sbsong/models.py:211
+#, python-format
+msgid "%(who)s (f) edited a link %(when)s"
+msgstr "%(who)s изменила ссылку %(when)s"
+
+#: sbsong/models.py:213
+#, python-format
+msgid "%(who)s (m) edited a link %(when)s"
+msgstr "%(who)s изменил ссылку %(when)s"
+
+#: sbsong/models.py:220
+msgid "Links"
+msgstr "Ссылки"
+
+#: sbsong/models.py:256
+msgid "Yes"
+msgstr "Да"
+
+#: sbsong/models.py:257
+msgid "No"
+msgstr "Нет"
+
+#: sbsong/models.py:260
+msgid "Song staffed"
+msgstr "Песня укомплектована"
+
+#: sbsong/jinja2/sbsong/suggest_a_song.html:10
+msgid "Suggest"
+msgstr "Предложить"
+
+#: sbsong/jinja2/sbsong/view_song.html:11
+#, python-format
+msgid "suggested by %(suggested_by)s for %(gig)s"
+msgstr "предложено %(suggested_by)s для «%(gig)s»"
+
+#: sbsong/jinja2/sbsong/view_song.html:35
+msgid "Join this part"
+msgstr "Присоединиться к партии"
+
+#: sbsong/jinja2/sbsong/view_song.html:40
+msgid "Change notice or leave this part"
+msgstr "Изменить примечание участия"
+
+#: sbsong/jinja2/sbsong/view_song.html:45
+msgid "Remove this part"
+msgstr "Удалить всю партию из песни"
+
+#: sbsong/jinja2/sbsong/view_song.html:55
+#: sbsong/jinja2/sbsong/view_song.html:212
+msgid "This action can not be undone."
+msgstr "Это действие невозможно отменить."
+
+#: sbsong/jinja2/sbsong/view_song.html:57
+#: sbsong/jinja2/sbsong/view_song.html:210
+msgid "Confirm remove"
+msgstr "Подтверждаю удаление"
+
+#: sbsong/jinja2/sbsong/view_song.html:69
+msgid "Join"
+msgstr "Присоединиться"
+
+#: sbsong/jinja2/sbsong/view_song.html:75
+msgid "Leave part"
+msgstr "Покинуть партию"
+
+#: sbsong/jinja2/sbsong/view_song.html:96
+msgid "Add a part"
+msgstr "Добавить партию"
+
+#: sbsong/jinja2/sbsong/view_song.html:105
+#: sbsong/jinja2/sbsong/view_song.html:230
+msgid "Add"
+msgstr "Добавить"
+
+#: sbsong/jinja2/sbsong/view_song.html:121
+msgid "Edit link"
+msgstr "Редактировать ссылку"
+
+#: sbsong/jinja2/sbsong/view_song.html:126
+msgid "Remove this link"
+msgstr "Удалить ссылку"
+
+#: sbsong/jinja2/sbsong/view_song.html:147
+#: sbsong/jinja2/sbsong/view_song.html:163
+msgid "show"
+msgstr "показать"
+
+#: sbsong/jinja2/sbsong/view_song.html:157
+msgid "YouTube video:"
+msgstr "Видео YouTube:"
+
+#: sbsong/jinja2/sbsong/view_song.html:221
+msgid "Add a link"
+msgstr "Добавить ссылку"
+
+#: sbuser/forms.py:24
+msgid "Old password"
+msgstr "Старый пароль"
+
+#: sbuser/forms.py:29
+msgid "New password"
+msgstr "Новый пароль"
+
+#: sbuser/forms.py:35
+msgid "Repeat password"
+msgstr "Повтор пароля"
+
+#: sbuser/forms.py:53
+msgid "Password is incorrect"
+msgstr "Неверный пароль"
+
+#: sbuser/forms.py:58
+msgid "Passwords do not match."
+msgstr "Пароли не совпадают."
+
+#: sbuser/forms.py:65
+msgid "New password must differ from an old one."
+msgstr "Новый пароль должен отличаться от старого."
+
+#: sbuser/models.py:26
+msgid "Female"
+msgstr "Женский"
+
+#: sbuser/models.py:27
+msgid "Male"
+msgstr "Мужской"
+
+#: sbuser/models.py:28
+msgid "Gender"
+msgstr "Пол"
+
+#: sbuser/models.py:29
+msgid "About myself"
+msgstr "Обо мне"
+
+#: sbuser/views.py:60
+msgid "Profile successfully saved"
+msgstr "Профиль успешно изменен"
+
+#: sbuser/views.py:65
+msgid ""
+"Your profile is empty, please fill it below. Than you can continue to "
+"songbook."
+msgstr "Чтобы продолжить, пожалуйста, заполните Ваш профиль."
+
+#: sbuser/views.py:80
+msgid "Password successfully changed"
+msgstr "Пароль успешно изменен"
+
+#: sbuser/views.py:85
+msgid "In order to continue you have to change your password"
+msgstr "Чтобы продолжить Вам необходимо изменить пароль"
+
+#: sbuser/jinja2/sbuser/change_password.html:3
+#: sbuser/jinja2/sbuser/change_password.html:7
+#: sbuser/jinja2/sbuser/change_password.html:33
+#: sbuser/jinja2/sbuser/view_profile.html:17
+msgid "Change password"
+msgstr "Изменить пароль"
+
+#: sbuser/jinja2/sbuser/edit_profile.html:8
+#, python-format
+msgid "Edit profile of user %(username)s"
+msgstr "Изменить профиль %(username)s"
+
+#: sbuser/jinja2/sbuser/edit_profile.html:15
+#: sbuser/jinja2/sbuser/view_profile.html:31
+msgid "I play"
+msgstr "Я могу играть на"
+
+#: sbuser/jinja2/sbuser/logged_out.html:5
+msgid "Logged out from songbook"
+msgstr "Успешный выход"
+
+#: sbuser/jinja2/sbuser/logged_out.html:8
+msgid "See ya!"
+msgstr "Чао!"
+
+#: sbuser/jinja2/sbuser/logged_out.html:13 sbuser/jinja2/sbuser/login.html:36
+msgid "Log in"
+msgstr "Войти"
+
+#: sbuser/jinja2/sbuser/login.html:5
+msgid "Log in to songbook"
+msgstr "Войти в songbook"
+
+#: sbuser/jinja2/sbuser/view_profile.html:8
+#, python-format
+msgid "Profile of user %(username)s"
+msgstr "Профиль %(username)s"
+
+#: sbuser/jinja2/sbuser/view_profile.html:13
+msgid "Edit profile"
+msgstr "Изменить профиль"
+
+#: sbuser/jinja2/sbuser/view_profile.html:45
+msgid "My last comments"
+msgstr "Мои последние комментарии"
+
+#: songbook/jinja2/_macros.html:110
+msgid "Your comment"
+msgstr "Ваш комментарий"
+
+#: songbook/jinja2/_macros.html:114
+msgid "Send comment"
+msgstr "Отправить"
+
+#: songbook/jinja2/base.html:7 songbook/jinja2/base.html:21
+msgid "songbook"
+msgstr "songbook"
+
+#: songbook/jinja2/base.html:29
+msgid "Log out"
+msgstr "Выйти"
+
+#: songbook/jinja2/base.html:47
+msgid "Dismiss"
+msgstr "Закрыть"
