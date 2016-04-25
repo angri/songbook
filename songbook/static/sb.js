@@ -118,6 +118,7 @@ sb.songInlineEdit = function() {
       sb.updatePagePartLoadComments($('#partsinfo')).done(function() {
         sb.initPartsInfo();
         addAPartForm.parent().collapse('hide');
+        addAPartForm.get(0).reset();
       });
     });
   });

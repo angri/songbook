@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 from songbook.forms import BootstrapModelForm
 import sbsong.models
@@ -34,7 +35,9 @@ class JoinSongPartForm(BootstrapModelForm):
         model = sbsong.models.SongPerformer
         fields = ['notice']
         widgets = {
-            'notice': forms.TextInput(attrs={'placeholder': 'Optional notice'})
+            'notice': forms.TextInput(
+                attrs={'placeholder': _('Optional notice')}
+            )
         }
 
 

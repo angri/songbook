@@ -1,6 +1,7 @@
 from django.forms.utils import ErrorList
 from django.forms.forms import BoundField
 from django import forms
+import jinja2
 
 
 def add_control_label(label_tag):
@@ -19,6 +20,12 @@ BoundField.label_tag = add_control_label(BoundField.label_tag)
 class CustomErrorList(ErrorList):
     def __init__(self, initlist=None, error_class='text-danger'):
         super(CustomErrorList, self).__init__(initlist, error_class)
+
+    def as_p(self):
+        return jinja2.Markup('\n'.join(
+            '<p class="%s">%s</p>' % (self.error_class, jinja2.escape(error))
+            for error in self
+        ))
 
 
 class BootstrapFormMixin:

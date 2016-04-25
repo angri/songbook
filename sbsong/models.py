@@ -31,9 +31,12 @@ class Song(models.Model):
     changed_by = models.ForeignKey(User, on_delete=models.PROTECT,
                                    null=False, blank=False,
                                    related_name='last_changed_songs')
-    title = models.CharField(max_length=150, null=False, blank=False)
-    artist = models.CharField(max_length=100, null=False, blank=True)
-    description = models.TextField(null=False, blank=True)
+    title = models.CharField(verbose_name=_("Title"),
+                             max_length=150, null=False, blank=False)
+    artist = models.CharField(verbose_name=_("Artist"),
+                              max_length=100, null=False, blank=True)
+    description = models.TextField(verbose_name=_("Description"),
+                                   null=False, blank=True)
     lyrics = models.TextField(null=False, blank=True)
     staffed = models.BooleanField(null=False, blank=False, default=False)
 
@@ -69,9 +72,12 @@ class SongPart(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
                              null=False, blank=False, related_name='parts')
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT,
+                                   verbose_name=_("Instrument"),
                                    null=False, blank=False)
-    notice = models.CharField(max_length=200, null=False, blank=True)
-    required = models.BooleanField(blank=False, null=False, default=True)
+    notice = models.CharField(verbose_name=_("Notice"),
+                              max_length=200, null=False, blank=True)
+    required = models.BooleanField(verbose_name=_("Required"),
+                                   blank=False, null=False, default=True)
 
     def __str__(self):
         if self.notice:
