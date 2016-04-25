@@ -156,14 +156,14 @@ def textdiff(prev, new):
                 if scope == 'lines':
                     prevwords = _words_re.findall(''.join(prev[i1:i2]))
                     newwords = _words_re.findall(''.join(new[j1:j2]))
-                    opcodes = difflib.SequenceMatcher(a=prevwords,
-                                                      b=newwords).get_opcodes()
-                    opcodes_stack.append((iter(opcodes), prevwords,
-                                          newwords, 'words'))
-                    break
-                else:
-                    result.append(removed_fmt % (''.join(prev[i1:i2])))
-                    result.append(added_fmt % (''.join(new[j1:j2])))
+                    smwords = difflib.SequenceMatcher(a=prevwords, b=newwords)
+                    if smwords.quick_ratio() > 0.7:
+                        opcodes = smwords.get_opcodes()
+                        opcodes_stack.append((iter(opcodes), prevwords,
+                                              newwords, 'words'))
+                        break
+                result.append(removed_fmt % (''.join(prev[i1:i2])))
+                result.append(added_fmt % (''.join(new[j1:j2])))
         else:
             opcodes_stack.pop()
     return jinja2.Markup(''.join(result))
