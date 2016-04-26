@@ -10,6 +10,10 @@
   text-decoration: line-through;
 }
 
+.song-uneditable button {
+  display: none;
+}
+
 ul#partsinfo,
 ul#links {
   padding: 0;

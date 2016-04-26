@@ -8,14 +8,21 @@
 <h1>
   {{ song.title }}
   <sup><span class="text-muted small">
-    {{- _("suggested by %(suggested_by)s for %(gig)s",
-          suggested_by=macros.username(song.suggested_by),
-          gig=macros.gig(song.gig)) -}}
+    {%- if song.gig -%}
+      {{- _("suggested by %(suggested_by)s for %(gig)s",
+            suggested_by=macros.username(song.suggested_by),
+            gig=macros.gig(song.gig)) -}}
+    {%- else -%}
+      {{- _("suggested by %(suggested_by)s",
+            suggested_by=macros.username(song.suggested_by)) -}}
+    {%- endif -%}
   </span></sup>
-  <button class="btn btn-default btn-xs" data-target="#remove-song-modal"
-     title="{{ _("Remove song") }}" data-toggle="modal">
-    <span class="glyphicon glyphicon-trash"></span>
-  </button>
+  {% if song.gig %}
+    <button class="btn btn-default btn-xs" data-target="#remove-song-modal"
+       title="{{ _("Remove song") }}" data-toggle="modal">
+      <span class="glyphicon glyphicon-trash"></span>
+    </button>
+  {% endif %}
 </h1>
 
 {% if song.artist %}
@@ -26,8 +33,7 @@
   <div class="lead">{{ song.description|markdown_safe }}</div>
 {% endif %}
 
-<hr>
-
+{% if song.gig %}
 <div class="modal fade" tabindex="-1" role="dialog" id="remove-song-modal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -49,8 +55,15 @@
     </div>
   </div>
 </div>
+{% else %}
+<p class="text-danger">
+  {% trans %}Song does not belong to a gig. No edits can be made.{% endtrans %}
+</p>
+{% endif %}
 
-<div class="row">
+<hr>
+
+<div class="row song-uneditable">
   <div class="col-sm-4">
     <ul id="partsinfo">
       {% for part_info in parts %}
