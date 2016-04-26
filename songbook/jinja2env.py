@@ -139,9 +139,9 @@ def textdiff(prev, new):
     added_fmt = '<span class="added">%s</span>'
     result = []
 
-    if not prev.endswith('\n'):
+    if prev and not prev.endswith('\n'):
         prev = prev + '\n'
-    if not new.endswith('\n'):
+    if new and not new.endswith('\n'):
         new = new + '\n'
 
     prev = prev.splitlines(True)

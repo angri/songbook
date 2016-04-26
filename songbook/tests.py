@@ -58,3 +58,19 @@ hhoa
 <span class="same">foo bar baz
 </span><span class="added">quux muux fuux
 </span>""")
+
+    def test_prev_was_empty(self):
+        prev = ""
+        new = "something"
+        res = textdiff(prev, new)
+        self.assertEqual(str(res), """\
+<span class="added">something
+</span>""")
+
+    def test_new_is_empty(self):
+        prev = "something"
+        new = ""
+        res = textdiff(prev, new)
+        self.assertEqual(str(res), """\
+<span class="removed">something
+</span>""")
