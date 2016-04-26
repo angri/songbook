@@ -282,11 +282,15 @@
   </div>
 </div>
 
-<script>$(sb.songInlineEdit);</script>
+{% if song.gig %}
+  <script>$(sb.songInlineEdit);</script>
+{% endif %}
 
 <hr>
 
-{{ macros.song_comment_form(song, csrf_token) }}
+{% if song.gig %}
+  {{ macros.song_comment_form(song, csrf_token) }}
+{% endif %}
 
 {{ macros.comments_list(song.comments.all()) }}
 
