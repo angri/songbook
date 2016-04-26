@@ -22,7 +22,7 @@ class Instrument(models.Model):
 
 class Song(models.Model):
     gig = models.ForeignKey(sbgig.models.Gig, on_delete=models.CASCADE,
-                            blank=False, related_name='songs')
+                            blank=True, null=True, related_name='songs')
     suggested_by = models.ForeignKey(User, on_delete=models.PROTECT,
                                      null=False, blank=False,
                                      related_name='suggested_songs')
@@ -223,6 +223,23 @@ class SongActions:
              'new': '\n'.join(sorted(str(link) for link in new_links))}
         ]
         cls._song_changed(song, action, user, changes)
+
+    @classmethod
+    def removed_from_gig(cls, user, song, old_gig):
+        changes = [
+            {'title': ugettext_noop('Gig'),
+             'title_translatable': True,
+             'prev': str(old_gig),
+             'new': ''}
+        ]
+        action = (ugettext_noop('%(who)s (f) removed song from gig %(when)s')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('%(who)s (m) removed song from gig %(when)s'))
+        info = {'action': action, 'changes': changes}
+        sbgig.models.Comment.objects.create(
+            gig=old_gig, song=song, author=user, text=json.dumps(info),
+            comment_type=sbgig.models.Comment.CT_SONG_EDIT,
+        )
 
     @classmethod
     def _song_changed(cls, song, action, user, changes, *,

@@ -12,6 +12,10 @@
           suggested_by=macros.username(song.suggested_by),
           gig=macros.gig(song.gig)) -}}
   </span></sup>
+  <button class="btn btn-default btn-xs" data-target="#remove-song-modal"
+     title="{{ _("Remove song") }}" data-toggle="modal">
+    <span class="glyphicon glyphicon-trash"></span>
+  </button>
 </h1>
 
 {% if song.artist %}
@@ -23,6 +27,28 @@
 {% endif %}
 
 <hr>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="remove-song-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url('sbsong:remove-song', song_id=song.pk) }}" method="post">
+        {{ csrf(csrf_token) }}
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"
+            aria-label="{{ _("Close") }}"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">{{ _("Remove song") }}</h4>
+        </div>
+        <div class="modal-body">
+          {{ _('The song "%(song)s" will be removed from "%(gig)s"', song=song, gig=song.gig) }}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">{{ _("Confirm remove") }}</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Cancel") }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <div class="row">
   <div class="col-sm-4">

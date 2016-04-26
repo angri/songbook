@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 from sbsong import forms
 from sbsong import models
@@ -64,6 +66,19 @@ def view_song(request, song_id):
                    'links': all_links,
                    'new_part_form': new_part_form,
                    'new_link_form': new_link_form})
+
+
+@login_required
+def remove_song(request, song_id):
+    song = get_object_or_404(models.Song, pk=song_id)
+    old_gig = song.gig
+    song.gig = None
+    song.save()
+    models.SongActions.removed_from_gig(request.user, song, old_gig)
+    messages.add_message(request, messages.INFO,
+                         _('Song successfully removed'))
+    return HttpResponseRedirect(reverse('sbgig:view-gig',
+                                        args=[old_gig.slug]))
 
 
 @login_required
