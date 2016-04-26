@@ -10,7 +10,7 @@
   text-decoration: line-through;
 }
 
-.song-uneditable button {
+.song-uneditable .song-editing {
   display: none;
 }
 

@@ -56,7 +56,7 @@
   </div>
 </div>
 {% else %}
-<p class="text-danger">
+<p class="text-danger well">
   {% trans %}Song does not belong to a gig. No edits can be made.{% endtrans %}
 </p>
 {% endif %}
@@ -70,24 +70,27 @@
         <li {% if part_info.has_joined %}class="joined"{% endif %}>
           <div class="controls">
             {{ macros.part(part_info.part) }}
-            <button type="button" class="btn btn-default btn-xs show-join-form not-joined"
-              title="{{ _("Join this part") }}"
-              data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
-              <span class="glyphicon glyphicon-flag"></span>
-            </button>
-            <button type="button" class="btn btn-default btn-xs show-join-form joined"
-              title="{{ _("Change notice or leave this part") }}"
-              data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
-              <span class="glyphicon glyphicon-flag"></span>
-            </button>
-            <button type="button" class="btn btn-default btn-xs remove-part"
-              title="{{ _("Remove this part") }}"
-              data-toggle="collapse" data-target="#remove-part-{{ part_info.part.pk }}-form">
-              <span class="glyphicon glyphicon-trash"></span>
-            </button>
+            <span class="song-editing">
+              <button type="button" class="btn btn-default btn-xs show-join-form not-joined"
+                title="{{ _("Join this part") }}"
+                data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
+                <span class="glyphicon glyphicon-flag"></span>
+              </button>
+              <button type="button" class="btn btn-default btn-xs show-join-form joined"
+                title="{{ _("Change notice or leave this part") }}"
+                data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
+                <span class="glyphicon glyphicon-flag"></span>
+              </button>
+              <button type="button" class="btn btn-default btn-xs remove-part"
+                title="{{ _("Remove this part") }}"
+                data-toggle="collapse" data-target="#remove-part-{{ part_info.part.pk }}-form">
+                <span class="glyphicon glyphicon-trash"></span>
+              </button>
+            </span>
           </div>
 
-          <div id="remove-part-{{ part_info.part.pk }}-form" class="remove-part-form collapse">
+          <div id="remove-part-{{ part_info.part.pk }}-form"
+            class="remove-part-form collapse song-editing">
             <form method="post" action="{{ url('sbsong:remove-song-part', part_info.part.pk) }}"
               class="well well-sm">
               {{ csrf(csrf_token) }}
@@ -98,7 +101,7 @@
             </form>
           </div>
 
-          <div id="join-part-{{ part_info.part.pk }}-form" class="join-form collapse">
+          <div id="join-part-{{ part_info.part.pk }}-form" class="join-form collapse song-editing">
             <form class="well well-sm"
               data-join-action="{{ url('sbsong:join-song-part', part_info.part.pk) }}"
               data-leave-action="{{ url('sbsong:leave-song-part', part_info.part.pk) }}">
@@ -130,11 +133,11 @@
       {% endfor %}
     </ul>
     <div>
-      <button type="button" class="btn btn-default btn-sm"
+      <button type="button" class="btn btn-default btn-sm song-editing"
         data-toggle="collapse" data-target="#add-a-part">
         {{ _("Add a part") }}
       </button>
-      <div id="add-a-part" class="collapse">
+      <div id="add-a-part" class="collapse song-editing">
         <p>
           <form class="well well-sm" method="post"
             action="{{ url('sbsong:add-song-part', song.pk) }}">
@@ -155,7 +158,7 @@
   <div class="col-sm-8">
     <ul id="links">
       {% macro link_controls(link_pk) %}
-        <span class="controls" style="vertical-align: top">
+        <span class="controls song-editing" style="vertical-align: top">
           <button type="button" class="btn btn-default btn-xs show-edit-form"
             title="{{ _("Edit link") }}"
             data-toggle="collapse" data-target="#edit-link-{{ link_pk }}-form">
@@ -227,7 +230,7 @@
           {% endif %}
           </div>
 
-          <div id="edit-link-{{ link.pk }}-form" class="collapse edit-form">
+          <div id="edit-link-{{ link.pk }}-form" class="collapse edit-form song-editing">
             <form class="well well-sm" method="post"
               action="{{ url('sbsong:edit-song-link', link.pk) }}">
               {{ csrf(csrf_token) }}
@@ -241,7 +244,7 @@
               </button>
             </form>
           </div>
-          <div id="remove-link-{{ link.pk }}-form" class="collapse remove-form">
+          <div id="remove-link-{{ link.pk }}-form" class="collapse remove-form song-editing">
             <form method="post" action="{{ url('sbsong:remove-song-link', link.pk) }}"
               class="well well-sm">
               {{ csrf(csrf_token) }}
@@ -255,11 +258,11 @@
       {% endfor %}
     </ul>
     <div>
-      <button type="button" class="btn btn-default btn-sm"
+      <button type="button" class="btn btn-default btn-sm song-editing"
         data-toggle="collapse" data-target="#add-a-link">
         {{ _("Add a link") }}
       </button>
-      <div id="add-a-link" class="collapse">
+      <div id="add-a-link" class="collapse song-editing">
         <p>
           <form class="well well-sm" method="post"
             action="{{ url('sbsong:add-song-link', song.pk) }}">
