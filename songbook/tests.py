@@ -14,7 +14,8 @@ class TextdiffTestCase(unittest.TestCase):
 </span><span class="removed">bar
 </span><span class="same">baz
 quuxer
-</span><span class="added">rab</span>""")
+</span><span class="added">rab
+</span>""")
 
     def test_intraline_changes(self):
         prev = "foo\nbar\nbaz\nquuxer word\n"
@@ -37,12 +38,23 @@ baz
 </span><span class="same">quuxer fuuxer </span><span class="added">mooxer
 </span><span class="same">quux
 </span><span class="same">gor
-hhoa</span>""")
+hhoa
+</span>""")
 
     def test_too_many_word_changes(self):
         prev = "По возможности подзвучиваем только клавиши и бас."
         new = "Пока предположительно на дальнем кофепойнте третьего этажа."
         res = textdiff(prev, new)
         self.assertEqual(str(res), """\
-<span class="removed">По возможности подзвучиваем только клавиши и бас.</span>\
-<span class="added">Пока предположительно на дальнем кофепойнте третьего этажа.</span>""")
+<span class="removed">По возможности подзвучиваем только клавиши и бас.
+</span><span class="added">Пока предположительно на дальнем кофепойнте третьего этажа.
+</span>""")
+
+    def test_added_line(self):
+        prev = "foo bar baz"
+        new = prev + "\nquux muux fuux"
+        res = textdiff(prev, new)
+        self.assertEqual(str(res), """\
+<span class="same">foo bar baz
+</span><span class="added">quux muux fuux
+</span>""")

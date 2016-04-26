@@ -139,6 +139,11 @@ def textdiff(prev, new):
     added_fmt = '<span class="added">%s</span>'
     result = []
 
+    if not prev.endswith('\n'):
+        prev = prev + '\n'
+    if not new.endswith('\n'):
+        new = new + '\n'
+
     prev = prev.splitlines(True)
     new = new.splitlines(True)
     sm = difflib.SequenceMatcher(a=prev, b=new)
