@@ -36,7 +36,7 @@ _get_youtube_iframe_url_re = re.compile(
 )
 
 _get_yamusic_embed_link_re = re.compile(
-    r"https://music\.yandex\.ru/album/(?P<album>\d+)/track/(?P<track>\d+)"
+    r"^https://music\.yandex\.ru/album/(?P<album>\d+)/track/(?P<track>\d+)$"
 )
 
 
@@ -84,7 +84,7 @@ def get_youtube_embed_link(link):
 
 
 def is_yamusic_link(link):
-    return link.startswith('https://music.yandex.ru/')
+    return _get_yamusic_embed_link_re.match(link) is not None
 
 
 def get_yamusic_embed_link(link):
