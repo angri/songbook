@@ -63,7 +63,7 @@
 
 <hr>
 
-<div class="row song-uneditable">
+<div class="row{% if not song.gig %} song-uneditable{% endif %}">
   <div class="col-sm-4">
     <ul id="partsinfo">
       {% for part_info in parts %}
