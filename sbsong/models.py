@@ -45,6 +45,13 @@ class Song(models.Model):
             ('gig', 'staffed'),
         ]
 
+    def __init__(self, *args, **kwargs):
+        super(Song, self).__init__(*args, **kwargs)
+        self._pristine = {
+            field.name: getattr(self, field.name)
+            for field in self._meta.fields
+        }
+
     def __str__(self):
         if self.artist:
             return "%s (by %s)" % (self.title, self.artist)
@@ -238,6 +245,32 @@ class SongActions:
         info = {'action': action, 'changes': changes}
         sbgig.models.Comment.objects.create(
             gig=old_gig, song=song, author=user, text=json.dumps(info),
+            comment_type=sbgig.models.Comment.CT_SONG_EDIT,
+        )
+
+    @classmethod
+    def edited_song(cls, user, song):
+        changes = []
+        track_changes_of = [
+            ('title', ugettext_noop('Title')),
+            ('artist', ugettext_noop('Artist')),
+            ('description', ugettext_noop('Description')),
+        ]
+        for field, verbose_name in track_changes_of:
+            oldval = str(song._pristine[field] or '')
+            newval = str(getattr(song, field))
+            changes.append({
+                'title': verbose_name,
+                'title_translatable': True,
+                'prev': oldval,
+                'new': newval
+            })
+        action = (ugettext_noop('%(who)s (f) edited song %(when)s')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('%(who)s (m) edited song %(when)s'))
+        info = {'action': action, 'changes': changes}
+        sbgig.models.Comment.objects.create(
+            gig=song.gig, song=song, author=user, text=json.dumps(info),
             comment_type=sbgig.models.Comment.CT_SONG_EDIT,
         )
 

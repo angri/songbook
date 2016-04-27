@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -66,6 +66,21 @@ def view_song(request, song_id):
                    'links': all_links,
                    'new_part_form': new_part_form,
                    'new_link_form': new_link_form})
+
+
+@login_required
+def edit_song(request, song_id):
+    song = get_object_or_404(models.Song, pk=song_id)
+    if song.gig is None:
+        return HttpResponse(status=403)
+    form = forms.SongForm(request.POST or None, instance=song)
+    if form.is_valid():
+        form.save()
+        models.SongActions.edited_song(request.user, song)
+        return HttpResponseRedirect(reverse('sbsong:view-song',
+                                            args=[song.pk]))
+    return render(request, 'sbsong/edit_song.html',
+                  {'form': form, 'song': song})
 
 
 @login_required

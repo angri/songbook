@@ -18,6 +18,10 @@
     {%- endif -%}
   </span></sup>
   {% if song.gig %}
+    <a class="btn btn-default btn-xs" href="{{ url('sbsong:edit-song', song_id=song.pk) }}"
+       title="{{ _("Edit song") }}">
+      <span class="glyphicon glyphicon-pencil"></span>
+    </a>
     <button class="btn btn-default btn-xs" data-target="#remove-song-modal"
        title="{{ _("Remove song") }}" data-toggle="modal">
       <span class="glyphicon glyphicon-trash"></span>
