@@ -87,7 +87,7 @@ def _get_comments(request, gig, song):
         qs = qs.exclude(comment_type=sbgig.models.Comment.CT_SONG_EDIT)
         qs = qs.exclude(comment_type=sbgig.models.Comment.CT_GIG_EDIT)
     qs = qs.select_related('song', 'gig', 'author')
-    comments = list(qs[:settings.SB_COMMENTS_ON_PAGE])
+    comments = list(qs[:settings.SB_COMMENTS_ON_PAGE + 1])
     return render(request, 'sbgig/comments.html', {'comments': comments})
 
 
