@@ -29,29 +29,53 @@
 <div class="row">
   <div class="col-sm-4">
     <h3>{{ _("I play") }}</h3>
-      {% for instrument, user_plays in all_instruments %}
-        <p>
-          <span class="glyphicon glyphicon-ok" {% if not user_plays %} style="visibility: hidden"{% endif %}></span>
-          {{ instrument }}
-          {% if user_plays and user_plays.notice %}
-            <span class="text-muted">({{ user_plays.notice }})</span>
-          {% endif %}
-        </p>
-      {% endfor %}
+    {% for instrument, user_plays in all_instruments %}
+      <p>
+        <span class="glyphicon glyphicon-ok" {% if not user_plays %} style="visibility: hidden"{% endif %}></span>
+        {{ instrument }}
+        {%- if user_plays and user_plays.notice -%}
+          : <span class="text-muted">{{ user_plays.notice }}</span>
+        {% endif %}
+      </p>
+    {% endfor %}
   </div>
 
   <div class="col-sm-8">
-    {% if comments %}
-      <h3>{{ _("My last comments") }}</h3>
-
-      <div class="comments-container">
-        <div class="comments-stream">
-          {{ macros.comments_list(comments) }}
-        </div>
-      </div>
+    {% if performs %}
+      <h3>{{ _("I participate in songs") }}</h3>
+      <dl>
+        {% for gig, gigsongs in performs %}
+          <dt><h4>{{ macros.gig(gig) }}</h4></dt>
+          <dd><ol>
+            {% for song, songparts in gigsongs %}
+              <li>
+                {{ macros.song(song) }}
+                <p>
+                  {% for part, song_performer in songparts %}
+                    {{ macros.part(part) -}}
+                    {% if song_performer.notice -%}
+                      : <span class="text-muted">{{ song_performer.notice }}</span>
+                    {%- endif -%}
+                    {%- if not loop.last %}, {% endif %}
+                  {% endfor %}
+                </p>
+              </li>
+            {% endfor %}
+          </ol></dd>
+        {% endfor %}
+      </dl>
     {% endif %}
   </div>
 </div>
 
+{% if comments %}
+  <h3>{{ _("My last comments") }}</h3>
+
+  <div class="comments-container">
+    <div class="comments-stream">
+      {{ macros.comments_list(comments) }}
+    </div>
+  </div>
+{% endif %}
 
 {% endblock %}

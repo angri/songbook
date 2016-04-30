@@ -11,6 +11,26 @@ import sbuser.forms
 import sbuser.models
 
 
+def _get_user_performs(user):
+    allgigs = []
+    user_performs = sbsong.models.SongPerformer.objects.filter(
+        performer=user, part__song__gig__isnull=False
+    ).select_related(
+        'part', 'part__instrument', 'part__song', 'part__song__gig'
+    ).order_by(
+        'part__song__gig', 'part__song', 'part'
+    )
+    for up in user_performs:
+        if not allgigs or allgigs[-1][0].id != up.part.song.gig.id:
+            allgigs.append((up.part.song.gig, []))
+        gig, gigsongs = allgigs[-1]
+        if not gigsongs or gigsongs[-1][0].id != up.part.song.id:
+            gigsongs.append((up.part.song, []))
+        song, songparts = gigsongs[-1]
+        songparts.append((up.part, up))
+    return allgigs
+
+
 @login_required
 def view_profile(request, username):
     user = get_object_or_404(User, username=username)
@@ -21,9 +41,11 @@ def view_profile(request, username):
     ]
     comments = user.comments.order_by('-datetime')[:5]
     is_editable = (user == request.user or request.user.is_superuser)
+    user_performs = _get_user_performs(user)
     return render(request, 'sbuser/view_profile.html',
                   {'user': user, 'all_instruments': all_instruments,
-                   'comments': comments, 'is_editable': is_editable})
+                   'comments': comments, 'is_editable': is_editable,
+                   'performs': user_performs})
 
 
 @login_required
