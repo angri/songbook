@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 from sbsong import forms
 from sbsong import models
@@ -60,12 +61,15 @@ def view_song(request, song_id):
         for link in song.links.all()
     ]
 
+    comments = song.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
+
     return render(request, 'sbsong/view_song.html',
                   {'song': song,
                    'parts': all_parts,
                    'links': all_links,
                    'new_part_form': new_part_form,
-                   'new_link_form': new_link_form})
+                   'new_link_form': new_link_form,
+                   'comments': comments})
 
 
 @login_required

@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import messages
 from django.db.models import Count
+from django.conf import settings
 
 import sbsong.models
 import sbgig.models
@@ -23,9 +24,11 @@ def view_gig(request, slug):
                       .filter(num_perf=0)
                       .select_related('instrument')
         )
+    comments = gig.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
     return render(request, 'sbgig/view_gig.html',
                   {'gig': gig, 'unstaffed_songs': unstaffed_songs,
-                   'staffed_songs': staffed_songs})
+                   'staffed_songs': staffed_songs,
+                   'comments': comments})
 
 
 @login_required
@@ -66,3 +69,35 @@ def add_gig_comment(request, slug):
 def add_song_comment(request, song_id):
     song = get_object_or_404(sbsong.models.Song, pk=song_id)
     return _add_comment(request, song.gig, song)
+
+
+def _get_comments(request, gig, song):
+    not_after = request.GET.get('not_after')
+    not_before = request.GET.get('not_before')
+    no_changes = request.GET.get('no_changes') is not None
+    if song:
+        qs = song.comments.all()
+    else:
+        qs = gig.comments.all()
+    if not_before:
+        qs = qs.filter(id__gt=not_before)
+    if not_after:
+        qs = qs.filter(id__lt=not_after)
+    if no_changes:
+        qs = qs.exclude(comment_type=sbgig.models.Comment.CT_SONG_EDIT)
+        qs = qs.exclude(comment_type=sbgig.models.Comment.CT_GIG_EDIT)
+    qs = qs.select_related('song', 'gig', 'author')
+    comments = list(qs[:settings.SB_COMMENTS_ON_PAGE])
+    return render(request, 'sbgig/comments.html', {'comments': comments})
+
+
+@login_required
+def get_gig_comments(request, slug):
+    gig = get_object_or_404(sbgig.models.Gig, slug=slug)
+    return _get_comments(request, gig, song=None)
+
+
+@login_required
+def get_song_comments(request, song_id):
+    song = get_object_or_404(sbsong.models.Song, pk=song_id)
+    return _get_comments(request, song.gig, song)

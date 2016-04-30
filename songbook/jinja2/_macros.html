@@ -48,8 +48,24 @@
 {% endmacro %}
 
 
-{% macro comments_list(comments, with_song_names=False, with_gig_names=False) -%}
-<div class="comments" id="comments">
+{% macro comments(url, comments, with_song_names=False, with_gig_names=False) %}
+  <div class="comments-container" data-url="{{ url }}">
+    <div class="comments-stream
+               {%- if not with_song_names %} hide-song-names {% endif -%}
+               {%- if not with_gig_names %} hide-gig-names {% endif -%}">
+      {{ comments_list(comments) }}
+    </div>
+    <div class="load-more-line">
+      <button type="button" class="btn btn-default btn-sm">
+        {{- _("Show more") -}}
+      </button>
+    </div>
+  </div>
+  <script>$(function() { sb.comments($('.comments-container')); });</script>
+{% endmacro %}
+
+
+{% macro comments_list(comments) -%}
 {% for comment in comments %}
 {%- with comment_data = comment.text|decode_json if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) else None -%}
   <div class="comment" data-comment-id="{{ comment.id }}">
@@ -66,12 +82,10 @@
           {{- when(comment.datetime) -}}
         </span>
       {% endif %}
-      {% if with_song_names and comment.song %}
-         / {{ song(comment.song) }}
+      {% if comment.song %}
+        <span class="songname">/ {{ song(comment.song) }} </span>
       {% endif %}
-      {% if with_gig_names %}
-         / {{ gig(comment.gig) }}
-      {% endif %}
+      <span class="gigname">/ {{ gig(comment.gig) }} </span>
     </div>
     {% if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) %}
       <div class="song-changed-comment-body textdiff">
@@ -96,8 +110,6 @@
   </div>
 {%- endwith %}
 {% endfor %}
-</div>
-<script>$(sb.commentsList);</script>
 {%- endmacro %}
 
 

@@ -59,7 +59,7 @@
 
 {{ macros.gig_comment_form(gig, csrf_token) }}
 
-{{ macros.comments_list(gig.comments.all(), with_song_names=True) }}
+{{ macros.comments(url('sbgig:get-gig-comments', slug=gig.slug), comments, with_song_names=True) }}
 
 
 {% endblock %}

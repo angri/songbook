@@ -94,16 +94,26 @@ a.username:first-letter {
     color: red;
 }
 
-.comments .comment {
+.comments-container .hide-song-names .comment-header .songname,
+.comments-container .hide-gig-names .comment-header .gigname {
+  display: none;
+}
+.comments-container .load-more-line {
+  display: none;
+}
+.comments-container.have-more .load-more-line {
+  display: block;
+}
+.comments-stream .comment {
   margin-bottom: 1em;
 }
-.comments .comment-header {
+.comments-stream .comment-header {
   background-color: #f6f6fa;
   padding: 0.8ex 0.2ex;
   margin-bottom: 0.5em;
   color: #888;
 }
-.comments .song-changed-comment-body dd {
+.comments-stream .song-changed-comment-body dd {
   font-family: monospace;
   overflow: auto;
   white-space: nowrap;

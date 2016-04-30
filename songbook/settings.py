@@ -154,5 +154,9 @@ STATICFILES_DIRS = [
 ]
 
 
+# songbook specific settings
+SB_COMMENTS_ON_PAGE = 20
+
+
 if 'SONGBOOK_LOCAL_SETTINGS' in os.environ:
     exec(open(os.environ['SONGBOOK_LOCAL_SETTINGS']).read(), globals())

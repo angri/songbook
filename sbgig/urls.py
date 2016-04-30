@@ -10,4 +10,9 @@ urlpatterns = [
         views.add_gig_comment, name='add-gig-comment'),
     url(r'^add-song-comment/(?P<song_id>\d+)$',
         views.add_song_comment, name='add-song-comment'),
+
+    url(r'^(?P<slug>[^/]+)/comments$',
+        views.get_gig_comments, name='get-gig-comments'),
+    url(r'^song-comments/(?P<song_id>\d+)$',
+        views.get_song_comments, name='get-song-comments'),
 ]
