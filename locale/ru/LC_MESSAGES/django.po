@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-05-01 01:08+0300\n"
+"POT-Creation-Date: 2016-05-01 02:08+0300\n"
 "PO-Revision-Date: 2016-04-10 17:46+0300\n"
 "Last-Translator: Anton Gritsay <anton@angri.ru>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -407,21 +407,21 @@ msgstr "Пол"
 msgid "About myself"
 msgstr "Обо мне"
 
-#: sbuser/views.py:60
+#: sbuser/views.py:82
 msgid "Profile successfully saved"
 msgstr "Профиль успешно изменен"
 
-#: sbuser/views.py:65
+#: sbuser/views.py:87
 msgid ""
 "Your profile is empty, please fill it below. Than you can continue to "
 "songbook."
 msgstr "Чтобы продолжить, пожалуйста, заполните Ваш профиль."
 
-#: sbuser/views.py:80
+#: sbuser/views.py:102
 msgid "Password successfully changed"
 msgstr "Пароль успешно изменен"
 
-#: sbuser/views.py:85
+#: sbuser/views.py:107
 msgid "In order to continue you have to change your password"
 msgstr "Чтобы продолжить Вам необходимо изменить пароль"
 
@@ -468,18 +468,22 @@ msgid "Edit profile"
 msgstr "Изменить профиль"
 
 #: sbuser/jinja2/sbuser/view_profile.html:45
+msgid "I participate in songs"
+msgstr "Я участвую в песнях"
+
+#: sbuser/jinja2/sbuser/view_profile.html:72
 msgid "My last comments"
 msgstr "Мои последние комментарии"
 
-#: songbook/jinja2/_macros.html:60
+#: songbook/jinja2/_macros.html:58
 msgid "Show more"
 msgstr "Показать еще"
 
-#: songbook/jinja2/_macros.html:122
+#: songbook/jinja2/_macros.html:120
 msgid "Your comment"
 msgstr "Ваш комментарий"
 
-#: songbook/jinja2/_macros.html:126
+#: songbook/jinja2/_macros.html:124
 msgid "Send comment"
 msgstr "Отправить"
 
