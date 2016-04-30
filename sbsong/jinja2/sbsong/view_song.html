@@ -127,7 +127,7 @@
             {% for performer in part_info.performers %}
               <li>
                 {{- macros.username(performer.performer) -}}
-                {% if performer.notice %} <span class="text-muted">({{ performer.notice }}){% endif -%}
+                {% if performer.notice %}: <span class="text-muted">{{ performer.notice }}{% endif -%}
               </li>
             {% else %}
               <span class="text-danger">&ndash;</span>

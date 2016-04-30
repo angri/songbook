@@ -69,21 +69,9 @@ ul#links .remove-form {
 span.giglink .date {
   color: gray;
 }
-span.giglink .date:before {
-  content: "(";
-}
-span.giglink .date:after {
-  content: ")";
-}
 
 span.songlink .artist {
   color: gray;
-}
-span.songlink .artist:before {
-  content: "(";
-}
-span.songlink .artist:after {
-  content: ")";
 }
 
 a.username {
@@ -92,6 +80,10 @@ a.username {
 }
 a.username:first-letter {
     color: red;
+}
+
+.partinfo .part-notice {
+  color: gray;
 }
 
 .comments-container .hide-song-names .comment-header .songname,

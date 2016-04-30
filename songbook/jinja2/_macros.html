@@ -26,10 +26,8 @@
 
 
 {% macro part(part) -%}
-  <span class="partinfo"><span class="instrument-name">{{ part.instrument }}</span>
-    {%- if part.required -%}
-      <span class="part-required">*</span>
-    {%- endif -%}
+  <span class="partinfo{% if part.required %} partinfo-required{% endif %}">{#
+    #}<span class="instrument-name">{{ part.instrument }}</span>
     {%- if part.notice %}
       <span class="part-notice">{{ part.notice }}</span>
     {%- endif -%}
