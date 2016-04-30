@@ -84,8 +84,9 @@ class Comment(models.Model):
     text = models.TextField(null=False, blank=False)
 
     class Meta:
-        ordering = ['gig', '-datetime']
+        ordering = ['-datetime']
         index_together = [
             ['author', 'datetime'],
-            ['gig', 'song', 'datetime']
+            ['gig', 'datetime'],
+            ['song', 'datetime'],
         ]
