@@ -48,8 +48,9 @@ class Song(models.Model):
     def __init__(self, *args, **kwargs):
         super(Song, self).__init__(*args, **kwargs)
         self._pristine = {
-            field.name: getattr(self, field.name)
-            for field in self._meta.fields
+            field: getattr(self, field)
+            for field in ('title', 'artist', 'description',
+                          'lyrics', 'staffed')
         }
 
     def __str__(self):
