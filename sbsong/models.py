@@ -293,11 +293,7 @@ class SongActions:
         action = (ugettext_noop('%(who)s (f) edited song %(when)s')
                   if user.profile.gender == 'f' else
                   ugettext_noop('%(who)s (m) edited song %(when)s'))
-        info = {'action': action, 'changes': changes}
-        sbgig.models.Comment.objects.create(
-            gig=song.gig, song=song, author=user, text=json.dumps(info),
-            comment_type=sbgig.models.Comment.CT_SONG_EDIT,
-        )
+        cls._song_changed(song, action, user, changes)
 
     @classmethod
     def _song_changed(cls, song, action, user, changes, *,
