@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
@@ -17,19 +19,18 @@ def view_gig(request, slug):
     gig = get_object_or_404(sbgig.models.Gig, slug=slug)
     staffed_songs = list(gig.songs.filter(staffed=True))
     unstaffed_songs = list(gig.songs.filter(staffed=False))
+    empty_parts = (sbsong.models.SongPart.objects.filter(song__gig=gig)
+                         .annotate(num_perf=Count('songperformer'))
+                         .filter(num_perf=0)
+                         .select_related('instrument')
+                         .order_by('song', 'id'))
+    empty_parts_by_song_id = defaultdict(list)
+    for empty_part in empty_parts:
+        empty_parts_by_song_id[empty_part.song_id].append(empty_part)
     for song in unstaffed_songs:
-        song.unstaffed_parts = (
-            song.parts.filter(required=True)
-                      .annotate(num_perf=Count('songperformer'))
-                      .filter(num_perf=0)
-                      .select_related('instrument')
-        )
+        song.unstaffed_parts = empty_parts_by_song_id.get(song.id, ())
     for song in staffed_songs:
-        song.desirable_parts = (
-            song.parts.annotate(num_perf=Count('songperformer'))
-                      .filter(num_perf=0)
-                      .select_related('instrument')
-        )
+        song.desirable_parts = empty_parts_by_song_id.get(song.id, ())
     comments = gig.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
     user_plays = set(request.user.plays.all().values_list('id', flat=True))
     return render(request, 'sbgig/view_gig.html',
