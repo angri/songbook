@@ -331,7 +331,8 @@ class SongActions:
                 {'title': ugettext_noop('Song staffed'),
                  'title_translatable': True,
                  'prev': bools_txt[song.staffed],
-                 'new': bools_txt[new_staffed]}
+                 'new': bools_txt[new_staffed],
+                 'value_translatable': True}
             )
             song.staffed = new_staffed
             song.save()
