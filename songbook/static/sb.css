@@ -92,6 +92,10 @@ a.username:first-letter {
 .partinfo .part-notice {
   color: gray;
 }
+.partinfo-required .instrument-name:after {
+  content: "*";
+  color: #333;
+}
 
 .comments-container .hide-song-names .comment-header .songname,
 .comments-container .hide-gig-names .comment-header .gigname {
