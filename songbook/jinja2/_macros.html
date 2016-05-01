@@ -35,12 +35,17 @@
 {%- endmacro %}
 
 
-{% macro csparts(parts) -%}
+{% macro csparts(parts, user_plays=()) -%}
   {% for p in parts[:5] -%}
     {% if loop.index == 5 -%}
       &hellip;
     {%- else -%}
-      {{ part(p) }}{% if not loop.last %}, {% endif %}
+      {%- if p.instrument_id in user_plays -%}
+        <mark>{{ part(p) }}</mark>
+      {%- else -%}
+        {{ part(p) }}
+      {%- endif -%}
+      {%- if not loop.last %}, {% endif %}
     {% endif %}
   {%- endfor %}
 {% endmacro %}

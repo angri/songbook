@@ -28,7 +28,13 @@
     <div class="songs-in-gig">
       <ol>
         {% for song in staffed_songs %}
-          <li>{{ macros.song(song) }}</li>
+          <li>
+            {{ macros.song(song) }}
+            {% if song.desirable_parts %}
+              <br>
+              {{ _("Desirable: %(parts)s", parts=macros.csparts(song.desirable_parts, user_plays)) }}
+            {% endif %}
+          </li>
         {% endfor %}
       </ol>
     </div>
@@ -40,9 +46,9 @@
         {% for song in unstaffed_songs %}
           <li>
             {{ macros.song(song) }}
-            <br>
             {% if song.unstaffed_parts %}
-              {{ _("Wanted: %(parts)s", parts=macros.csparts(song.unstaffed_parts)) }}
+              <br>
+              {{ _("Wanted: %(parts)s", parts=macros.csparts(song.unstaffed_parts, user_plays)) }}
             {% endif %}
           </li>
         {% endfor %}

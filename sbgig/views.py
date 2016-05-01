@@ -24,11 +24,18 @@ def view_gig(request, slug):
                       .filter(num_perf=0)
                       .select_related('instrument')
         )
+    for song in staffed_songs:
+        song.desirable_parts = (
+            song.parts.annotate(num_perf=Count('songperformer'))
+                      .filter(num_perf=0)
+                      .select_related('instrument')
+        )
     comments = gig.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
+    user_plays = set(request.user.plays.all().values_list('id', flat=True))
     return render(request, 'sbgig/view_gig.html',
                   {'gig': gig, 'unstaffed_songs': unstaffed_songs,
                    'staffed_songs': staffed_songs,
-                   'comments': comments})
+                   'comments': comments, 'user_plays': user_plays})
 
 
 @login_required
