@@ -32,7 +32,8 @@ def view_gig(request, slug):
     for song in staffed_songs:
         song.desirable_parts = empty_parts_by_song_id.get(song.id, ())
     comments = gig.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
-    user_plays = set(request.user.plays.all().values_list('id', flat=True))
+    user_plays = set(request.user.plays.all().values_list('instrument_id',
+                                                          flat=True))
     return render(request, 'sbgig/view_gig.html',
                   {'gig': gig, 'unstaffed_songs': unstaffed_songs,
                    'staffed_songs': staffed_songs,
