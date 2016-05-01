@@ -99,16 +99,17 @@ class SongPart(models.Model):
 
 
 class SongPerformer(models.Model):
-    READINESS_CHOICES = (
-        (0, _("Haven't seen")),
-        (25, _("Scratched a bit")),
-        (50, _("Peep into the text/chords")),
-        (75, _("Mostly learned")),
-        (100, _("Mastered"))
-    )
+    READINESS_STRINGS = {
+        0: ugettext_noop("Haven't seen"),
+        25: ugettext_noop("Scratched a bit"),
+        50: ugettext_noop("Peep into the text/chords"),
+        75: ugettext_noop("Mostly learned"),
+        100: ugettext_noop("Mastered"),
+    }
     READINESS_SYMBOLS = {
         0: "○", 25: "◔", 50: "◑", 75: "◕", 100: "●"
     }
+    READINESS_CHOICES = sorted((k, _(v)) for k, v in READINESS_STRINGS.items())
 
     part = models.ForeignKey(SongPart, on_delete=models.CASCADE,
                              null=False, blank=False)
@@ -186,6 +187,16 @@ class SongActions:
              'new': '\n'.join(sorted(str(songperformer)
                                      for songperformer in new_performers))}
         ]
+        old_readiness = {sp.id: SongPerformer.READINESS_STRINGS[sp.readiness]
+                         for sp in old_performers}
+        for songperf in new_performers:
+            changes.append({
+                'title': "%s / %s" % (songperf, songperf.part),
+                'title_translatable': False,
+                'prev': old_readiness.get(songperf.id, ''),
+                'new': SongPerformer.READINESS_STRINGS[songperf.readiness],
+                'value_translatable': True,
+            })
         cls._song_changed(part.song, action, user, changes, check_staffed=True)
 
     @classmethod

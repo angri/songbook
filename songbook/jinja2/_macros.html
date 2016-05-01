@@ -95,7 +95,11 @@
               <dt>{{ change['title'] }}</dt>
             {% endif %}
             <dd>
-              {{ change['prev']|textdiff(change['new'])|replace("\n", "<br>"|safe) }}
+              {% if change['value_translatable'] %}
+                {{ _(change['prev'])|textdiff(_(change['new']))|replace("\n", "<br>"|safe) }}
+              {% else %}
+                {{ change['prev']|textdiff(change['new'])|replace("\n", "<br>"|safe) }}
+              {% endif %}
             </dd>
           </dl>
         {% endfor %}
