@@ -52,7 +52,7 @@ def view_song(request, song_id):
         if part_perf.performer == request.user:
             all_parts[part_perf.part.pk]['has_joined'] = True
             all_parts[part_perf.part.pk]['join_form'] = forms.JoinSongPartForm(
-                initial={'notice': part_perf.notice}
+                instance=part_perf
             )
     all_parts = [part_info for part_pk, part_info in sorted(all_parts.items())]
 
@@ -109,7 +109,7 @@ def join_song_part(request, part_id):
         )
         songperf, created = models.SongPerformer.objects.update_or_create(
             part_id=part_id, performer=request.user,
-            defaults={'notice': join_part_form.cleaned_data['notice']}
+            defaults=join_part_form.cleaned_data
         )
         if created:
             models.SongActions.joined_part(request.user, songperf.part,

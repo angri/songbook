@@ -11,6 +11,8 @@ import jinja2
 import markdown
 import babel.dates
 
+import sbsong.models
+
 
 def markdown_safe(text):
     md = markdown.Markdown(output_format='html5')
@@ -174,6 +176,15 @@ def textdiff(prev, new):
     return jinja2.Markup(''.join(result))
 
 
+def readiness_symbol(value):
+    symbol = sbsong.models.SongPerformer.READINESS_SYMBOLS[value]
+    title = dict(sbsong.models.SongPerformer.READINESS_CHOICES)[value]
+    return jinja2.Markup(
+        '<span class="readiness-symbol readiness-%03d" title="%s">%s</span>' %
+        (value, jinja2.escape(title), symbol)
+    )
+
+
 def environment(**options):
     extensions = ['jinja2.ext.i18n',
                   'jinja2.ext.with_']
@@ -186,6 +197,7 @@ def environment(**options):
         'csrf': csrf,
     })
     env.filters.update({
+        'readiness_symbol': readiness_symbol,
         'textdiff': textdiff,
         'format_datedelta': format_datedelta,
         'format_timedelta': format_timedelta,

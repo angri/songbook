@@ -55,6 +55,13 @@ ul#partsinfo li.joined:hover button.joined,
 ul#partsinfo li.joined button.leave-part {
   display: inline-block;
 }
+ul#partsinfo ul.performers li {
+  padding-left: 2em;
+}
+ul#partsinfo .rangeslider .display-value {
+  display: block;
+  margin-top: 0.6em;
+}
 form.remove-part {
   display: inline;
 }
@@ -117,4 +124,23 @@ a.username:first-letter {
 
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.6em;
+}
+
+.readiness-symbol {
+  font-family: dingbats;
+}
+.readiness-000 {
+  color: #000000;
+}
+.readiness-025 {
+  color: #003f00;
+}
+.readiness-050 {
+  color: #007f00;
+}
+.readiness-075 {
+  color: #00bf00;
+}
+.readiness-100 {
+  color: #22ee22;
 }

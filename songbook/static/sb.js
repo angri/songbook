@@ -196,3 +196,17 @@ sb.songInlineEdit = function() {
     });
   });
 };
+
+sb.rangeSlider = function(container, choices) {
+  var slider = container.find('input[type=range]');
+  var displayValue = container.find('.display-value');
+  slider.on('input', function() {
+    var value = Number(slider.val());
+    $.each(choices, function(idx, choice) {
+      if (choice[0] == value) {
+        displayValue.text(choice[1]);
+        return false;
+      }
+    });
+  }).trigger('input');
+}

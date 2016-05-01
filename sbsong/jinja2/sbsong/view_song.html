@@ -123,10 +123,11 @@
             </form>
           </div>
 
-          <ul id="part-{{ part_info.part.id }}-performers" class="performers">
+          <ul id="part-{{ part_info.part.id }}-performers" class="performers list-unstyled">
             {% for performer in part_info.performers %}
               <li>
-                {{- macros.username(performer.performer) -}}
+                {{ performer.readiness|readiness_symbol }}
+                {{ macros.username(performer.performer) -}}
                 {% if performer.notice %}: <span class="text-muted">{{ performer.notice }}{% endif -%}
               </li>
             {% else %}

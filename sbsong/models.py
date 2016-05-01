@@ -99,11 +99,24 @@ class SongPart(models.Model):
 
 
 class SongPerformer(models.Model):
+    READINESS_CHOICES = (
+        (0, _("Haven't seen")),
+        (25, _("Scratched a bit")),
+        (50, _("Peep into the text/chords")),
+        (75, _("Mostly learned")),
+        (100, _("Mastered"))
+    )
+    READINESS_SYMBOLS = {
+        0: "○", 25: "◔", 50: "◑", 75: "◕", 100: "●"
+    }
+
     part = models.ForeignKey(SongPart, on_delete=models.CASCADE,
                              null=False, blank=False)
     performer = models.ForeignKey(User, on_delete=models.CASCADE,
                                   null=True, blank=True)
     notice = models.CharField(max_length=200, null=False, blank=True)
+    readiness = models.PositiveSmallIntegerField(blank=False, default=0,
+                                                 choices=READINESS_CHOICES)
 
     class Meta:
         unique_together = [
