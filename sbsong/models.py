@@ -187,14 +187,27 @@ class SongActions:
              'new': '\n'.join(sorted(str(songperformer)
                                      for songperformer in new_performers))}
         ]
-        old_readiness = {sp.id: SongPerformer.READINESS_STRINGS[sp.readiness]
-                         for sp in old_performers}
+        old_performers_by_id = {sp.id: sp for sp in old_performers}
         for songperf in new_performers:
+            old_performer = old_performers_by_id.pop(songperf.id, None)
+            old_readiness = (
+                SongPerformer.READINESS_STRINGS[old_performer.readiness]
+                if old_performer is not None
+                else ''
+            )
             changes.append({
                 'title': "%s / %s" % (songperf, songperf.part),
                 'title_translatable': False,
-                'prev': old_readiness.get(songperf.id, ''),
+                'prev': old_readiness,
                 'new': SongPerformer.READINESS_STRINGS[songperf.readiness],
+                'value_translatable': True,
+            })
+        for sp_id, songperf in sorted(old_performers_by_id.items()):
+            changes.append({
+                'title': "%s / %s" % (songperf, songperf.part),
+                'title_translatable': False,
+                'new': '',
+                'prev': SongPerformer.READINESS_STRINGS[songperf.readiness],
                 'value_translatable': True,
             })
         cls._song_changed(part.song, action, user, changes, check_staffed=True)
