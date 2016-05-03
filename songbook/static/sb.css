@@ -125,26 +125,67 @@ a.username:first-letter {
 .songs-in-gig .songlink {
   font-size: 120%;
 }
+.songs-in-gig ul.list-unstyled {
+  padding-left: 3.3ex;
+}
+.songs-in-gig .songlink .pie {
+  margin-left: -2.5ex;
+}
 
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.6em;
 }
 
-.readiness-symbol {
-  font-family: dingbats;
+.pie {
+  font-size: 80%;
+  margin-top: 0.1em;
+  margin-bottom: -0.1em;
+  height: 1em;
+  width: 1em;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid black;
+  box-sizing: border-box;
+  display: inline-block;
+  border-radius: 1em;
+  background-color: white;
+  opacity: 0.4;
 }
-.readiness-000 {
-  color: #000000;
+.pie:before, .pie:after {
+  margin: -1px 0 0 -1px;
+  position: absolute;
+  content: "";
+  background-color: black;
 }
-.readiness-025 {
-  color: #003f00;
+.pie:before {
+  height: 2em;
+  width: 1em;
+  top: -0.5em;
+  left: 0.5em;
 }
-.readiness-050 {
-  color: #007f00;
+.pie:after {
+  height: 1em;
+  width: 2em;
+  top: 0.5em;
+  left: -0.5em;
+  transform-origin: 50% 0;
 }
-.readiness-075 {
-  color: #00bf00;
-}
-.readiness-100 {
-  color: #22ee22;
-}
+
+.pie-0:before, .pie-0:after,
+.pie-100:before, .pie-100:after { display: none; }
+.pie-100 { background-color: black; }
+
+.pie-10:after, .pie-20:after, .pie-25:after,
+.pie-30:after, .pie-40:after, .pie-50:after { background-color: white; }
+.pie-60:after, .pie-70:after, .pie-75:after,
+.pie-80:after, .pie-90:after, .pie-100:after { background-color: black; }
+
+.pie-10:after { transform: rotate(-54deg); }
+.pie-20:after { transform: rotate(-18deg); }
+.pie-30:after { transform: rotate(18deg); }
+.pie-40:after { transform: rotate(54deg); }
+.pie-50:after { display: none; }
+.pie-60:after { transform: rotate(-54deg); }
+.pie-70:after { transform: rotate(-18deg); }
+.pie-80:after { transform: rotate(18deg); }
+.pie-90:after { transform: rotate(54deg); }

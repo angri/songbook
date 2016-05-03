@@ -126,7 +126,7 @@
           <ul id="part-{{ part_info.part.id }}-performers" class="performers list-unstyled">
             {% for performer in part_info.performers %}
               <li>
-                {{ performer.readiness|readiness_symbol }}
+                {{ performer.readiness|pie(title=_(performer.READINESS_STRINGS[performer.readiness])) }}
                 {{ macros.username(performer.performer) -}}
                 {% if performer.notice %}: <span class="text-muted">{{ performer.notice }}{% endif -%}
               </li>

@@ -26,7 +26,7 @@
   <div class="col-sm-6">
     <h3>{{ _("Staffed songs") }}</h3>
     <div class="songs-in-gig">
-      <ol>
+      <ul class="list-unstyled">
         {% for song in staffed_songs %}
           <li>
             {{ macros.song(song) }}
@@ -36,13 +36,13 @@
             {% endif %}
           </li>
         {% endfor %}
-      </ol>
+      </ul>
     </div>
   </div>
   <div class="col-sm-6">
     <h3>{{ _("Unstaffed songs") }}</h3>
     <div class="songs-in-gig">
-      <ul>
+      <ul class="list-unstyled">
         {% for song in unstaffed_songs %}
           <li>
             {{ macros.song(song) }}

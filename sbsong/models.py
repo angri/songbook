@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_noop
+from django.core import validators
 
 import sbgig.models
 
@@ -39,6 +40,9 @@ class Song(models.Model):
                                    null=False, blank=True)
     lyrics = models.TextField(null=False, blank=True)
     staffed = models.BooleanField(null=False, blank=False, default=False)
+    readiness = models.PositiveSmallIntegerField(
+        blank=False, default=0, validators=[validators.MaxValueValidator(100)]
+    )
 
     class Meta:
         index_together = [
@@ -105,9 +109,6 @@ class SongPerformer(models.Model):
         50: ugettext_noop("Peep into the text/chords"),
         75: ugettext_noop("Mostly learned"),
         100: ugettext_noop("Mastered"),
-    }
-    READINESS_SYMBOLS = {
-        0: "○", 25: "◔", 50: "◑", 75: "◕", 100: "●"
     }
     READINESS_CHOICES = sorted((k, _(v)) for k, v in READINESS_STRINGS.items())
 
@@ -210,7 +211,8 @@ class SongActions:
                 'prev': SongPerformer.READINESS_STRINGS[songperf.readiness],
                 'value_translatable': True,
             })
-        cls._song_changed(part.song, action, user, changes, check_staffed=True)
+        cls._song_changed(part.song, action, user, changes,
+                          check_staffed=True, update_readiness=True)
 
     @classmethod
     def added_part(cls, user, song, old_parts):
@@ -235,7 +237,8 @@ class SongActions:
              'prev': '\n'.join(sorted(str(part) for part in old_parts)),
              'new': '\n'.join(sorted(str(part) for part in new_parts))}
         ]
-        cls._song_changed(song, action, user, changes, check_staffed=True)
+        cls._song_changed(song, action, user, changes, check_staffed=True,
+                          update_readiness=True)
 
     @classmethod
     def added_link(cls, user, song, old_links):
@@ -310,9 +313,11 @@ class SongActions:
 
     @classmethod
     def _song_changed(cls, song, action, user, changes, *,
-                      check_staffed=False):
+                      check_staffed=False, update_readiness=False):
         if check_staffed:
             changes = cls._check_staffed(song, changes)
+        if update_readiness:
+            cls._update_readiness(song)
         changes = [
             change
             for change in changes
@@ -350,3 +355,19 @@ class SongActions:
             song.staffed = new_staffed
             song.save()
         return new_changes
+
+    @classmethod
+    def _update_readiness(cls, song):
+        parts_qs = song.parts.filter(required=True)
+        num_parts = parts_qs.count()
+        if num_parts == 0:
+            new_readiness = 0
+        else:
+            all_readiness = parts_qs.annotate(
+                best_perf=models.Max('songperformer__readiness')
+            ).values_list('best_perf', flat=True)
+            new_readiness = int(sum(r for r in all_readiness if r) / num_parts)
+        if song.readiness == new_readiness:
+            return
+        song.readiness = new_readiness
+        song.save()
