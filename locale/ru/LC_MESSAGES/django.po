@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-05-01 20:07+0300\n"
+"POT-Creation-Date: 2016-05-03 13:14+0300\n"
 "PO-Revision-Date: 2016-04-10 17:46+0300\n"
 "Last-Translator: Anton Gritsay <anton@angri.ru>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -31,8 +31,8 @@ msgstr "Слаг"
 msgid "Gig date"
 msgstr "Дата"
 
-#: sbgig/models.py:13 sbgig/models.py:31 sbsong/models.py:38
-#: sbsong/models.py:149 sbsong/models.py:295
+#: sbgig/models.py:13 sbgig/models.py:31 sbsong/models.py:39
+#: sbsong/models.py:150 sbsong/models.py:298
 msgid "Description"
 msgstr "Описание"
 
@@ -104,185 +104,185 @@ msgstr "Предложить песню"
 msgid "Optional notice"
 msgstr "Примечание"
 
-#: sbsong/models.py:12
+#: sbsong/models.py:13
 msgid "Instrument name"
 msgstr "Название"
 
-#: sbsong/models.py:17
+#: sbsong/models.py:18
 msgid "instrument"
 msgstr "Инструмент"
 
-#: sbsong/models.py:34 sbsong/models.py:145 sbsong/models.py:293
+#: sbsong/models.py:35 sbsong/models.py:146 sbsong/models.py:296
 msgid "Title"
 msgstr "Название"
 
-#: sbsong/models.py:36 sbsong/models.py:141 sbsong/models.py:294
+#: sbsong/models.py:37 sbsong/models.py:142 sbsong/models.py:297
 msgid "Artist"
 msgstr "Исполнитель"
 
-#: sbsong/models.py:83
+#: sbsong/models.py:87
 msgid "Instrument"
 msgstr "Инструмент"
 
-#: sbsong/models.py:85
+#: sbsong/models.py:89
 msgid "Notice"
 msgstr "Примечание"
 
-#: sbsong/models.py:87
+#: sbsong/models.py:91
 msgid "Required"
 msgstr "Обязательная"
 
-#: sbsong/models.py:103
+#: sbsong/models.py:107
 msgid "Haven't seen"
 msgstr "Буду смотреть"
 
-#: sbsong/models.py:104
+#: sbsong/models.py:108
 msgid "Scratched a bit"
 msgstr "Разбираю"
 
-#: sbsong/models.py:105
+#: sbsong/models.py:109
 msgid "Peep into the text/chords"
 msgstr "Подглядываю в текст/аккорды"
 
-#: sbsong/models.py:106
+#: sbsong/models.py:110
 msgid "Mostly learned"
 msgstr "Почти выучено"
 
-#: sbsong/models.py:107
+#: sbsong/models.py:111
 msgid "Mastered"
 msgstr "Играю свободно"
 
-#: sbsong/models.py:137
+#: sbsong/models.py:138
 #, python-format
 msgid "%(who)s (f) suggested a song %(when)s"
 msgstr "%(who)s предложила песню %(when)s"
 
-#: sbsong/models.py:139
+#: sbsong/models.py:140
 #, python-format
 msgid "%(who)s (m) suggested a song %(when)s"
 msgstr "%(who)s предложил песню %(when)s"
 
-#: sbsong/models.py:158
+#: sbsong/models.py:159
 #, python-format
 msgid "%(who)s (f) joined a song part %(when)s"
 msgstr "%(who)s присоединилась к партии %(when)s"
 
-#: sbsong/models.py:160
+#: sbsong/models.py:161
 #, python-format
 msgid "%(who)s (m) joined a song part %(when)s"
 msgstr "%(who)s присоединился к партии %(when)s"
 
-#: sbsong/models.py:166
+#: sbsong/models.py:167
 #, python-format
 msgid "%(who)s (f) edited part participation %(when)s"
 msgstr "%(who)s изменила примечание участия в партии %(when)s"
 
-#: sbsong/models.py:168
+#: sbsong/models.py:169
 #, python-format
 msgid "%(who)s (m) edited part participation %(when)s"
 msgstr "%(who)s изменил примечание участия в партии %(when)s"
 
-#: sbsong/models.py:174
+#: sbsong/models.py:175
 #, python-format
 msgid "%(who)s (f) left a song part %(when)s"
 msgstr "%(who)s покинула партию %(when)s"
 
-#: sbsong/models.py:176
+#: sbsong/models.py:177
 #, python-format
 msgid "%(who)s (m) left a song part %(when)s"
 msgstr "%(who)s покинул партию %(when)s"
 
-#: sbsong/models.py:217
+#: sbsong/models.py:219
 #, python-format
 msgid "%(who)s (f) added a song part %(when)s"
 msgstr "%(who)s добавила в песню партию %(when)s"
 
-#: sbsong/models.py:219
+#: sbsong/models.py:221
 #, python-format
 msgid "%(who)s (m) added a song part %(when)s"
 msgstr "%(who)s добавил в песню партию %(when)s"
 
-#: sbsong/models.py:224
+#: sbsong/models.py:226
 #, python-format
 msgid "%(who)s (f) removed a song part %(when)s"
 msgstr "%(who)s удалила партию из песни %(when)s"
 
-#: sbsong/models.py:226
+#: sbsong/models.py:228
 #, python-format
 msgid "%(who)s (m) removed a song part %(when)s"
 msgstr "%(who)s удалил партию из песни %(when)s"
 
-#: sbsong/models.py:233
+#: sbsong/models.py:235
 msgid "Parts"
 msgstr "Партии"
 
-#: sbsong/models.py:242
+#: sbsong/models.py:245
 #, python-format
 msgid "%(who)s (f) added a link %(when)s"
 msgstr "%(who)s добавила ссылку %(when)s"
 
-#: sbsong/models.py:244
+#: sbsong/models.py:247
 #, python-format
 msgid "%(who)s (m) added a song link %(when)s"
 msgstr "%(who)s добавил ссылку %(when)s"
 
-#: sbsong/models.py:249
+#: sbsong/models.py:252
 #, python-format
 msgid "%(who)s (f) removed a link %(when)s"
 msgstr "%(who)s удалила ссылку %(when)s"
 
-#: sbsong/models.py:251
+#: sbsong/models.py:254
 #, python-format
 msgid "%(who)s (m) removed a link %(when)s"
 msgstr "%(who)s удалил ссылку %(when)s"
 
-#: sbsong/models.py:256
+#: sbsong/models.py:259
 #, python-format
 msgid "%(who)s (f) edited a link %(when)s"
 msgstr "%(who)s изменила ссылку %(when)s"
 
-#: sbsong/models.py:258
+#: sbsong/models.py:261
 #, python-format
 msgid "%(who)s (m) edited a link %(when)s"
 msgstr "%(who)s изменил ссылку %(when)s"
 
-#: sbsong/models.py:265
+#: sbsong/models.py:268
 msgid "Links"
 msgstr "Ссылки"
 
-#: sbsong/models.py:275
+#: sbsong/models.py:278
 msgid "Gig"
 msgstr "Выступление"
 
-#: sbsong/models.py:280
+#: sbsong/models.py:283
 #, python-format
 msgid "%(who)s (f) removed song from gig %(when)s"
 msgstr "%(who)s удалила песню из плейлиста выступления %(when)s"
 
-#: sbsong/models.py:282
+#: sbsong/models.py:285
 #, python-format
 msgid "%(who)s (m) removed song from gig %(when)s"
 msgstr "%(who)s удалил песню из плейлиста выступления %(when)s"
 
-#: sbsong/models.py:306
+#: sbsong/models.py:309
 #, python-format
 msgid "%(who)s (f) edited song %(when)s"
 msgstr "%(who)s отредактировала песню %(when)s"
 
-#: sbsong/models.py:308
+#: sbsong/models.py:311
 #, python-format
 msgid "%(who)s (m) edited song %(when)s"
 msgstr "%(who)s отредактировал песню %(when)s"
 
-#: sbsong/models.py:340
+#: sbsong/models.py:345
 msgid "Yes"
 msgstr "Да"
 
-#: sbsong/models.py:341
+#: sbsong/models.py:346
 msgid "No"
 msgstr "Нет"
 
-#: sbsong/models.py:344
+#: sbsong/models.py:349
 msgid "Song staffed"
 msgstr "Песня укомплектована"
 
@@ -500,15 +500,20 @@ msgstr "Я участвую в песнях"
 msgid "My last comments"
 msgstr "Мои последние комментарии"
 
-#: songbook/jinja2/_macros.html:63
+#: songbook/jinja2/_macros.html:14
+#, python-format
+msgid "Readiness: %(readiness)s%%"
+msgstr "Готовность: %(readiness)s%%"
+
+#: songbook/jinja2/_macros.html:65
 msgid "Show more"
 msgstr "Показать еще"
 
-#: songbook/jinja2/_macros.html:129
+#: songbook/jinja2/_macros.html:131
 msgid "Your comment"
 msgstr "Ваш комментарий"
 
-#: songbook/jinja2/_macros.html:133
+#: songbook/jinja2/_macros.html:135
 msgid "Send comment"
 msgstr "Отправить"
 
