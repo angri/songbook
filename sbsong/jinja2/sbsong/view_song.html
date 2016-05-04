@@ -27,6 +27,22 @@
       <span class="glyphicon glyphicon-trash"></span>
     </button>
   {% endif %}
+  <form method="post" action="{{ url('sbsong:watch-unwatch-song', song_id=song.id) }}"
+    style="display: inline" id="watch-unwatch-form">
+    {{ csrf(csrf_token) }}
+    {% if songwatcher %}
+      <input type="hidden" name="action" value="unwatch">
+      <button class="btn btn-default btn-xs" title="{{ _("Unwatch this song") }}" type="submit">
+        <span class="glyphicon glyphicon-eye-close"></span>
+      </button>
+    {% else %}
+      <input type="hidden" name="action" value="watch">
+      <button class="btn btn-default btn-xs" title="{{ _("Watch this song") }}" type="submit">
+        <span class="glyphicon glyphicon-eye-open"></span>
+      </button>
+    {% endif %}
+    <script>$(function() { sb.watchUnwatch($('#watch-unwatch-form')); });</script>
+  </form>
 </h1>
 
 {% if song.artist %}

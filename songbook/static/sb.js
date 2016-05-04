@@ -197,6 +197,15 @@ sb.songInlineEdit = function() {
   });
 };
 
+sb.watchUnwatch = function(form) {
+  form.on('submit', function(event) {
+    event.preventDefault();
+    $.post(form.attr('action'), form.serialize(), function(result) {
+      sb.updatePagePart(form);
+    });
+  });
+}
+
 sb.rangeSlider = function(container, choices) {
   var slider = container.find('input[type=range]');
   var displayValue = container.find('.display-value');

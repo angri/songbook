@@ -24,6 +24,9 @@ urlpatterns = [
     url(r'^link/(?P<link_id>\d+)/remove$', views.remove_song_link,
         name='remove-song-link'),
 
+    url(r'^(?P<song_id>\d+)/watch-unwatch$', views.watch_unwatch_song,
+        name='watch-unwatch-song'),
+
     url(r'^suggest/(?P<gigslug>[^/]+)$', views.suggest_a_song,
         name='suggest-song'),
 ]

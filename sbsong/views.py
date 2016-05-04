@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -61,6 +63,7 @@ def view_song(request, song_id):
         for link in song.links.all()
     ]
 
+    songwatcher = song.watchers.filter(user=request.user).first()
     comments = song.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
 
     return render(request, 'sbsong/view_song.html',
@@ -69,7 +72,22 @@ def view_song(request, song_id):
                    'links': all_links,
                    'new_part_form': new_part_form,
                    'new_link_form': new_link_form,
-                   'comments': comments})
+                   'comments': comments,
+                   'songwatcher': songwatcher})
+
+
+@login_required
+def watch_unwatch_song(request, song_id):
+    song = get_object_or_404(models.Song, pk=song_id)
+    action = request.POST.get('action')
+    if request.method != 'POST' or action not in ('watch', 'unwatch'):
+        return HttpResponse(status=400)
+    if action == 'watch':
+        models.SongWatcher.objects.get_or_create(user=request.user, song=song)
+    else:
+        models.SongWatcher.objects.filter(user=request.user,
+                                          song=song).delete()
+    return JsonResponse({'result': 'ok'})
 
 
 @login_required

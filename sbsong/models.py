@@ -64,6 +64,19 @@ class Song(models.Model):
             return self.title
 
 
+class SongWatcher(models.Model):
+    song = models.ForeignKey(Song, blank=False, related_name='watchers',
+                             on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=False, related_name='watched_songs',
+                             on_delete=models.CASCADE)
+    last_seen = models.DateTimeField(blank=False, auto_now_add=True)
+
+    class Meta:
+        unique_together = [
+            ('song', 'user'),
+        ]
+
+
 class SongLink(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
                              null=False, blank=False, related_name='links')
