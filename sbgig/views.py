@@ -55,7 +55,9 @@ def view_gig(request, slug):
             songs['staffed-watched'].append(song)
         else:
             songs['staffed-other'].append(song)
-    comments = gig.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
+    comments = gig.comments.filter(
+        comment_type__in=sbgig.models.Comment.GIG_ONLY_COMMENTS
+    )[:settings.SB_COMMENTS_ON_PAGE + 1]
     user_plays = set(request.user.plays.all().values_list('instrument_id',
                                                           flat=True))
     return render(request, 'sbgig/view_gig.html',
@@ -103,7 +105,6 @@ def add_song_comment(request, song_id):
 def _get_comments(request, gig, song):
     not_after = request.GET.get('not_after')
     not_before = request.GET.get('not_before')
-    no_changes = request.GET.get('no_changes') is not None
     if song:
         qs = song.comments.all()
     else:
@@ -112,9 +113,8 @@ def _get_comments(request, gig, song):
         qs = qs.filter(id__gt=not_before)
     if not_after:
         qs = qs.filter(id__lt=not_after)
-    if no_changes:
-        qs = qs.exclude(comment_type=sbgig.models.Comment.CT_SONG_EDIT)
-        qs = qs.exclude(comment_type=sbgig.models.Comment.CT_GIG_EDIT)
+    if song is None:
+        qs = qs.filter(comment_type__in=sbgig.models.Comment.GIG_ONLY_COMMENTS)
     qs = qs.select_related('song', 'gig', 'author')
     comments = list(qs[:settings.SB_COMMENTS_ON_PAGE + 1])
     songwatcher = None

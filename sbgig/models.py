@@ -71,6 +71,8 @@ class Comment(models.Model):
         (CT_GIG_COMMENT, CT_GIG_COMMENT),
         (CT_SONG_EDIT, CT_SONG_EDIT),
     )
+    GIG_ONLY_COMMENTS = (CT_GIG_COMMENT, CT_GIG_EDIT)
+
     gig = models.ForeignKey(Gig, on_delete=models.CASCADE,
                             blank=False, related_name='comments')
     song = models.ForeignKey('sbsong.Song', on_delete=models.CASCADE,
