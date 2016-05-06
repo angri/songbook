@@ -28,6 +28,11 @@ class Migration(migrations.Migration):
             name='songwatcher',
             unique_together=set([('song', 'user')]),
         ),
+        migrations.AlterField(
+            model_name='song',
+            name='changed_at',
+            field=models.DateTimeField(auto_now_add=True),
+        ),
         migrations.RunSQL(
             sql=[("""INSERT INTO sbsong_songwatcher (song_id, user_id, last_seen)
                      SELECT DISTINCT song.id, performer.performer_id, %s
