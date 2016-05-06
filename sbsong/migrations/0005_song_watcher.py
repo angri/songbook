@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                      JOIN sbsong_songpart AS part
                      ON (song.id = part.song_id)
                      JOIN sbsong_songperformer AS performer
-                     ON (performer.part_id = part.id)""", (datetime.now(), ))],
+                     ON (performer.part_id = part.id)""", (datetime.utcnow(), ))],
             reverse_sql=""
         )
     ]
