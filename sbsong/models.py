@@ -167,9 +167,11 @@ class SongActions:
              'new': song.description},
         ]
         cls._song_changed(song, action, user, changes)
+        SongWatcher.objects.update_or_create(song=song, user=user)
 
     @classmethod
     def joined_part(cls, user, part, old_performers):
+        SongWatcher.objects.update_or_create(song=part.song, user=user)
         action = (ugettext_noop('%(who)s (f) joined a song part %(when)s')
                   if user.profile.gender == 'f' else
                   ugettext_noop('%(who)s (m) joined a song part %(when)s'))
