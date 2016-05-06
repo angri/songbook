@@ -1,4 +1,5 @@
 from collections import defaultdict
+import itertools
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -25,18 +26,40 @@ def view_gig(request, slug):
                          .select_related('instrument')
                          .order_by('song', 'id'))
     empty_parts_by_song_id = defaultdict(list)
+    songwatchers = sbsong.models.SongWatcher.objects.filter(user=request.user,
+                                                            song__gig=gig)
+    songwatchers = dict(songwatchers.values_list('song_id', 'last_seen'))
+    songs = {
+        'staffed-watched': [],
+        'staffed-other': [],
+        'unstaffed-watched': [],
+        'unstaffed-other': [],
+    }
+    for song in itertools.chain(staffed_songs, unstaffed_songs):
+        last_seen = songwatchers.get(song.id)
+        song.is_watched = last_seen is not None
+        song.updated_since_last_seen = None
+        if song.is_watched:
+            song.updated_since_last_seen = (song.changed_at > last_seen)
     for empty_part in empty_parts:
         empty_parts_by_song_id[empty_part.song_id].append(empty_part)
     for song in unstaffed_songs:
         song.unstaffed_parts = empty_parts_by_song_id.get(song.id, ())
+        if song.is_watched:
+            songs['unstaffed-watched'].append(song)
+        else:
+            songs['unstaffed-other'].append(song)
     for song in staffed_songs:
         song.desirable_parts = empty_parts_by_song_id.get(song.id, ())
+        if song.is_watched:
+            songs['staffed-watched'].append(song)
+        else:
+            songs['staffed-other'].append(song)
     comments = gig.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
     user_plays = set(request.user.plays.all().values_list('instrument_id',
                                                           flat=True))
     return render(request, 'sbgig/view_gig.html',
-                  {'gig': gig, 'unstaffed_songs': unstaffed_songs,
-                   'staffed_songs': staffed_songs,
+                  {'gig': gig, 'songs': songs,
                    'comments': comments, 'user_plays': user_plays})
 
 

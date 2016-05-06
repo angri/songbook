@@ -27,14 +27,16 @@
     <h3>{{ _("Staffed songs") }}</h3>
     <div class="songs-in-gig">
       <ul class="list-unstyled">
-        {% for song in staffed_songs %}
-          <li>
-            {{ macros.song(song) }}
-            {% if song.desirable_parts %}
-              <br>
-              {{ _("Desirable: %(parts)s", parts=macros.csparts(song.desirable_parts, user_plays)) }}
-            {% endif %}
-          </li>
+        {% for key in ('staffed-watched', 'staffed-other') %}
+          {% for song in songs[key] %}
+            <li class="{{ key }}">
+              {{ macros.song(song, song.updated_since_last_seen) }}
+              {% if song.desirable_parts %}
+                <br>
+                {{ _("Desirable: %(parts)s", parts=macros.csparts(song.desirable_parts, user_plays)) }}
+              {% endif %}
+            </li>
+          {% endfor %}
         {% endfor %}
       </ul>
     </div>
@@ -43,14 +45,16 @@
     <h3>{{ _("Unstaffed songs") }}</h3>
     <div class="songs-in-gig">
       <ul class="list-unstyled">
-        {% for song in unstaffed_songs %}
-          <li>
-            {{ macros.song(song) }}
-            {% if song.unstaffed_parts %}
-              <br>
-              {{ _("Wanted: %(parts)s", parts=macros.csparts(song.unstaffed_parts, user_plays)) }}
-            {% endif %}
-          </li>
+        {% for key in ('unstaffed-watched', 'unstaffed-other') %}
+          {% for song in songs[key] %}
+            <li class="{{ key }}">
+              {{ macros.song(song, song.updated_since_last_seen) }}
+              {% if song.unstaffed_parts %}
+                <br>
+                {{ _("Wanted: %(parts)s", parts=macros.csparts(song.unstaffed_parts, user_plays)) }}
+              {% endif %}
+            </li>
+          {% endfor %}
         {% endfor %}
       </ul>
     </div>

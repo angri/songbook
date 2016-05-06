@@ -77,8 +77,19 @@ span.giglink .date {
   color: gray;
 }
 
+span.songlink-updated {
+  font-weight: bold;
+}
 span.songlink .artist {
   color: gray;
+}
+.staffed-watched + .staffed-other:before,
+.unstaffed-watched + .unstaffed-other:before {
+  content: "";
+  border-top: 1px dashed #ccc;
+  display: block;
+  width: 100%;
+  margin: 1em 0;
 }
 
 a.username {
@@ -144,7 +155,7 @@ a.username:first-letter {
 }
 
 .songs-in-gig .songlink {
-  font-size: 120%;
+  font-size: 13pt;
 }
 .songs-in-gig ul.list-unstyled {
   padding-left: 3.3ex;

@@ -9,13 +9,15 @@
 {%- endmacro %}
 
 
-{% macro song(song) -%}
-  <span class="songlink">{#
+{% macro song(song, is_updated=False) -%}
+  <span class="songlink{% if is_updated %} songlink-updated{% endif %}" {#
+    #}{% if is_updated %}title="{{ _("Updated %(when)s", when=song.changed_at|format_timedelta) }} "{% endif %}>{#
     #}{{ song.readiness|pie(title=_("Readiness: %(readiness)s%%", readiness=song.readiness)) }} {#
     #}<a href="{{ url('sbsong:view-song', song_id=song.id) }}">{#
-    #}<span class="title">{{ song.title }}</span>
-    <span class="artist">{{ song.artist }}</span>{#
-  #}</a></span>
+      #}<span class="title">{{ song.title }}</span>
+      <span class="artist">{{ song.artist }}</span>{#
+    #}</a>{#
+  #}</span>
 {%- endmacro %}
 
 
