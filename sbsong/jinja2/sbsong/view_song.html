@@ -3,6 +3,20 @@
 
 {% block pagetitle %}{{ song.title }} | {{ super() }}{% endblock %}
 
+
+{% block extra_messages %}
+  {% if num_unread_comments %}
+    <div id="unread-comments-notice">
+      {{ macros.message(
+           "info",
+           ngettext('There is <a href="#commentform">%(num)d unread comment</a>',
+                    'There are <a href="#commentform">%(num)d unread comments</a>',
+                    num_unread_comments)) }}
+    </div>
+  {% endif %}
+{% endblock %}
+
+
 {% block content %}
 
 <h1>
@@ -313,7 +327,20 @@
   {{ macros.song_comment_form(song, csrf_token) }}
 {% endif %}
 
-{{ macros.comments(url('sbgig:get-song-comments', song_id=song.id), comments, with_gig_names=True) }}
+{% if songwatcher %}
+  <form action="{{ url('sbsong:mark-song-as-seen', song_id=songwatcher.song_id) }}"
+    method="post" class="comments-mark-as-seen collapse">
+      {{ csrf(csrf_token) }}
+      <p>
+        <button type="submit" class="btn btn-default btn-sm">
+          {{ _("Mark all as seen") }}
+        </button>
+      </p>
+  </form>
+  <script>$(function() { sb.commentsMarkAsViewed($('.comments-container'), $('.comments-mark-as-seen')); })</script>
+{% endif %}
+
+{{ macros.comments(url('sbgig:get-song-comments', song_id=song.id), comments, songwatcher, with_gig_names=True) }}
 
 
 {% endblock %}

@@ -54,30 +54,27 @@ def edit_gig(request, slug):
                   {'gig': gig, 'form': form})
 
 
-def _add_comment(request, gig, song):
+@login_required
+def add_gig_comment(request, slug):
+    gig = get_object_or_404(sbgig.models.Gig, slug=slug)
     text = request.POST.get('body').strip()
     if not text:
         return HttpResponse(status=400)
-    comment_type = sbgig.models.Comment.CT_GIG_COMMENT
-    if song is not None:
-        comment_type = sbgig.models.Comment.CT_SONG_COMMENT
     sbgig.models.Comment.objects.create(
-        gig=gig, song=song, author=request.user,
-        text=text, comment_type=comment_type
+        gig=gig, author=request.user,
+        text=text, comment_type=sbgig.models.Comment.CT_GIG_COMMENT
     )
     return JsonResponse({'result': 'ok'})
 
 
 @login_required
-def add_gig_comment(request, slug):
-    gig = get_object_or_404(sbgig.models.Gig, slug=slug)
-    return _add_comment(request, gig, song=None)
-
-
-@login_required
 def add_song_comment(request, song_id):
     song = get_object_or_404(sbsong.models.Song, pk=song_id)
-    return _add_comment(request, song.gig, song)
+    text = request.POST.get('body').strip()
+    if not text:
+        return HttpResponse(status=400)
+    sbsong.models.SongActions.song_comment_written(song, request.user, text)
+    return JsonResponse({'result': 'ok'})
 
 
 def _get_comments(request, gig, song):
@@ -97,7 +94,11 @@ def _get_comments(request, gig, song):
         qs = qs.exclude(comment_type=sbgig.models.Comment.CT_GIG_EDIT)
     qs = qs.select_related('song', 'gig', 'author')
     comments = list(qs[:settings.SB_COMMENTS_ON_PAGE + 1])
-    return render(request, 'sbgig/comments.html', {'comments': comments})
+    songwatcher = None
+    if song:
+        songwatcher = song.watchers.filter(user=request.user).first()
+    return render(request, 'sbgig/comments.html', {'comments': comments,
+                                                   'songwatcher': songwatcher})
 
 
 @login_required

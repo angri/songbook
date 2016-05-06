@@ -1,10 +1,9 @@
-from datetime import datetime
-
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
@@ -65,6 +64,11 @@ def view_song(request, song_id):
 
     songwatcher = song.watchers.filter(user=request.user).first()
     comments = song.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
+    num_unread_comments = 0
+    if songwatcher:
+        num_unread_comments = song.comments.filter(
+            datetime__gt=songwatcher.last_seen
+        ).count()
 
     return render(request, 'sbsong/view_song.html',
                   {'song': song,
@@ -73,7 +77,8 @@ def view_song(request, song_id):
                    'new_part_form': new_part_form,
                    'new_link_form': new_link_form,
                    'comments': comments,
-                   'songwatcher': songwatcher})
+                   'songwatcher': songwatcher,
+                   'num_unread_comments': num_unread_comments})
 
 
 @login_required
@@ -87,6 +92,15 @@ def watch_unwatch_song(request, song_id):
     else:
         models.SongWatcher.objects.filter(user=request.user,
                                           song=song).delete()
+    return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def mark_song_as_seen(request, song_id):
+    songwatcher = get_object_or_404(models.SongWatcher, song_id=song_id,
+                                    user_id=request.user.id)
+    songwatcher.last_seen = timezone.now()
+    songwatcher.save()
     return JsonResponse({'result': 'ok'})
 
 

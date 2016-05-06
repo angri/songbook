@@ -26,7 +26,7 @@ sb.REFRESH_COMMENTS_EVERY = 45000;
 
 sb.comments = function(container) {
   container = $(container);
-  comments = {'container': container};
+  var comments = {'container': container};
   var baseUrl = container.data('url');
   comments.limitNumComments = function(numCommentsToDisplay) {
     var toRemove = container.find('.comment').splice(numCommentsToDisplay, Infinity);
@@ -50,8 +50,11 @@ sb.comments = function(container) {
       if (newComments.length) {
         container.find('.comments-stream').prepend(newComments.hide());
         comments.limitNumComments(numCommentsToDisplay);
+        setTimeout(function() {
+          container.find('.comment:hidden').slideDown();
+          container.trigger('newCommentsLoaded', [newComments]);
+        }, 0);
       }
-      setTimeout(function() { container.find('.comment:hidden').slideDown(); }, 0);
     });
   }
   comments.loadOldComments = function() {
@@ -82,6 +85,27 @@ sb.comments = function(container) {
 
   container.get(0).setAttribute('data-comments', 1);
   container.data('comments', comments);
+}
+
+sb.commentsMarkAsViewed = function(container, form) {
+  if (container.find('.comment-unread').length) {
+    form.collapse('show');
+  }
+  container.on('newCommentsLoaded', function(event, newComments) {
+    if (newComments.filter('.comment-unread').length) {
+      form.collapse('show');
+    }
+  });
+  form.on('submit', function(event) {
+    event.preventDefault();
+    $.post(form.attr('action'), form.serialize(), function(result) {
+      form.collapse('hide');
+      container.find('.comment-unread')
+        .removeClass('comment-unread')
+        .addClass('comment-seen');
+      $('#unread-comments-notice').remove();
+    });
+  });
 }
 
 sb.refreshAllComments = function() {

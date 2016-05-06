@@ -121,6 +121,27 @@ a.username:first-letter {
   overflow: auto;
   white-space: nowrap;
 }
+.comment-unread .comment-header {
+  font-weight: bold;
+}
+.comment-unread .comment-header:before {
+  content: "+";
+  border-radius: 9pt;
+  background-color: #aaa;
+  color: white;
+  padding: 0 5pt 1.5pt 5pt;
+  font-size: 9pt;
+  line-height: inherit;
+  margin-right: 2pt;
+}
+
+.comment-unread + .comment-seen:before {
+  content: "";
+  border-top: 1px dashed #ccc;
+  display: block;
+  width: 100%;
+  margin: 2.5em 0;
+}
 
 .songs-in-gig .songlink {
   font-size: 120%;

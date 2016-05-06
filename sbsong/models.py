@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_noop
+from django.utils import timezone
 from django.core import validators
 
 import sbgig.models
@@ -28,7 +29,7 @@ class Song(models.Model):
                                      null=False, blank=False,
                                      related_name='suggested_songs')
     suggested_at = models.DateTimeField(auto_now_add=True)
-    changed_at = models.DateTimeField(auto_now=True)
+    changed_at = models.DateTimeField(auto_now_add=True)
     changed_by = models.ForeignKey(User, on_delete=models.PROTECT,
                                    null=False, blank=False,
                                    related_name='last_changed_songs')
@@ -296,11 +297,7 @@ class SongActions:
         action = (ugettext_noop('%(who)s (f) removed song from gig %(when)s')
                   if user.profile.gender == 'f' else
                   ugettext_noop('%(who)s (m) removed song from gig %(when)s'))
-        info = {'action': action, 'changes': changes}
-        sbgig.models.Comment.objects.create(
-            gig=old_gig, song=song, author=user, text=json.dumps(info),
-            comment_type=sbgig.models.Comment.CT_SONG_EDIT,
-        )
+        cls._song_changed(song, action, user, changes, override_gig=old_gig)
 
     @classmethod
     def edited_song(cls, user, song):
@@ -325,8 +322,17 @@ class SongActions:
         cls._song_changed(song, action, user, changes)
 
     @classmethod
+    def song_comment_written(cls, song, user, text):
+        sbgig.models.Comment.objects.create(
+            gig=song.gig, song=song, author=user,
+            text=text, comment_type=sbgig.models.Comment.CT_SONG_COMMENT
+        )
+        cls._update_changed_at(song, user)
+
+    @classmethod
     def _song_changed(cls, song, action, user, changes, *,
-                      check_staffed=False, update_readiness=False):
+                      check_staffed=False, update_readiness=False,
+                      override_gig=None):
         if check_staffed:
             changes = cls._check_staffed(song, changes)
         if update_readiness:
@@ -339,10 +345,23 @@ class SongActions:
         if not changes:
             return
         info = {'action': action, 'changes': changes}
+
+        gig = override_gig or song.gig
         sbgig.models.Comment.objects.create(
-            gig=song.gig, song=song, author=user, text=json.dumps(info),
-            comment_type=sbgig.models.Comment.CT_SONG_EDIT,
+            gig=gig, song=song, author=user, text=json.dumps(info),
+            comment_type=sbgig.models.Comment.CT_SONG_EDIT
         )
+        cls._update_changed_at(song, user)
+
+    @classmethod
+    def _update_changed_at(cls, song, user):
+        now = timezone.now()
+        SongWatcher.objects.filter(
+            song=song, user=user, last_seen__gte=song.changed_at
+        ).update(last_seen=now)
+        song.changed_at = now
+        song.changed_by = user
+        song.save()
 
     @classmethod
     def _check_staffed(cls, song, changes):
