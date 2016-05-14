@@ -81,8 +81,9 @@ class SongWatcher(models.Model):
 class SongLink(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE,
                              null=False, blank=False, related_name='links')
-    link = models.URLField(null=False, blank=False)
-    notice = models.CharField(max_length=150, null=False, blank=True)
+    link = models.URLField(null=False, blank=False, verbose_name=_("Link"))
+    notice = models.CharField(max_length=150, null=False, blank=True,
+                              verbose_name=_("Notice"))
 
     def __str__(self):
         link = self.link
