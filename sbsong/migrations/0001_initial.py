@@ -48,8 +48,8 @@ class Migration(migrations.Migration):
             name='SongLink',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('link', models.URLField()),
-                ('notice', models.CharField(blank=True, max_length=150)),
+                ('link', models.URLField(verbose_name="Link")),
+                ('notice', models.CharField(blank=True, max_length=150, verbose_name='Notice')),
                 ('song', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='links', to='sbsong.Song')),
             ],
         ),
