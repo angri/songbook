@@ -71,6 +71,9 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'environment': 'songbook.jinja2env.environment',
+            'extra_globals': {
+                'all_gigs': "sbgig.jinja2env.all_gigs",
+            },
         },
     },
     {
