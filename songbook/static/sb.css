@@ -155,13 +155,14 @@ a.username:first-letter {
 }
 
 .songs-in-gig .songlink {
-  font-size: 13pt;
+  font-size: 12pt;
+  font-family: "arial";
 }
 .songs-in-gig ul.list-unstyled {
   padding-left: 3.3ex;
 }
 .songs-in-gig .songlink .pie {
-  margin-left: -2.5ex;
+  margin-left: -13pt;
 }
 
 h1, h2, h3, h4, h5, h6 {
