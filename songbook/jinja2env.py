@@ -7,6 +7,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.urlresolvers import reverse
 from django.utils import translation
 from django.utils import timezone
+from django.utils.module_loading import import_string
 import jinja2
 import markdown
 import babel.dates
@@ -186,6 +187,8 @@ def pie(value, title=None):
 
 
 def environment(**options):
+    extra_globals = options.pop('extra_globals', {})
+    extra_filters = options.pop('extra_filters', {})
     extensions = ['jinja2.ext.i18n',
                   'jinja2.ext.with_']
     env = jinja2.Environment(**options, extensions=extensions)
@@ -195,6 +198,9 @@ def environment(**options):
         'static': staticfiles_storage.url,
         'url': url,
         'csrf': csrf,
+    })
+    env.globals.update({
+        k: import_string(v) for k, v in extra_globals.items()
     })
     env.filters.update({
         'pie': pie,
@@ -209,5 +215,8 @@ def environment(**options):
         'get_youtube_embed_link': get_youtube_embed_link,
         'is_yamusic_link': is_yamusic_link,
         'get_yamusic_embed_link': get_yamusic_embed_link,
+    })
+    env.filters.update({
+        k: import_string(v) for k, v in extra_filters.items()
     })
     return env
