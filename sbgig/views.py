@@ -134,3 +134,28 @@ def get_gig_comments(request, slug):
 def get_song_comments(request, song_id):
     song = get_object_or_404(sbsong.models.Song, pk=song_id)
     return _get_comments(request, song.gig, song)
+
+
+@login_required
+def setlist(request, slug):
+    gig = get_object_or_404(sbgig.models.Gig, slug=slug)
+    songs = list(gig.songs.filter(staffed=True))
+    song_ids = [song.id for song in songs]
+    songperfs = sbsong.models.SongPerformer.objects.filter(
+        part__song__pk__in=song_ids
+    ).select_related(
+        'part__song', 'performer', 'part__instrument'
+    )
+    performer_by_song_by_instrument = defaultdict(lambda: defaultdict(list))
+    used_instruments = set()
+    for songperf in songperfs:
+        used_instruments.add(songperf.part.instrument)
+        songparts = performer_by_song_by_instrument[songperf.part.song]
+        songparts[songperf.part.instrument].append(songperf.performer)
+    used_instruments = sorted(used_instruments,
+                              key=lambda instrument: instrument.id)
+    return render(
+        request, 'sbgig/setlist.html',
+        {'gig': gig, 'used_instruments': used_instruments, 'songs': songs,
+         'performer_by_song_by_instrument': performer_by_song_by_instrument}
+    )

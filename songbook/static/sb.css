@@ -222,3 +222,47 @@ h1, h2, h3, h4, h5, h6 {
 .pie-70:after { transform: rotate(-18deg); }
 .pie-80:after { transform: rotate(18deg); }
 .pie-90:after { transform: rotate(54deg); }
+
+.setlist {
+  margin-top: 4em;
+}
+.setlist tbody td:nth-of-type(even),
+.setlist thead th:nth-of-type(even) {
+  background: #f6f6f6;
+}
+.setlist tbody td,
+.setlist thead th {
+  text-align: center;
+}
+.setlist tbody td.song,
+.setlist tbody th.song {
+  width: 25%;
+}
+.setlist tbody td.song {
+  text-align: right;
+}
+.setlist tbody td.song a {
+  font-weight: bold;
+}
+.setlist .changes .in {
+  color: green;
+}
+.setlist .changes .in:after {
+  content: " →";
+}
+.setlist .changes .out {
+  color: red;
+}
+.setlist .changes .out:before {
+  content: "← ";
+}
+.setlist .changes .change .who:after {
+  content: ":";
+}
+.setlist .changes .change .from,
+.setlist .changes .change .to {
+  color: gray;
+}
+.setlist .changes .change .from:after {
+  content: " →";
+}

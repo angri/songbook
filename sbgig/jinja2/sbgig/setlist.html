@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block pagetitle %}{{ _("Gig \"%(title)s\" setlist", title=gig.title) }} | {{ super() }}{% endblock %}
+
+{% block extrahead %}
+  {{ super() }}
+  <script src="{{ static('jquery.sortScroll.min.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+
+<h1>{{ _("Gig \"%(title)s\" setlist", title=gig.title) }}</h1>
+
+<table class="table setlist">
+  <thead>
+    <tr>
+      <th class="song"></th>
+      {% for instrument in used_instruments %}
+        <th class="instrument" data-instrument="{{ instrument.id }}"
+            style="width: {{ 75 // used_instruments|length }}%">{{ instrument }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody data-callback="sb.highlightSetlist()">
+    {% for song in songs %}
+      <tr class="sort-scroll-element">
+        <td class="song">
+          <button class="btn btn-default btn-xs sort-scroll-button-up">↑</button>
+          <button class="btn btn-default btn-xs sort-scroll-button-down">↓</button>
+          {{ macros.song(song, with_artist=False) }}
+          <ul class="changes list-unstyled"></ul>
+        </td>
+        {% for instrument in used_instruments %}
+          <td class="performer" data-instrument="{{ instrument.id }}">
+            {% for performer in performer_by_song_by_instrument[song][instrument] %}
+              {{ macros.username(performer) }}<br>
+            {% endfor %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+  $(function() {
+    $('.setlist tbody').sortScroll({animationDuration: 1, keepStill: false});
+    $('.setlist tbody').on("sortScroll.sortEnd", sb.highlightSetlist);
+  });
+
+  $(sb.highlightSetlist);
+</script>
+
+{% endblock %}

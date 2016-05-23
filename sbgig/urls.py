@@ -15,4 +15,7 @@ urlpatterns = [
         views.get_gig_comments, name='get-gig-comments'),
     url(r'^song-comments/(?P<song_id>\d+)$',
         views.get_song_comments, name='get-song-comments'),
+
+    url(r'^(?P<slug>[^/]+)/setlist$',
+        views.setlist, name='setlist'),
 ]

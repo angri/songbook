@@ -243,3 +243,56 @@ sb.rangeSlider = function(container, choices) {
     });
   }).trigger('input');
 }
+
+sb.highlightSetlist = function() {
+  console.log('hsl');
+  var instrumentNames = {};
+  $('.setlist .instrument').each(function(idx, elem) {
+    instrumentNames[$(elem).data('instrument')] = elem.innerText;
+  });
+
+  var performersBySong = [];
+  $('.setlist tbody tr').each(function(idx, elem) {
+    var performers = {};
+    $(elem).find('a.username').each(function(idx, elem) {
+      var username = elem.innerText;
+      if (!performers[username])
+        performers[username] = [];
+      var instrumentId = $(elem).parent('td').data('instrument');
+      performers[username].push(instrumentNames[instrumentId]);
+    });
+    performersBySong.push(performers);
+  });
+
+
+  $('.setlist tbody tr').each(function(idx, elem) {
+    var changes = $(elem).find('.changes');
+    changes.empty();
+    if (idx == 0)
+      return;
+    $.each(performersBySong[idx - 1], function(performer, instruments) {
+      var newInstruments = performersBySong[idx][performer];
+      if (newInstruments == instruments)
+        return;
+      if (! newInstruments) {
+        changes.append($('<li class="out"></li>').text(performer));
+        return;
+      }
+      var oldInstrStr = instruments.join(", ");
+      var newInstrStr = newInstruments.join(", ");
+      if (oldInstrStr == newInstrStr)
+        return;
+      changes.append($(
+        '<li class="change"><span class="who">' + performer + '</span> ' +
+        '<span class="from">' + oldInstrStr + '</span> ' +
+        '<span class="to">' + newInstrStr + '</span>'
+      ));
+    });
+    $.each(performersBySong[idx], function(performer, instruments) {
+      if (! performersBySong[idx - 1][performer]) {
+        changes.append($('<li class="in"></li>').text(performer));
+        return;
+      }
+    });
+  });
+};
