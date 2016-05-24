@@ -226,17 +226,27 @@ h1, h2, h3, h4, h5, h6 {
 .setlist {
   margin-top: 4em;
 }
+.setlist tr {
+  display: block;
+  background-color: rgba(255,255,255,0.7);
+}
 .setlist tbody td:nth-of-type(even),
 .setlist thead th:nth-of-type(even) {
-  background: #f6f6f6;
+  background: rgba(245,245,245,0.7);
 }
-.setlist tbody td,
-.setlist thead th {
+.setlist tbody tr td,
+.setlist thead tr th {
+  padding: 6pt 0;
   text-align: center;
+  min-width: 80pt;
+  max-width: 80pt;
+  overflow: hidden;
 }
 .setlist tbody td.song,
-.setlist tbody th.song {
-  width: 25%;
+.setlist thead th.song {
+  padding: 6pt;
+  min-width: 220pt;
+  max-width: 220pt;
 }
 .setlist tbody td.song {
   text-align: right;

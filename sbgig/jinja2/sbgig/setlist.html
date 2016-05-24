@@ -13,13 +13,18 @@
 
 <h1>{{ _("Gig \"%(title)s\" setlist", title=gig.title) }}</h1>
 
+<p class="form-group">
+  <button type="button" class="btn btn-default" id="export">{{ _("Export setlist") }}</button>
+</p>
+
+<textarea rows="{{ songs|length }}" id="csv" class="form-control"></textarea>
+
 <table class="table setlist">
   <thead>
     <tr>
       <th class="song"></th>
       {% for instrument in used_instruments %}
-        <th class="instrument" data-instrument="{{ instrument.id }}"
-            style="width: {{ 75 // used_instruments|length }}%">{{ instrument }}</th>
+        <th class="instrument" data-instrument="{{ instrument.id }}">{{ instrument }}</th>
       {% endfor %}
     </tr>
   </thead>
@@ -46,8 +51,28 @@
 
 <script>
   $(function() {
-    $('.setlist tbody').sortScroll({animationDuration: 1, keepStill: false});
-    $('.setlist tbody').on("sortScroll.sortEnd", sb.highlightSetlist);
+    $('.setlist tbody').sortScroll({animationDuration: 1000, keepStill: true});
+    $('.setlist tbody').on("sortScroll.sortEnd", function() {
+      sb.highlightSetlist();
+      $('#csv').slideUp();
+    });
+
+    $('#csv').hide();
+    $('#export').click(function() {
+      var header = [];
+      $('.setlist thead th').each(function(idx, elem) {
+        header.push(elem.innerText);
+      });
+      var result = [header.join(",")];
+      $('.setlist tbody tr').each(function(idx, elem) {
+        var line = [$(elem).find('td.song .songlink .title').text()];
+        $(elem).find('td.performer').each(function(idx, elem) {
+          line.push(elem.innerText.trim().replace(/\n/g, " "));
+        });
+        result.push(line.join(","));
+      });
+      $('#csv').val(result.join("\n")).slideDown();
+    });
   });
 
   $(sb.highlightSetlist);

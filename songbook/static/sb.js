@@ -245,7 +245,6 @@ sb.rangeSlider = function(container, choices) {
 }
 
 sb.highlightSetlist = function() {
-  console.log('hsl');
   var instrumentNames = {};
   $('.setlist .instrument').each(function(idx, elem) {
     instrumentNames[$(elem).data('instrument')] = elem.innerText;
