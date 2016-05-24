@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-05-14 13:58+0300\n"
+"POT-Creation-Date: 2016-05-25 02:51+0300\n"
 "PO-Revision-Date: 2016-04-10 17:46+0300\n"
 "Last-Translator: Anton Gritsay <anton@angri.ru>\n"
 "Language: ru\n"
@@ -56,22 +56,31 @@ msgid "Edit gig \"%(title)s\""
 msgstr "Редактировать выступление «%(title)s»"
 
 #: sbgig/jinja2/sbgig/edit_gig.html:16 sbsong/jinja2/sbsong/edit_song.html:16
-#: sbsong/jinja2/sbsong/view_song.html:148
-#: sbsong/jinja2/sbsong/view_song.html:274
+#: sbsong/jinja2/sbsong/view_song.html:165
+#: sbsong/jinja2/sbsong/view_song.html:291
 #: sbuser/jinja2/sbuser/edit_profile.html:33
 msgid "Save"
 msgstr "Сохранить"
 
 #: sbgig/jinja2/sbgig/edit_gig.html:19 sbsong/jinja2/sbsong/edit_song.html:19
 #: sbsong/jinja2/sbsong/suggest_a_song.html:12
-#: sbsong/jinja2/sbsong/view_song.html:86
-#: sbsong/jinja2/sbsong/view_song.html:186
-#: sbsong/jinja2/sbsong/view_song.html:278
-#: sbsong/jinja2/sbsong/view_song.html:311
+#: sbsong/jinja2/sbsong/view_song.html:103
+#: sbsong/jinja2/sbsong/view_song.html:203
+#: sbsong/jinja2/sbsong/view_song.html:295
+#: sbsong/jinja2/sbsong/view_song.html:328
 #: sbuser/jinja2/sbuser/change_password.html:36
 #: sbuser/jinja2/sbuser/edit_profile.html:36
 msgid "Cancel"
 msgstr "Отмена"
+
+#: sbgig/jinja2/sbgig/setlist.html:4 sbgig/jinja2/sbgig/setlist.html:14
+#, python-format
+msgid "Gig \"%(title)s\" setlist"
+msgstr "«%(title)s»: сетлист"
+
+#: sbgig/jinja2/sbgig/setlist.html:17
+msgid "Export setlist"
+msgstr "Экспортировать сетлист"
 
 #: sbgig/jinja2/sbgig/view_gig.html:14
 msgid "Edit this gig"
@@ -326,7 +335,7 @@ msgid "Edit song"
 msgstr "Редактировать песню"
 
 #: sbsong/jinja2/sbsong/view_song.html:40
-#: sbsong/jinja2/sbsong/view_song.html:79
+#: sbsong/jinja2/sbsong/view_song.html:96
 msgid "Remove song"
 msgstr "Удалить песню"
 
@@ -338,81 +347,81 @@ msgstr "Перестать наблюдать за этой песней"
 msgid "Watch this song"
 msgstr "Наблюдать за этой песней"
 
-#: sbsong/jinja2/sbsong/view_song.html:78
+#: sbsong/jinja2/sbsong/view_song.html:95
 msgid "Close"
 msgstr "Закрыть"
 
-#: sbsong/jinja2/sbsong/view_song.html:82
+#: sbsong/jinja2/sbsong/view_song.html:99
 #, python-format
 msgid "The song \"%(song)s\" will be removed from \"%(gig)s\""
 msgstr "Песня «%(song)s» будет удалена из выступления «%(gig)s»"
 
-#: sbsong/jinja2/sbsong/view_song.html:85
-#: sbsong/jinja2/sbsong/view_song.html:133
-#: sbsong/jinja2/sbsong/view_song.html:287
+#: sbsong/jinja2/sbsong/view_song.html:102
+#: sbsong/jinja2/sbsong/view_song.html:150
+#: sbsong/jinja2/sbsong/view_song.html:304
 msgid "Confirm remove"
 msgstr "Подтверждаю удаление"
 
-#: sbsong/jinja2/sbsong/view_song.html:94
+#: sbsong/jinja2/sbsong/view_song.html:111
 msgid "Song does not belong to a gig. No edits can be made."
 msgstr "Песня не привязана к выступлению. Ее редактирование невозможно."
 
-#: sbsong/jinja2/sbsong/view_song.html:109
+#: sbsong/jinja2/sbsong/view_song.html:126
 msgid "Join this part"
 msgstr "Присоединиться к партии"
 
-#: sbsong/jinja2/sbsong/view_song.html:114
+#: sbsong/jinja2/sbsong/view_song.html:131
 msgid "Change notice or leave this part"
 msgstr "Изменить примечание участия"
 
-#: sbsong/jinja2/sbsong/view_song.html:119
+#: sbsong/jinja2/sbsong/view_song.html:136
 msgid "Remove this part"
 msgstr "Удалить всю партию из песни"
 
-#: sbsong/jinja2/sbsong/view_song.html:131
-#: sbsong/jinja2/sbsong/view_song.html:289
+#: sbsong/jinja2/sbsong/view_song.html:148
+#: sbsong/jinja2/sbsong/view_song.html:306
 msgid "This action can not be undone."
 msgstr "Это действие невозможно отменить."
 
-#: sbsong/jinja2/sbsong/view_song.html:145
+#: sbsong/jinja2/sbsong/view_song.html:162
 msgid "Join"
 msgstr "Присоединиться"
 
-#: sbsong/jinja2/sbsong/view_song.html:151
+#: sbsong/jinja2/sbsong/view_song.html:168
 msgid "Leave part"
 msgstr "Покинуть партию"
 
-#: sbsong/jinja2/sbsong/view_song.html:173
+#: sbsong/jinja2/sbsong/view_song.html:190
 msgid "Add a part"
 msgstr "Добавить партию"
 
-#: sbsong/jinja2/sbsong/view_song.html:182
-#: sbsong/jinja2/sbsong/view_song.html:307
+#: sbsong/jinja2/sbsong/view_song.html:199
+#: sbsong/jinja2/sbsong/view_song.html:324
 msgid "Add"
 msgstr "Добавить"
 
-#: sbsong/jinja2/sbsong/view_song.html:198
+#: sbsong/jinja2/sbsong/view_song.html:215
 msgid "Edit link"
 msgstr "Редактировать ссылку"
 
-#: sbsong/jinja2/sbsong/view_song.html:203
+#: sbsong/jinja2/sbsong/view_song.html:220
 msgid "Remove this link"
 msgstr "Удалить ссылку"
 
-#: sbsong/jinja2/sbsong/view_song.html:224
-#: sbsong/jinja2/sbsong/view_song.html:240
+#: sbsong/jinja2/sbsong/view_song.html:241
+#: sbsong/jinja2/sbsong/view_song.html:257
 msgid "show"
 msgstr "показать"
 
-#: sbsong/jinja2/sbsong/view_song.html:234
+#: sbsong/jinja2/sbsong/view_song.html:251
 msgid "YouTube video:"
 msgstr "Видео YouTube:"
 
-#: sbsong/jinja2/sbsong/view_song.html:298
+#: sbsong/jinja2/sbsong/view_song.html:315
 msgid "Add a link"
 msgstr "Добавить ссылку"
 
-#: sbsong/jinja2/sbsong/view_song.html:336
+#: sbsong/jinja2/sbsong/view_song.html:353
 msgid "Mark all as seen"
 msgstr "Все просмотрено"
 
@@ -456,21 +465,21 @@ msgstr "Пол"
 msgid "About myself"
 msgstr "Обо мне"
 
-#: sbuser/views.py:82
+#: sbuser/views.py:85
 msgid "Profile successfully saved"
 msgstr "Профиль успешно изменен"
 
-#: sbuser/views.py:87
+#: sbuser/views.py:90
 msgid ""
 "Your profile is empty, please fill it below. Than you can continue to "
 "songbook."
 msgstr "Чтобы продолжить, пожалуйста, заполните Ваш профиль."
 
-#: sbuser/views.py:102
+#: sbuser/views.py:105
 msgid "Password successfully changed"
 msgstr "Пароль успешно изменен"
 
-#: sbuser/views.py:107
+#: sbuser/views.py:110
 msgid "In order to continue you have to change your password"
 msgstr "Чтобы продолжить Вам необходимо изменить пароль"
 
@@ -550,15 +559,15 @@ msgstr "Отправить"
 msgid "Dismiss"
 msgstr "Закрыть"
 
-#: songbook/jinja2/base.html:7 songbook/jinja2/base.html:21
+#: songbook/jinja2/base.html:7 songbook/jinja2/base.html:25
 msgid "songbook"
 msgstr "songbook"
 
-#: songbook/jinja2/base.html:28
+#: songbook/jinja2/base.html:32
 msgid "Gigs"
 msgstr "Выступления"
 
-#: songbook/jinja2/base.html:40
+#: songbook/jinja2/base.html:44
 msgid "Log out"
 msgstr "Выйти"
 
