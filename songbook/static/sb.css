@@ -266,7 +266,7 @@ h1, h2, h3, h4, h5, h6 {
   content: "↘";
 }
 .setlist .changes .out {
-  color: red;
+  color: #e33;
 }
 .setlist .changes .out:after {
   content: "↗";
@@ -281,6 +281,12 @@ h1, h2, h3, h4, h5, h6 {
 .setlist .changes .change .from:after {
   content: " →";
 }
+.setlist .changes .change .added {
+  color: gray;
+}
+.setlist .changes .change .added:before {
+  content: "+";
+}
 .setlist .changes {
   position: absolute;
   z-index: 100;
@@ -293,5 +299,5 @@ h1, h2, h3, h4, h5, h6 {
 }
 .setlist .changes li {
   display: inline-block;
-  margin-right: 1em;
+  margin-right: 1.4em;
 }

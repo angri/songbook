@@ -266,9 +266,9 @@ sb.highlightSetlist = function(initial) {
     $(elem).find('a.username').each(function(idx, elem) {
       var username = elem.innerText;
       if (!performers[username])
-        performers[username] = [];
+        performers[username] = new Set();
       var instrumentId = $(elem).parent('td').data('instrument');
-      performers[username].push(instrumentNames[instrumentId]);
+      performers[username].add(instrumentNames[instrumentId]);
     });
     performersBySong.push(performers);
   });
@@ -288,21 +288,46 @@ sb.highlightSetlist = function(initial) {
         changes.append($('<li class="out"></li>').text(performer));
         return;
       }
-      var oldInstrStr = instruments.join(", ");
-      var newInstrStr = newInstruments.join(", ");
-      if (oldInstrStr == newInstrStr)
+
+      var addedInstruments = [];
+      var removedInstruments = [];
+      newInstruments.forEach(function(instrument) {
+        if (!instruments.has(instrument))
+          addedInstruments.push(instrument);
+      });
+      instruments.forEach(function(instrument) {
+        if (!newInstruments.has(instrument))
+          removedInstruments.push(instrument);
+      });
+
+      var removedInstrStr = removedInstruments.join(", ");
+      var addedInstrStr = addedInstruments.join(", ");
+      if (addedInstruments.length && removedInstruments.length) {
+        changes.append($(
+          '<li class="change"><span class="who">' + performer + '</span> ' +
+          '<span class="from">' + removedInstrStr + '</span> ' +
+          '<span class="to">' + addedInstrStr + '</span></li>'
+        ));
         return;
-      changes.append($(
-        '<li class="change"><span class="who">' + performer + '</span> ' +
-        '<span class="from">' + oldInstrStr + '</span> ' +
-        '<span class="to">' + newInstrStr + '</span>'
-      ));
+      }
+
+      if (addedInstruments.length) {
+        changes.append($(
+          '<li class="change"><span class="who">' + performer + '</span> ' +
+          '<span class="added">' + addedInstrStr + '</span></li>'
+        ));
+        return;
+      }
     });
     $.each(performersBySong[idx + 1], function(performer, instruments) {
       if (! performersBySong[idx][performer]) {
         changes.append($('<li class="in"></li>').text(performer));
         return;
       }
+    });
+
+    changes.find('li.change').each(function(idx, change) {
+      changes.append($(change).detach());
     });
   });
 
