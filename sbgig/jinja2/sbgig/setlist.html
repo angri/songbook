@@ -5,7 +5,7 @@
 
 {% block extrahead %}
   {{ super() }}
-  <script src="{{ static('jquery.sortScroll.min.js') }}"></script>
+  <script src="{{ static('jquery.vSort.min.js') }}"></script>
 {% endblock %}
 
 
@@ -17,7 +17,7 @@
   <button type="button" class="btn btn-default" id="export">{{ _("Export setlist") }}</button>
 </p>
 
-<textarea rows="{{ songs|length }}" id="csv" class="form-control"></textarea>
+<textarea rows="{{ songs|length + 1 }}" id="csv" class="form-control"></textarea>
 
 <table class="table setlist">
   <thead>
@@ -30,10 +30,8 @@
   </thead>
   <tbody data-callback="sb.highlightSetlist()">
     {% for song in songs %}
-      <tr class="sort-scroll-element">
-        <td class="song">
-          <button class="btn btn-default btn-xs sort-scroll-button-up">↑</button>
-          <button class="btn btn-default btn-xs sort-scroll-button-down">↓</button>
+      <tr class="sortitem" data-song="{{ song.id }}">
+        <td class="song sorthandle">
           {{ macros.song(song, with_artist=False) }}
           <ul class="changes list-unstyled"></ul>
         </td>
@@ -51,12 +49,7 @@
 
 <script>
   $(function() {
-    $('.setlist tbody').sortScroll({animationDuration: 1000, keepStill: true});
-    $('.setlist tbody').on("sortScroll.sortEnd", function() {
-      sb.highlightSetlist();
-      $('#csv').slideUp();
-    });
-
+    sb.highlightSetlist(true);
     $('#csv').hide();
     $('#export').click(function() {
       var header = [];
@@ -71,11 +64,9 @@
         });
         result.push(line.join(","));
       });
-      $('#csv').val(result.join("\n")).slideDown();
+      $('#csv').val(result.join("\n")).slideToggle();
     });
   });
-
-  $(sb.highlightSetlist);
 </script>
 
 {% endblock %}

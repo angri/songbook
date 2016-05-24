@@ -228,25 +228,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 .setlist tr {
   display: block;
-  background-color: rgba(255,255,255,0.7);
+  background-color: rgba(255,255,255,0.9);
 }
 .setlist tbody td:nth-of-type(even),
 .setlist thead th:nth-of-type(even) {
-  background: rgba(245,245,245,0.7);
+  background: rgba(245,245,245,0.9);
 }
 .setlist tbody tr td,
 .setlist thead tr th {
-  padding: 6pt 0;
+  padding: 18pt 0 18pt 0;
   text-align: center;
   min-width: 80pt;
   max-width: 80pt;
   overflow: hidden;
+  vertical-align: middle;
 }
 .setlist tbody td.song,
 .setlist thead th.song {
-  padding: 6pt;
-  min-width: 220pt;
-  max-width: 220pt;
+  padding: 18pt 6pt;
+  min-width: 221pt;
+  max-width: 221pt;
+  border: none;
 }
 .setlist tbody td.song {
   text-align: right;
@@ -254,17 +256,20 @@ h1, h2, h3, h4, h5, h6 {
 .setlist tbody td.song a {
   font-weight: bold;
 }
+.setlist tr.dragging .changes {
+  display: none;
+}
 .setlist .changes .in {
   color: green;
 }
-.setlist .changes .in:after {
-  content: " →";
+.setlist .changes .in:before {
+  content: "↘";
 }
 .setlist .changes .out {
   color: red;
 }
-.setlist .changes .out:before {
-  content: "← ";
+.setlist .changes .out:after {
+  content: "↗";
 }
 .setlist .changes .change .who:after {
   content: ":";
@@ -275,4 +280,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 .setlist .changes .change .from:after {
   content: " →";
+}
+.setlist .changes {
+  position: absolute;
+  z-index: 100;
+  bottom: -15pt;
+  left: 210pt;
+  border-radius: 10pt;
+  padding-left: 6pt;
+  font-size: 10pt;
+  background-color: #ffe4e4;
+}
+.setlist .changes li {
+  display: inline-block;
+  margin-right: 1em;
 }
