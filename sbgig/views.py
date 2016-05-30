@@ -153,7 +153,7 @@ def setlist(request, slug):
         songparts = performer_by_song_by_instrument[songperf.part.song]
         songparts[songperf.part.instrument].append(songperf.performer)
     used_instruments = sorted(used_instruments,
-                              key=lambda instrument: instrument.id)
+                              key=lambda instrument: instrument.name)
     return render(
         request, 'sbgig/setlist.html',
         {'gig': gig, 'used_instruments': used_instruments, 'songs': songs,
