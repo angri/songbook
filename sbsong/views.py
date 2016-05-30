@@ -70,6 +70,8 @@ def view_song(request, song_id):
             datetime__gt=songwatcher.last_seen
         ).count()
 
+    copy_to_gig_form = forms.make_copy_to_gig_form(exclude_gig=song.gig)
+
     return render(request, 'sbsong/view_song.html',
                   {'song': song,
                    'parts': all_parts,
@@ -78,7 +80,8 @@ def view_song(request, song_id):
                    'new_link_form': new_link_form,
                    'comments': comments,
                    'songwatcher': songwatcher,
-                   'num_unread_comments': num_unread_comments})
+                   'num_unread_comments': num_unread_comments,
+                   'copy_to_gig_form': copy_to_gig_form})
 
 
 @login_required
@@ -232,3 +235,48 @@ def edit_song_link(request, link_id):
         form.save()
         models.SongActions.edited_link(request.user, link.song, old_links)
     return JsonResponse({'result': 'ok'})
+
+
+@login_required
+def copy_song(request, song_id):
+    song = get_object_or_404(models.Song, pk=song_id)
+    form = forms.make_copy_to_gig_form(request.POST or None,
+                                       exclude_gig=song.gig)
+    if not form or not form.is_valid():
+        return HttpResponse(status=400)
+    gig = get_object_or_404(sbgig.models.Gig,
+                            id=form.cleaned_data['target_gig'])
+    if gig == song.gig:
+        return HttpResponse(status=400)
+
+    parts = {part.id: part for part in song.parts.all()}
+    links = list(song.links.all())
+    songperfs = list(models.SongPerformer.objects.filter(part__song=song))
+
+    song.pk = None
+    prev_gig = song.gig
+    song.gig = gig
+    song.suggested_by = request.user
+    song.save()
+
+    for part in parts.values():
+        part.pk = None
+        part.song = song
+        part.save()
+
+    if form.cleaned_data['copy_participants']:
+        for perf in songperfs:
+            perf.part = parts[perf.part_id]
+            perf.pk = None
+            perf.save()
+
+    if form.cleaned_data['copy_links']:
+        for link in links:
+            link.pk = None
+            link.song = song
+            link.save()
+
+    models.SongActions.song_copied(request.user, song, prev_gig, song_id)
+
+    return HttpResponseRedirect(reverse('sbsong:view-song',
+                                        args=[song.pk]))

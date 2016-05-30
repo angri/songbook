@@ -19,6 +19,52 @@
 
 {% block content %}
 
+<div class="modal fade" tabindex="-1" role="dialog" id="copyToAnotherGig">
+  <form action="{{ url('sbsong:copy-song', song_id=song.id) }}" method="post" class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+          aria-label="{{ _("Close") }}"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{ _("Copy song to another gig") }}</h4>
+      </div>
+      <div class="modal-body">
+        {% if copy_to_gig_form %}
+          {{ csrf(csrf_token) }}
+          <div class="form-group">
+            <label>{{ _("Select a gig to copy song to:") }}</label>
+            {% for gig_id, gig_str in copy_to_gig_form.fields['target_gig'].choices %}
+              <div class="radio">
+                <label>
+                  <input type="radio" name="target_gig" value="{{ gig_id }}" required> {{ gig_str }}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+          <p class="help-block">{% trans -%}
+Copied song will have the same title/author, description and parts.
+Comments will not be copied. This original song will be left intact.
+          {%- endtrans %}</p>
+          <div class="checkbox">
+            <label><input type="checkbox" name="copy_links" checked> {{ _("Copy links") }}</label>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" name="copy_participants" checked> {{ _("Copy participants") }}</label>
+          </div>
+        {% else %}
+          <p>{{ _("No future gig to copy a song to") }}</p>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default"
+          data-dismiss="modal">{{ _("Cancel") }}</button>
+        {% if copy_to_gig_form %}
+          <button type="submit" class="btn btn-primary">{{ _("Copy") }}</button>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+</div>
+
 <h1>
   {{ song.title }}
   <sup><span class="text-muted small">
@@ -57,6 +103,10 @@
     {% endif %}
     <script>$(function() { sb.watchUnwatch($('#watch-unwatch-form')); });</script>
   </form>
+  <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#copyToAnotherGig"
+    type="button" title="{{ _("Copy song to another gig") }}">
+    <span class="glyphicon glyphicon-duplicate"></span>
+  </button>
 </h1>
 
 {% if song.artist %}

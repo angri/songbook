@@ -4,12 +4,14 @@ from itertools import chain
 
 from django import forms
 from django.forms.utils import flatatt
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
-from songbook.forms import BootstrapModelForm
+from songbook.forms import BootstrapForm, BootstrapModelForm
 import sbsong.models
+import sbgig.models
 
 
 class RangeSlider(forms.Select):
@@ -90,3 +92,21 @@ class SongLinkForm(BootstrapModelForm):
         widgets = {
             'link': forms.TextInput(attrs={'required': 'true', 'type': 'url'})
         }
+
+
+def make_copy_to_gig_form(*args, exclude_gig=None, **kwargs):
+    gigs = sbgig.models.Gig.objects.filter(date__gte=timezone.now().date())
+    if exclude_gig:
+        gigs = gigs.exclude(id=exclude_gig.id)
+    gigs = list(gigs.order_by('date'))
+
+    if not gigs:
+        return None
+
+    class CopyToGigForm(BootstrapForm):
+        target_gig = forms.ChoiceField(choices=[(gig.id, str(gig))
+                                                for gig in gigs])
+        copy_links = forms.BooleanField(required=False)
+        copy_participants = forms.BooleanField(required=False)
+
+    return CopyToGigForm(*args, **kwargs)

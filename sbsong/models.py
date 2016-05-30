@@ -333,6 +333,24 @@ class SongActions:
         cls._update_changed_at(song, user)
 
     @classmethod
+    def song_copied(cls, user, song, prev_gig, prev_song_id):
+        changes = [
+            {'title': ugettext_noop('Gig'),
+             'title_translatable': True,
+             'prev': str(prev_gig),
+             'new': str(song.gig)},
+            {'title': ugettext_noop('Song id'),
+             'title_translatable': True,
+             'prev': str(prev_song_id),
+             'new': str(song.id)},
+        ]
+        action = (ugettext_noop('%(who)s (f) copied song %(when)s')
+                  if user.profile.gender == 'f' else
+                  ugettext_noop('%(who)s (m) copied song %(when)s'))
+        cls._song_changed(song, action, user, changes,
+                          check_staffed=True, update_readiness=True)
+
+    @classmethod
     def _song_changed(cls, song, action, user, changes, *,
                       check_staffed=False, update_readiness=False,
                       override_gig=None):

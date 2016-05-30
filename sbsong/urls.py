@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^(?P<song_id>\d+)$', views.view_song, name='view-song'),
     url(r'^(?P<song_id>\d+)/remove$', views.remove_song, name='remove-song'),
     url(r'^(?P<song_id>\d+)/edit$', views.edit_song, name='edit-song'),
+    url(r'^(?P<song_id>\d+)/copy$', views.copy_song, name='copy-song'),
 
     url(r'^(?P<song_id>\d+)/add-part$', views.add_song_part,
         name='add-song-part'),
