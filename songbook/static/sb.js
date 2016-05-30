@@ -253,6 +253,7 @@ sb.highlightSetlist = function(initial) {
   if (initial) {
     var urlParts = location.href.split('#');
     if (urlParts.length == 2) {
+      $('.setlist tbody').prepend($('.setlist tr.cutoff').detach());
       $.each(urlParts[1].split(',').reverse(), function(idx, songId) {
         var songLine = $('.setlist tr[data-song="' + songId + '"]').detach();
         $('.setlist tbody').prepend(songLine);
@@ -261,25 +262,33 @@ sb.highlightSetlist = function(initial) {
   }
 
   var performersBySong = [];
+  var cutoffIndex = -1;
   $('.setlist tbody tr').each(function(idx, elem) {
+    if ($(elem).is('.cutoff')) {
+      cutoffIndex = idx;
+      return;
+    }
     var performers = {};
     $(elem).find('a.username').each(function(idx, elem) {
       var username = elem.innerText;
       if (!performers[username])
         performers[username] = new Set();
-      var instrumentId = $(elem).parent('td').data('instrument');
+      var instrumentId = $(elem).closest('td').data('instrument');
       performers[username].add(instrumentNames[instrumentId]);
     });
     performersBySong.push(performers);
   });
 
-  var songIds = []
+  var songIds = [];
+  $('.setlist tbody tr .changes').empty();
   $('.setlist tbody tr').each(function(idx, elem) {
+    $(elem).find('.num').text(new String(idx + 1));
+
     songIds.push($(elem).data('song'));
     var changes = $(elem).find('.changes');
     changes.empty();
-    if (idx >= performersBySong.length - 1)
-      return;
+    if (idx == cutoffIndex - 1)
+      return false;
     $.each(performersBySong[idx], function(performer, instruments) {
       var newInstruments = performersBySong[idx + 1][performer];
       if (newInstruments == instruments)

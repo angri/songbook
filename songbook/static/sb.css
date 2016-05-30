@@ -230,30 +230,54 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   background-color: rgba(255,255,255,0.9);
 }
-.setlist tbody td:nth-of-type(even),
-.setlist thead th:nth-of-type(even) {
+.setlist tbody td:nth-of-type(odd),
+.setlist thead th:nth-of-type(odd) {
   background: rgba(245,245,245,0.9);
 }
 .setlist tbody tr td,
 .setlist thead tr th {
   padding: 18pt 0 18pt 0;
   text-align: center;
-  min-width: 80pt;
-  max-width: 80pt;
+  min-width: 65pt;
+  max-width: 65pt;
   overflow: hidden;
   vertical-align: middle;
+  line-height: 1.1em;
+}
+.setlist tbody td.num,
+.setlist thead th.num {
+  min-width: 25pt;
+  max-width: 25pt;
+  border: none;
+}
+.setlist thead th.num {
+  background: none;
+}
+.setlist tbody td.num {
+  border-top: 1px solid #ddd;
+  padding-right: 0px;
+}
+.setlist tbody td.num:after {
+  content: ".";
 }
 .setlist tbody td.song,
 .setlist thead th.song {
   padding: 18pt 6pt;
-  min-width: 221pt;
-  max-width: 221pt;
+  min-width: 200pt;
+  max-width: 200pt;
   border: none;
 }
 .setlist tbody td.song {
   text-align: right;
 }
 .setlist tbody td.song a {
+  font-weight: bold;
+}
+.setlist .username {
+  opacity: 0.9;
+}
+.setlist .me .username {
+  opacity: 1;
   font-weight: bold;
 }
 .setlist tr.dragging .changes {
@@ -290,8 +314,8 @@ h1, h2, h3, h4, h5, h6 {
 .setlist .changes {
   position: absolute;
   z-index: 100;
-  bottom: -15pt;
-  left: 210pt;
+  bottom: -14pt;
+  left: 220pt;
   border-radius: 10pt;
   padding-left: 6pt;
   font-size: 10pt;
@@ -300,4 +324,57 @@ h1, h2, h3, h4, h5, h6 {
 .setlist .changes li {
   display: inline-block;
   margin-right: 1.4em;
+}
+.setlist tr.cutoff {
+  background: repeating-linear-gradient(-45deg, #bbb, #bbb 10px, #ccc 10px, #ccc 20px);
+}
+.setlist tr.cutoff td {
+  border: none;
+  background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,255));
+  display: block;
+  max-width: none;
+  height: 1.5em;
+  padding: 0 0 0 28pt;
+  text-align: left;
+}
+.setlist tr.cutoff td:before {
+  position: relative;
+  top: 3pt;
+  font-size: 18pt;
+  vertical-align: middle;
+  color: #777;
+  content: "\e226";
+  font-family: 'Glyphicons Halflings';
+}
+.setlist .cutoff ~ tr {
+  opacity: 0.4;
+}
+.setlist .cutoff ~ tr td.num {
+  color: transparent;
+}
+.setlist .cutoff ~ tr .changes {
+  display: none;
+}
+.setlist.compact td.song {
+  padding: 0 6pt;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.setlist.compact td,
+.setlist.compact th {
+  padding: 4pt 0;
+}
+.setlist.compact th {
+  padding: 4pt 0;
+}
+.setlist.compact .changes {
+  display: none;
+}
+.setlist.compact a {
+  pointer-events: none;
+}
+.setlist.compact tbody td.song,
+.setlist.compact thead th.song {
+  min-width: 151pt;
+  max-width: 151pt;
 }
