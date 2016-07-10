@@ -188,14 +188,16 @@ class SongActions:
         return cls._part_participation_base(action, user, part, old_performers)
 
     @classmethod
-    def left_part(cls, user, part, old_performers):
+    def left_part(cls, user, part, old_performers, changed_by):
         action = (ugettext_noop('%(who)s (f) left a song part %(when)s')
                   if user.profile.gender == 'f' else
                   ugettext_noop('%(who)s (m) left a song part %(when)s'))
-        return cls._part_participation_base(action, user, part, old_performers)
+        return cls._part_participation_base(action, user, part, old_performers,
+                                            changed_by=changed_by)
 
     @classmethod
-    def _part_participation_base(cls, action, user, part, old_performers):
+    def _part_participation_base(cls, action, user, part, old_performers,
+                                 changed_by=None):
         new_performers = part.songperformer_set.all()
         changes = [
             {'title': str(part),
@@ -229,7 +231,8 @@ class SongActions:
                 'value_translatable': True,
             })
         cls._song_changed(part.song, action, user, changes,
-                          check_staffed=True, update_readiness=True)
+                          check_staffed=True, update_readiness=True,
+                          changed_by=changed_by)
 
     @classmethod
     def added_part(cls, user, song, old_parts):
@@ -353,7 +356,7 @@ class SongActions:
     @classmethod
     def _song_changed(cls, song, action, user, changes, *,
                       check_staffed=False, update_readiness=False,
-                      override_gig=None):
+                      override_gig=None, changed_by=None):
         if check_staffed:
             changes = cls._check_staffed(song, changes)
         if update_readiness:
@@ -366,13 +369,15 @@ class SongActions:
         if not changes:
             return
         info = {'action': action, 'changes': changes}
+        if changed_by is not None and changed_by != user:
+            info['changed_by'] = str(changed_by)
 
         gig = override_gig or song.gig
         sbgig.models.Comment.objects.create(
             gig=gig, song=song, author=user, text=json.dumps(info),
             comment_type=sbgig.models.Comment.CT_SONG_EDIT
         )
-        cls._update_changed_at(song, user)
+        cls._update_changed_at(song, changed_by or user)
 
     @classmethod
     def _update_changed_at(cls, song, user):

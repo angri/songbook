@@ -166,9 +166,11 @@ def kick_from_song_part(request, part_id, performer_id):
         pass
     else:
         part = songperf.part
+        user = songperf.performer
         old_performers = list(part.songperformer_set.all())
         songperf.delete()
-        models.SongActions.left_part(request.user, part, old_performers)
+        models.SongActions.left_part(user, part, old_performers,
+                                     changed_by=request.user)
     return JsonResponse({'result': 'ok'})
 
 
