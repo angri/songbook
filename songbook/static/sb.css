@@ -130,14 +130,11 @@ a.username:first-letter {
   font-weight: bold;
 }
 .comment-unread .comment-header:before {
-  content: "+";
-  border-radius: 9pt;
-  background-color: #aaa;
-  color: white;
-  padding: 0 5pt 1.5pt 5pt;
-  font-size: 9pt;
-  line-height: inherit;
-  margin-right: 2pt;
+  font-family: 'Glyphicons Halflings';
+  content: "\002a";
+  color: #888;
+  margin-left: 0.5em;
+  margin-top: 13px;
 }
 
 .comment-unread + .comment-seen:before {
