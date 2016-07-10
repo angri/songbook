@@ -156,6 +156,21 @@ sb.initPartsInfo = function() {
         sb.refreshAllComments();
     });
   });
+  var ownUserId = $('#partsinfo').data('own-user-id').toString();
+  $('#partsinfo select[name=performer]').each(function(idx, elem) {
+    var select = $(elem);
+    var container = select.closest('li');
+    var performers = new Set();
+    container.find('ul.performers li').each(function(idx, elem) {
+      performers.add($(elem).data('performer-id').toString());
+    });
+    select.find('option').each(function(idx, elem) {
+      elem.disabled = performers.has(elem.value);
+    });
+    if (!performers.has(ownUserId)) {
+      select.find('option[value=' + ownUserId + ']').attr('selected', true);
+    }
+  });
 };
 
 sb.initLinks = function() {

@@ -38,11 +38,10 @@ def view_song(request, song_id):
 
     new_part_form = forms.SongPartForm()
     new_link_form = forms.SongLinkForm()
-    empty_join_form = forms.JoinSongPartForm()
+    empty_join_form = forms.JoinSongPartFormWithPerformerSelect()
 
     all_parts = {part.pk: {'part': part,
                            'performers': [],
-                           'join_form': empty_join_form,
                            'has_joined': False}
                  for part in song.parts.select_related('instrument')}
     all_performers = models.SongPerformer.objects.filter(part__song=song_id)
@@ -52,9 +51,8 @@ def view_song(request, song_id):
         all_parts[part_perf.part.pk]['performers'].append(part_perf)
         if part_perf.performer == request.user:
             all_parts[part_perf.part.pk]['has_joined'] = True
-            all_parts[part_perf.part.pk]['join_form'] = forms.JoinSongPartForm(
-                instance=part_perf
-            )
+            all_parts[part_perf.part.pk]['part_edit_form'] = \
+                forms.JoinSongPartForm(instance=part_perf)
     all_parts = [part_info for part_pk, part_info in sorted(all_parts.items())]
 
     all_links = [
@@ -74,6 +72,7 @@ def view_song(request, song_id):
 
     return render(request, 'sbsong/view_song.html',
                   {'song': song,
+                   'join_form': empty_join_form,
                    'parts': all_parts,
                    'links': all_links,
                    'new_part_form': new_part_form,
@@ -137,18 +136,26 @@ def remove_song(request, song_id):
 
 @login_required
 def join_song_part(request, part_id):
-    join_part_form = forms.JoinSongPartForm(request.POST)
+    if request.method == 'POST' and 'performer' in request.POST:
+        form_cls = forms.JoinSongPartFormWithPerformerSelect
+    else:
+        form_cls = forms.JoinSongPartForm
+    join_part_form = form_cls(request.POST)
     if join_part_form.is_valid():
         old_performers = list(
             models.SongPerformer.objects.filter(part_id=part_id)
         )
+        performer = request.user
+        if 'performer' in join_part_form.cleaned_data:
+            performer = join_part_form.cleaned_data['performer']
         songperf, created = models.SongPerformer.objects.update_or_create(
-            part_id=part_id, performer=request.user,
+            part_id=part_id, performer=performer,
             defaults=join_part_form.cleaned_data
         )
         if created:
-            models.SongActions.joined_part(request.user, songperf.part,
-                                           old_performers)
+            models.SongActions.joined_part(songperf.performer, songperf.part,
+                                           old_performers,
+                                           changed_by=request.user)
         else:
             models.SongActions.edited_part_participation(
                 request.user, songperf.part, old_performers

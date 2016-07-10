@@ -171,12 +171,13 @@ class SongActions:
         SongWatcher.objects.update_or_create(song=song, user=user)
 
     @classmethod
-    def joined_part(cls, user, part, old_performers):
+    def joined_part(cls, user, part, old_performers, *, changed_by=None):
         SongWatcher.objects.update_or_create(song=part.song, user=user)
         action = (ugettext_noop('%(who)s (f) joined a song part %(when)s')
                   if user.profile.gender == 'f' else
                   ugettext_noop('%(who)s (m) joined a song part %(when)s'))
-        return cls._part_participation_base(action, user, part, old_performers)
+        return cls._part_participation_base(action, user, part, old_performers,
+                                            changed_by=changed_by)
 
     @classmethod
     def edited_part_participation(cls, user, part, old_performers):

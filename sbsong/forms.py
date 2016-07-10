@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
+from django.contrib.auth.models import User
 
 from songbook.forms import BootstrapForm, BootstrapModelForm
 import sbsong.models
@@ -83,6 +84,15 @@ class JoinSongPartForm(BootstrapModelForm):
             ),
             'readiness': RangeSlider(),
         }
+
+
+class JoinSongPartFormWithPerformerSelect(BootstrapModelForm):
+    performer = forms.ModelChoiceField(
+        queryset=User.objects.all().order_by('username')
+    )
+
+    class Meta(JoinSongPartForm.Meta):
+        fields = ['performer', 'notice', 'readiness']
 
 
 class SongLinkForm(BootstrapModelForm):
