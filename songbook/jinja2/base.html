@@ -31,9 +31,23 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
               aria-haspopup="true" aria-expanded="false">{{ _("Gigs") }} <span class="caret"></span></a>
             <ul class="dropdown-menu">
-              {% for gig in all_gigs() %}
-                <li><a href="{{ url("sbgig:view-gig", slug=gig.slug) }}">{{ gig.title }}</a></li>
-              {% endfor %}
+              {% with future_gigs=all_gigs(only_future=True), past_gigs=all_gigs(only_past=True) %}
+                {% for gig in future_gigs[::-1] %}
+                  <li><a href="{{ url("sbgig:view-gig", slug=gig.slug) }}" class="gig">{#
+                    #}<span class="gigname">{{ gig.title }}</span>
+                    <span class="gigdate">{{ gig.date }}</span>{#
+                  #}</a></li>
+                {% endfor %}
+                {% if future_gigs and past_gigs %}
+                  <li role="separator" class="divider"></li>
+                {% endif %}
+                {% for gig in past_gigs[::-1] %}
+                  <li><a href="{{ url("sbgig:view-gig", slug=gig.slug) }}" class="gig gig-past">{#
+                    #}<span class="gigname">{{ gig.title }}</span>
+                    <span class="gigdate">{{ gig.date }}</span>{#
+                  #}</a></li>
+                {% endfor %}
+              {% endwith %}
             </ul>
           </li>
         </ul>

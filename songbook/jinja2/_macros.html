@@ -94,7 +94,7 @@
         <span class="songname">/ {{ song(comment.song) }} </span>
       {% endif %}
       <span class="gigname">/ {{ gig(comment.gig) }} </span>
-      {% if 'changed_by' in comment_data %}
+      {% if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) and 'changed_by' in comment_data %}
         <span class="changes-made-by">/
           {% trans who=username(comment_data['changed_by'], string_only=True) %}changes made by {{ who }}{% endtrans -%}
         </span>

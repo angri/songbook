@@ -1,3 +1,13 @@
+.navbar a.gig-past {
+  color: #777;
+}
+.navbar a.gig .gigdate {
+  opacity: 0.5;
+}
+.navbar a.gig .gigdate:before {
+  content: " / ";
+}
+
 .textdiff .added,
 .textdiff .removed {
   margin-right: 0.3em;
