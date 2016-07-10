@@ -23,37 +23,34 @@ ul#links > li {
   list-style: none;
   padding: 1em 0;
 }
-ul#partsinfo .controls button,
-ul#links .controls button {
-  display: none;
-  margin: -2px 0;
-}
-ul#partsinfo > li:hover button.not-joined,
-ul#partsinfo > li:hover button.remove-part,
-ul#links > li:hover .controls button {
-  display: inline-block;
-}
 ul#partsinfo .instrument-name,
 ul#links .link-notice {
   font-size: 120%;
 }
-ul#partsinfo .join-form > *,
-ul#partsinfo .remove-part-form > * {
+ul#partsinfo .controls button,
+ul#links .controls button {
+  margin: -2px 0;
+}
+ul#partsinfo button.hover,
+ul#links button.hover {
+  opacity: 0.3;
+  border: none;
+}
+ul#partsinfo button.hover:hover,
+ul#links button.hover:hover {
+  opacity: 1;
+}
+ul#partsinfo .join-form > form,
+ul#partsinfo .part-edit-form > form,
+ul#partsinfo .leave-form > form,
+ul#partsinfo .remove-part-form > form {
   display: inline-block;
+  margin-bottom: 0;
 }
-ul#partsinfo button.save-changes,
-ul#partsinfo button.joined,
-ul#partsinfo button.leave-part {
-  display: none;
-}
-ul#partsinfo li.joined button.join-part,
-ul#partsinfo li.joined button.not-joined {
-  display: none;
-}
-ul#partsinfo li.joined button.save-changes,
-ul#partsinfo li.joined:hover button.joined,
-ul#partsinfo li.joined button.leave-part {
-  display: inline-block;
+ul#partsinfo .join-form,
+ul#partsinfo .leave-form,
+ul#partsinfo .part-edit-form {
+  margin: 1em 0;
 }
 ul#partsinfo ul.performers li {
   padding-left: 2em;
@@ -61,9 +58,6 @@ ul#partsinfo ul.performers li {
 ul#partsinfo .rangeslider .display-value {
   display: block;
   margin-top: 0.6em;
-}
-form.remove-part {
-  display: inline;
 }
 ul#partsinfo .controls {
   margin-bottom: 1em;

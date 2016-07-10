@@ -155,17 +155,14 @@ Comments will not be copied. This original song will be left intact.
           <div class="controls">
             {{ macros.part(part_info.part) }}
             <span class="song-editing">
-              <button type="button" class="btn btn-default btn-xs show-join-form not-joined"
-                title="{{ _("Join this part") }}"
-                data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
-                <span class="glyphicon glyphicon-flag"></span>
-              </button>
-              <button type="button" class="btn btn-default btn-xs show-join-form joined"
-                title="{{ _("Change notice or leave this part") }}"
-                data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
-                <span class="glyphicon glyphicon-flag"></span>
-              </button>
-              <button type="button" class="btn btn-default btn-xs remove-part"
+              {% if not part_info.has_joined %}
+                <button type="button" class="btn btn-default btn-xs hover"
+                  title="{{ _("Join this part") }}"
+                  data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
+                  <span class="glyphicon glyphicon-flag"></span>
+                </button>
+              {% endif %}
+              <button type="button" class="btn btn-default btn-xs hover"
                 title="{{ _("Remove this part") }}"
                 data-toggle="collapse" data-target="#remove-part-{{ part_info.part.pk }}-form">
                 <span class="glyphicon glyphicon-trash"></span>
@@ -178,6 +175,7 @@ Comments will not be copied. This original song will be left intact.
             <form method="post" action="{{ url('sbsong:remove-song-part', part_info.part.pk) }}"
               class="well well-sm">
               {{ csrf(csrf_token) }}
+              <p>{% trans %}Do you really want to remove part from the song?{% endtrans %}</p>
               <p>{% trans %}This action can not be undone.{% endtrans %}</p>
               <button type="submit" class="btn btn-danger">
                 {{ _("Confirm remove") }}
@@ -185,23 +183,17 @@ Comments will not be copied. This original song will be left intact.
             </form>
           </div>
 
-          <div id="join-part-{{ part_info.part.pk }}-form" class="join-form collapse song-editing">
-            <form class="well well-sm"
-              data-join-action="{{ url('sbsong:join-song-part', part_info.part.pk) }}"
-              data-leave-action="{{ url('sbsong:leave-song-part', part_info.part.pk) }}">
-              {{ csrf(csrf_token) }}
-              {{ part_info.join_form.as_bootstrap_form_without_labels() }}
-              <button type="button" class="btn btn-primary join-part">
-                {% trans %}Join{% endtrans %}
-              </button>
-              <button type="button" class="btn btn-success save-changes">
-                {% trans %}Save{% endtrans %}
-              </button>
-              <button type="button" class="btn btn-danger leave-part">
-                {% trans %}Leave part{% endtrans %}
-              </button>
-            </form>
-          </div>
+          {% if not part_info.has_joined %}
+            <div id="join-part-{{ part_info.part.pk }}-form" class="join-form collapse song-editing">
+              <form class="well well-sm" action="{{ url('sbsong:join-song-part', part_info.part.pk) }}">
+                {{ csrf(csrf_token) }}
+                {{ part_info.join_form.as_bootstrap_form_without_labels() }}
+                <button type="submit" class="btn btn-primary">
+                  {% trans %}Join{% endtrans %}
+                </button>
+              </form>
+            </div>
+          {% endif %}
 
           <ul id="part-{{ part_info.part.id }}-performers" class="performers list-unstyled">
             {% for performer in part_info.performers %}
@@ -209,6 +201,47 @@ Comments will not be copied. This original song will be left intact.
                 {{ performer.readiness|pie(title=_(performer.READINESS_STRINGS[performer.readiness])) }}
                 {{ macros.username(performer.performer) -}}
                 {% if performer.notice %}: <span class="text-muted">{{ performer.notice }}{% endif -%}
+                {% if request.user.pk == performer.performer.pk %}
+                  <button type="button" class="btn btn-default btn-xs hover song-editing"
+                    title="{{ _("Change participation notice or readiness") }}"
+                    data-toggle="collapse" data-target="#join-part-{{ part_info.part.pk }}-form">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </button>
+                {% endif %}
+                <button class="btn btn-default btn-xs hover song-editing"
+                  title="{{ _("Leave part") if request.user.pk == performer.performer.pk else _("Kick from part") }}"
+                  data-toggle="collapse" data-target="#leave-part-{{ performer.pk }}-form">
+                  <span class="glyphicon glyphicon-log-out"></span>
+                </button>
+                <div id="leave-part-{{ performer.pk }}-form" class="leave-form collapse song-editing">
+                  <form class="well well-sm" action="{{ url('sbsong:kick-from-song-part', part_id=part_info.part.pk,
+                                                            performer_id=performer.performer.pk) }}">
+                    {{ csrf(csrf_token) }}
+                    <p>
+                      {%- if request.user.pk != performer.performer.pk %}
+                        {% trans who=macros.username(performer.performer) -%}
+                          Do you want to kick {{ who }} from the part?
+                        {%- endtrans %}
+                      {% else %}
+                        {% trans %}Do you want to leave the part?{% endtrans %}
+                      {% endif -%}
+                    </p>
+                    <button type="submit" class="btn btn-danger">
+                      {% trans %}Confirm{% endtrans %}
+                    </button>
+                  </form>
+                </div>
+                {% if request.user.pk == performer.performer.pk %}
+                  <div id="join-part-{{ part_info.part.pk }}-form" class="part-edit-form collapse song-editing">
+                    <form class="well well-sm" action="{{ url('sbsong:join-song-part', part_info.part.pk) }}">
+                      {{ csrf(csrf_token) }}
+                      {{ part_info.join_form.as_bootstrap_form_without_labels() }}
+                      <button type="submit" class="btn btn-success">
+                        {% trans %}Save{% endtrans %}
+                      </button>
+                    </form>
+                  </div>
+                {% endif %}
               </li>
             {% else %}
               <span class="text-danger">&ndash;</span>
@@ -244,12 +277,12 @@ Comments will not be copied. This original song will be left intact.
     <ul id="links">
       {% macro link_controls(link_pk) %}
         <span class="controls song-editing" style="vertical-align: top">
-          <button type="button" class="btn btn-default btn-xs show-edit-form"
+          <button type="button" class="btn btn-default btn-xs hover"
             title="{{ _("Edit link") }}"
             data-toggle="collapse" data-target="#edit-link-{{ link_pk }}-form">
             <span class="glyphicon glyphicon-pencil"></span>
           </button>
-          <button type="button" class="btn btn-default btn-xs show-remove-form"
+          <button type="button" class="btn btn-default btn-xs hover"
             title="{{ _("Remove this link") }}"
             data-toggle="collapse" data-target="#remove-link-{{ link_pk }}-form">
             <span class="glyphicon glyphicon-trash"></span>

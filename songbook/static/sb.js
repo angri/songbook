@@ -120,35 +120,27 @@ sb.updatePagePart = function(target) {
 }
 
 sb.initPartsInfo = function() {
-  $('#partsinfo button.join-part, #partsinfo button.save-changes').click(function() {
-    var joinFormContainer = $(this).parents('li').find('.join-form');
-    var joinForm = joinFormContainer.find('> form');
-    var partContainer = joinFormContainer.parents('ul#partsinfo > li');
-    var data = joinForm.serialize();
-    var action = joinForm.data('join-action');
-    $.post(action, data, function(result) {
-      joinFormContainer
+  $('#partsinfo .join-form form, #partsinfo .part-edit-form form').on('submit', function(event) {
+    event.preventDefault();
+    var form = $(this);
+    $.post(form.attr('action'), form.serialize(), function(result) {
+      form.parent()
         .collapse('hide')
         .one('hidden.bs.collapse', function() {
-          partContainer.addClass('joined');
+          sb.updatePagePart($('#partsinfo')).done(sb.initPartsInfo);
         });
-      sb.updatePagePart(partContainer.find('.performers'));
       sb.refreshAllComments();
     });
   });
-  $('#partsinfo button.leave-part').click(function() {
-    var joinFormContainer = $(this).parents('li').find('.join-form');
-    var joinForm = joinFormContainer.find('> form');
-    var partContainer = joinFormContainer.parents('ul#partsinfo > li');
-    var data = joinForm.serialize();
-    var action = joinForm.data('leave-action');
-    $.post(action, data, function(result) {
-      joinFormContainer
+  $('#partsinfo .leave-form form').on('submit', function(event) {
+    event.preventDefault();
+    var form = $(this);
+    $.post(form.attr('action'), form.serialize(), function(result) {
+      form.closest('.leave-form')
         .collapse('hide')
         .one('hidden.bs.collapse', function() {
-          partContainer.removeClass('joined')
+          sb.updatePagePart($('#partsinfo')).done(sb.initPartsInfo);
         });
-      sb.updatePagePart(partContainer.find('.performers'));
       sb.refreshAllComments();
     });
   });
@@ -156,10 +148,12 @@ sb.initPartsInfo = function() {
     event.preventDefault();
     var form = $(this);
     $.post(form.attr('action'), form.serialize(), function(result) {
-      form.parents('ul#partsinfo > li').slideUp(function() {
-        $(this).remove();
+      form.closest('.remove-part-form')
+        .collapse('hide')
+        .one('hidden.bs.collapse', function() {
+          $(this).closest('li').remove();
+        });
         sb.refreshAllComments();
-      });
     });
   });
 };

@@ -13,8 +13,8 @@ urlpatterns = [
         name='add-song-part'),
     url(r'^part/(?P<part_id>\d+)/join$', views.join_song_part,
         name='join-song-part'),
-    url(r'^part/(?P<part_id>\d+)/leave$', views.leave_song_part,
-        name='leave-song-part'),
+    url(r'^part/(?P<part_id>\d+)/performer-(?P<performer_id>\d+)/kick$',
+        views.kick_from_song_part, name='kick-from-song-part'),
     url(r'^part/(?P<part_id>\d+)/remove$', views.remove_song_part,
         name='remove-song-part'),
 

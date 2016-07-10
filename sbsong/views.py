@@ -157,10 +157,10 @@ def join_song_part(request, part_id):
 
 
 @login_required
-def leave_song_part(request, part_id):
+def kick_from_song_part(request, part_id, performer_id):
     try:
         songperf = models.SongPerformer.objects.get(
-            part_id=part_id, performer=request.user
+            part_id=part_id, performer=performer_id
         )
     except models.SongPerformer.DoesNotExist:
         pass
