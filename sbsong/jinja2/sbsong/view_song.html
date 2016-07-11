@@ -419,7 +419,7 @@ Comments will not be copied. This original song will be left intact.
   <script>$(function() { sb.commentsMarkAsViewed($('.comments-container'), $('.comments-mark-as-seen')); })</script>
 {% endif %}
 
-{{ macros.comments(url('sbgig:get-song-comments', song_id=song.id), comments, songwatcher, with_gig_names=True) }}
+{{ macros.comments(url('sbgig:get-song-comments', song_id=song.id), comments, last_seen, with_gig_names=True) }}
 
 
 {% endblock %}

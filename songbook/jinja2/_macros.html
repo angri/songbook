@@ -55,12 +55,12 @@
 {% endmacro %}
 
 
-{% macro comments(url, comments, songwatcher=None, with_song_names=False, with_gig_names=False) %}
+{% macro comments(url, comments, last_seen=None, with_song_names=False, with_gig_names=False) %}
   <div class="comments-container" data-url="{{ url }}">
     <div class="comments-stream
                {%- if not with_song_names %} hide-song-names {% endif -%}
                {%- if not with_gig_names %} hide-gig-names {% endif -%}">
-      {{ comments_list(comments, songwatcher) }}
+      {{ comments_list(comments, last_seen) }}
     </div>
     <div class="load-more-line">
       <button type="button" class="btn btn-default btn-sm">
@@ -72,10 +72,10 @@
 {% endmacro %}
 
 
-{% macro comments_list(comments, songwatcher=None) -%}
+{% macro comments_list(comments, last_seen=None) -%}
 {% for comment in comments %}
 {%- with comment_data = comment.text|decode_json if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) else None -%}
-  <div class="comment {% if songwatcher and songwatcher.last_seen < comment.datetime %}comment-unread{% else %}comment-seen{% endif %}"
+  <div class="comment {% if last_seen and last_seen < comment.datetime %}comment-unread{% else %}comment-seen{% endif %}"
     data-comment-id="{{ comment.id }}">
     <div class="comment-header">
       {% if comment.comment_type in (comment.CT_SONG_EDIT, comment.CT_GIG_EDIT) %}

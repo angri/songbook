@@ -61,12 +61,16 @@ def view_song(request, song_id):
     ]
 
     songwatcher = song.watchers.filter(user=request.user).first()
+    last_seen = None
     comments = song.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
     num_unread_comments = 0
     if songwatcher:
         num_unread_comments = song.comments.filter(
             datetime__gt=songwatcher.last_seen
         ).count()
+        last_seen = songwatcher.last_seen
+        songwatcher.last_seen = timezone.now()
+        songwatcher.save()
 
     copy_to_gig_form = forms.make_copy_to_gig_form(exclude_gig=song.gig)
 
@@ -79,6 +83,7 @@ def view_song(request, song_id):
                    'new_link_form': new_link_form,
                    'comments': comments,
                    'songwatcher': songwatcher,
+                   'last_seen': last_seen,
                    'num_unread_comments': num_unread_comments,
                    'copy_to_gig_form': copy_to_gig_form})
 

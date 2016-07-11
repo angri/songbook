@@ -88,9 +88,6 @@ sb.comments = function(container) {
 }
 
 sb.commentsMarkAsViewed = function(container, form) {
-  if (container.find('.comment-unread').length) {
-    form.collapse('show');
-  }
   container.on('newCommentsLoaded', function(event, newComments) {
     if (newComments.filter('.comment-unread').length) {
       form.collapse('show');
