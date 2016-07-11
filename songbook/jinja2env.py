@@ -5,6 +5,7 @@ import difflib
 from django.contrib.messages.api import get_messages
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.utils import translation
 from django.utils import timezone
 from django.utils.module_loading import import_string
@@ -101,30 +102,35 @@ def get_yamusic_embed_link(link):
            m.groupdict()
 
 
+def _get_babel_locale():
+    django_locale = settings.LANGUAGE_CODE
+    if settings.USE_L10N:
+        django_locale = translation.get_language() or settings.LANGUAGE_CODE
+    babel_locale = django_locale.replace('-', '_')
+    return babel_locale
+
+
 def format_datedelta(date):
     td = date - timezone.now().date()
-    locale = translation.trans_real.get_language()
     return babel.dates.format_timedelta(td, add_direction=True,
-                                        locale=locale)
+                                        locale=_get_babel_locale())
 
 
 def format_timedelta(dt):
     td = dt - timezone.now()
-    locale = translation.trans_real.get_language()
     return babel.dates.format_timedelta(td, add_direction=True,
-                                        locale=locale)
+                                        locale=_get_babel_locale())
 
 
 def format_date(date, format='medium'):
-    locale = translation.trans_real.get_language()
-    return babel.dates.format_date(date, format=format, locale=locale)
+    return babel.dates.format_date(date, format=format,
+                                   locale=_get_babel_locale())
 
 
 def format_datetime(dt, format='medium'):
     tz = timezone.get_current_timezone()
-    locale = translation.trans_real.get_language()
-    return babel.dates.format_datetime(dt, format=format, locale=locale,
-                                       tzinfo=tz)
+    return babel.dates.format_datetime(dt, format=format,
+                                       locale=_get_babel_locale(), tzinfo=tz)
 
 
 def decode_json(data):
