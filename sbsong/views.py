@@ -261,6 +261,7 @@ def copy_song(request, song_id):
     parts = {part.id: part for part in song.parts.all()}
     links = list(song.links.all())
     songperfs = list(models.SongPerformer.objects.filter(part__song=song))
+    watchers = list(song.watchers.all())
 
     song.pk = None
     prev_gig = song.gig
@@ -272,6 +273,11 @@ def copy_song(request, song_id):
         part.pk = None
         part.song = song
         part.save()
+
+    for watcher in watchers:
+        watcher.pk = None
+        watcher.song = song
+        watcher.save()
 
     if form.cleaned_data['copy_participants']:
         for perf in songperfs:
