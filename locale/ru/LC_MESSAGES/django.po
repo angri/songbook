@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-07-11 02:27+0300\n"
+"POT-Creation-Date: 2016-07-12 01:13+0300\n"
 "PO-Revision-Date: 2016-04-10 17:46+0300\n"
 "Last-Translator: Anton Gritsay <anton@angri.ru>\n"
 "Language: ru\n"
@@ -46,7 +46,7 @@ msgstr "%(who)s отредактировала выступление %(when)s"
 msgid "%(who)s (m) edited gig %(when)s"
 msgstr "%(who)s отредактировал выступление %(when)s"
 
-#: sbgig/views.py:76
+#: sbgig/views.py:88
 msgid "Gig successfully saved"
 msgstr "Выступление успешно сохранено"
 
@@ -96,25 +96,33 @@ msgid "Staffed songs"
 msgstr "Укомплектованные песни"
 
 #: sbgig/jinja2/sbgig/view_gig.html:36
+msgid ""
+"Your readiness level in this song is below average. Consider practicing "
+"more or giving up on the part."
+msgstr ""
+"Ваш уровень выученности ниже среднего в этой песне. Подумайте над тем, "
+"чтобы заниматься больше, или отдать кому-то партию."
+
+#: sbgig/jinja2/sbgig/view_gig.html:40
 #, python-format
 msgid "Desirable: %(parts)s"
 msgstr "Желательно: %(parts)s"
 
-#: sbgig/jinja2/sbgig/view_gig.html:45
+#: sbgig/jinja2/sbgig/view_gig.html:49
 msgid "Unstaffed songs"
 msgstr "Песни без кворума"
 
-#: sbgig/jinja2/sbgig/view_gig.html:54
+#: sbgig/jinja2/sbgig/view_gig.html:58
 #, python-format
 msgid "Wanted: %(parts)s"
 msgstr "Нужны: %(parts)s"
 
-#: sbgig/jinja2/sbgig/view_gig.html:65
+#: sbgig/jinja2/sbgig/view_gig.html:69
 #: sbsong/jinja2/sbsong/suggest_a_song.html:5
 msgid "Suggest a song"
 msgstr "Предложить песню"
 
-#: sbgig/jinja2/sbgig/view_gig.html:68
+#: sbgig/jinja2/sbgig/view_gig.html:72
 msgid "Construct a setlist"
 msgstr "Собрать сетлист"
 
@@ -322,7 +330,7 @@ msgstr "Нет"
 msgid "Song staffed"
 msgstr "Песня укомплектована"
 
-#: sbsong/views.py:132
+#: sbsong/views.py:137
 msgid "Song successfully removed"
 msgstr "Песня успешно удалена"
 
@@ -651,3 +659,4 @@ msgstr "Выступления"
 #: songbook/jinja2/base.html:58
 msgid "Log out"
 msgstr "Выйти"
+
