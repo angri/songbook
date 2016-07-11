@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import messages
-from django.db.models import Count
+from django.db.models import Count, Min
 from django.conf import settings
 
 import sbsong.models
@@ -28,6 +28,11 @@ def view_gig(request, slug):
     empty_parts_by_song_id = defaultdict(list)
     songwatchers = sbsong.models.SongWatcher.objects.filter(user=request.user,
                                                             song__gig=gig)
+    mine_readiness = dict(
+        gig.songs.filter(parts__songperformer__performer=request.user)
+                 .annotate(mr=Min('parts__songperformer__readiness'))
+                 .values_list('pk', 'mr')
+    )
     mine_song_ids = set(
         gig.songs.filter(parts__songperformer__performer=request.user)
                  .values_list('pk', flat=True)
@@ -46,6 +51,8 @@ def view_gig(request, slug):
         if song.is_watched:
             song.updated_since_last_seen = (song.changed_at > last_seen)
         song.is_mine = song.id in mine_song_ids
+        if song.is_mine:
+            song.mine_readiness = mine_readiness[song.pk]
     for empty_part in empty_parts:
         empty_parts_by_song_id[empty_part.song_id].append(empty_part)
     for song in unstaffed_songs:

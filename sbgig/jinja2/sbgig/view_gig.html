@@ -31,6 +31,10 @@
           {% for song in songs[key] %}
             <li class="{{ key }}">
               {{ macros.song(song, song.updated_since_last_seen) }}
+              {% if song.is_mine and song.mine_readiness < song.readiness %}
+                <span class="glyphicon glyphicon-warning-sign text-warning"
+                  title="{{ _("Your readiness level in this song is below average. Consider practicing more or giving up on the part.") }}"></span>
+              {% endif %}
               {% if song.desirable_parts %}
                 <br>
                 {{ _("Desirable: %(parts)s", parts=macros.csparts(song.desirable_parts, user_plays)) }}
