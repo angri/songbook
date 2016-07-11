@@ -84,8 +84,8 @@ span.songlink-updated {
 span.songlink .artist {
   color: gray;
 }
-.staffed-watched + .staffed-other:before,
-.unstaffed-watched + .unstaffed-other:before {
+.staffed-mine + .staffed-other:before,
+.unstaffed-mine + .unstaffed-other:before {
   content: "";
   border-top: 1px dashed #ccc;
   display: block;

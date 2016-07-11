@@ -28,11 +28,15 @@ def view_gig(request, slug):
     empty_parts_by_song_id = defaultdict(list)
     songwatchers = sbsong.models.SongWatcher.objects.filter(user=request.user,
                                                             song__gig=gig)
+    mine_song_ids = set(
+        gig.songs.filter(parts__songperformer__performer=request.user)
+                 .values_list('pk', flat=True)
+    )
     songwatchers = dict(songwatchers.values_list('song_id', 'last_seen'))
     songs = {
-        'staffed-watched': [],
+        'staffed-mine': [],
         'staffed-other': [],
-        'unstaffed-watched': [],
+        'unstaffed-mine': [],
         'unstaffed-other': [],
     }
     for song in itertools.chain(staffed_songs, unstaffed_songs):
@@ -41,18 +45,19 @@ def view_gig(request, slug):
         song.updated_since_last_seen = None
         if song.is_watched:
             song.updated_since_last_seen = (song.changed_at > last_seen)
+        song.is_mine = song.id in mine_song_ids
     for empty_part in empty_parts:
         empty_parts_by_song_id[empty_part.song_id].append(empty_part)
     for song in unstaffed_songs:
         song.unstaffed_parts = empty_parts_by_song_id.get(song.id, ())
-        if song.is_watched:
-            songs['unstaffed-watched'].append(song)
+        if song.is_mine:
+            songs['unstaffed-mine'].append(song)
         else:
             songs['unstaffed-other'].append(song)
     for song in staffed_songs:
         song.desirable_parts = empty_parts_by_song_id.get(song.id, ())
-        if song.is_watched:
-            songs['staffed-watched'].append(song)
+        if song.is_mine:
+            songs['staffed-mine'].append(song)
         else:
             songs['staffed-other'].append(song)
     comments = gig.comments.filter(
