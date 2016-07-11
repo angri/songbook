@@ -35,7 +35,7 @@
                 {% for gig in future_gigs[::-1] %}
                   <li><a href="{{ url("sbgig:view-gig", slug=gig.slug) }}" class="gig">{#
                     #}<span class="gigname">{{ gig.title }}</span>
-                    <span class="gigdate">{{ gig.date }}</span>{#
+                    <span class="gigdate">{{ gig.date|format_date("short") }}</span>{#
                   #}</a></li>
                 {% endfor %}
                 {% if future_gigs and past_gigs %}
@@ -44,7 +44,7 @@
                 {% for gig in past_gigs[::-1] %}
                   <li><a href="{{ url("sbgig:view-gig", slug=gig.slug) }}" class="gig gig-past">{#
                     #}<span class="gigname">{{ gig.title }}</span>
-                    <span class="gigdate">{{ gig.date }}</span>{#
+                    <span class="gigdate">{{ gig.date|format_date("short") }}</span>{#
                   #}</a></li>
                 {% endfor %}
               {% endwith %}

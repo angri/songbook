@@ -4,9 +4,6 @@
 .navbar a.gig .gigdate {
   opacity: 0.5;
 }
-.navbar a.gig .gigdate:before {
-  content: " / ";
-}
 
 .textdiff .added,
 .textdiff .removed {
