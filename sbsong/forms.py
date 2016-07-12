@@ -88,7 +88,8 @@ class JoinSongPartForm(BootstrapModelForm):
 
 class JoinSongPartFormWithPerformerSelect(BootstrapModelForm):
     performer = forms.ModelChoiceField(
-        queryset=User.objects.all().order_by('username')
+        queryset=User.objects.all().order_by('username'),
+        widget=forms.Select(attrs={'required': 'true'})
     )
 
     class Meta(JoinSongPartForm.Meta):
