@@ -5,6 +5,13 @@
   opacity: 0.5;
 }
 
+input[type=range].form-control {
+  padding: 0;
+  /* these bootstrap styles break appearance of range slider */
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
 .textdiff .added,
 .textdiff .removed {
   margin-right: 0.3em;
@@ -61,6 +68,9 @@ ul#partsinfo .part-edit-form {
 }
 ul#partsinfo ul.performers li {
   padding-left: 2em;
+}
+ul#partsinfo .part-edit-form form {
+  width: 100%;
 }
 ul#partsinfo .rangeslider .display-value {
   display: block;

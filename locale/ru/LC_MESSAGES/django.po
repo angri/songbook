@@ -180,7 +180,7 @@ msgstr "Почти выучено"
 
 #: sbsong/models.py:126
 msgid "Mastered"
-msgstr "Играю свободно"
+msgstr "Исполняю свободно"
 
 #: sbsong/models.py:153
 #, python-format
