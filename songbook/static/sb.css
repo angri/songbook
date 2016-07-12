@@ -61,9 +61,9 @@ ul#partsinfo .remove-part-form > form {
   display: inline-block;
   margin-bottom: 0;
 }
-ul#partsinfo .join-form,
-ul#partsinfo .leave-form,
-ul#partsinfo .part-edit-form {
+ul#partsinfo .join-form form,
+ul#partsinfo .leave-form form,
+ul#partsinfo .part-edit-form form {
   margin: 1em 0;
 }
 ul#partsinfo ul.performers li {
