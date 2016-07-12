@@ -183,6 +183,7 @@ Comments will not be copied. This original song will be left intact.
 
           <div id="join-part-{{ part_info.part.pk }}-form" class="join-form collapse song-editing">
             <form class="well well-sm" action="{{ url('sbsong:join-song-part', part_info.part.pk) }}">
+              <label>{{ _("Add a new performer to a part") }}</label>
               {{ csrf(csrf_token) }}
               {{ join_form.as_bootstrap_form_without_labels() }}
               <button type="submit" class="btn btn-primary">
