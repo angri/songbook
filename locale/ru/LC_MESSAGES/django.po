@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-07-12 01:13+0300\n"
+"POT-Creation-Date: 2016-07-13 01:19+0300\n"
 "PO-Revision-Date: 2016-04-10 17:46+0300\n"
 "Last-Translator: Anton Gritsay <anton@angri.ru>\n"
 "Language: ru\n"
@@ -56,8 +56,8 @@ msgid "Edit gig \"%(title)s\""
 msgstr "Редактировать выступление «%(title)s»"
 
 #: sbgig/jinja2/sbgig/edit_gig.html:16 sbsong/jinja2/sbsong/edit_song.html:16
-#: sbsong/jinja2/sbsong/view_song.html:236
-#: sbsong/jinja2/sbsong/view_song.html:353
+#: sbsong/jinja2/sbsong/view_song.html:237
+#: sbsong/jinja2/sbsong/view_song.html:354
 #: sbuser/jinja2/sbuser/edit_profile.html:33
 msgid "Save"
 msgstr "Сохранить"
@@ -66,9 +66,9 @@ msgstr "Сохранить"
 #: sbsong/jinja2/sbsong/suggest_a_song.html:12
 #: sbsong/jinja2/sbsong/view_song.html:59
 #: sbsong/jinja2/sbsong/view_song.html:136
-#: sbsong/jinja2/sbsong/view_song.html:265
-#: sbsong/jinja2/sbsong/view_song.html:357
-#: sbsong/jinja2/sbsong/view_song.html:390
+#: sbsong/jinja2/sbsong/view_song.html:266
+#: sbsong/jinja2/sbsong/view_song.html:358
+#: sbsong/jinja2/sbsong/view_song.html:391
 #: sbuser/jinja2/sbuser/change_password.html:36
 #: sbuser/jinja2/sbuser/edit_profile.html:36
 msgid "Cancel"
@@ -424,7 +424,7 @@ msgstr "Песня «%(song)s» будет удалена из выступле�
 
 #: sbsong/jinja2/sbsong/view_song.html:135
 #: sbsong/jinja2/sbsong/view_song.html:179
-#: sbsong/jinja2/sbsong/view_song.html:366
+#: sbsong/jinja2/sbsong/view_song.html:367
 msgid "Confirm remove"
 msgstr "Подтверждаю удаление"
 
@@ -445,67 +445,71 @@ msgid "Do you really want to remove part from the song?"
 msgstr "На самом деле удалить партию из песни?"
 
 #: sbsong/jinja2/sbsong/view_song.html:177
-#: sbsong/jinja2/sbsong/view_song.html:368
+#: sbsong/jinja2/sbsong/view_song.html:369
 msgid "This action can not be undone."
 msgstr "Это действие невозможно отменить."
 
-#: sbsong/jinja2/sbsong/view_song.html:189
-#: sbsong/jinja2/sbsong/view_song.html:261
-#: sbsong/jinja2/sbsong/view_song.html:386
+#: sbsong/jinja2/sbsong/view_song.html:186
+msgid "Add a new performer to a part"
+msgstr "Добавить нового исполнителя в партию"
+
+#: sbsong/jinja2/sbsong/view_song.html:190
+#: sbsong/jinja2/sbsong/view_song.html:262
+#: sbsong/jinja2/sbsong/view_song.html:387
 msgid "Add"
 msgstr "Добавить"
 
-#: sbsong/jinja2/sbsong/view_song.html:202
+#: sbsong/jinja2/sbsong/view_song.html:203
 msgid "Change participation notice or readiness"
 msgstr "Изменить примечание участия или уровень выученности"
 
-#: sbsong/jinja2/sbsong/view_song.html:208
+#: sbsong/jinja2/sbsong/view_song.html:209
 msgid "Leave the part"
 msgstr "Покинуть партию"
 
-#: sbsong/jinja2/sbsong/view_song.html:208
+#: sbsong/jinja2/sbsong/view_song.html:209
 msgid "Kick from the part"
 msgstr "Исключить из партии"
 
-#: sbsong/jinja2/sbsong/view_song.html:218
+#: sbsong/jinja2/sbsong/view_song.html:219
 #, python-format
 msgid "Do you want to kick %(who)s from the part?"
 msgstr "Действительно исключить пользователя %(who)s из партии?"
 
-#: sbsong/jinja2/sbsong/view_song.html:222
+#: sbsong/jinja2/sbsong/view_song.html:223
 msgid "Do you want to leave the part?"
 msgstr "Действительно покинуть партию?"
 
-#: sbsong/jinja2/sbsong/view_song.html:226
+#: sbsong/jinja2/sbsong/view_song.html:227
 msgid "Confirm"
 msgstr "Подтвердить"
 
-#: sbsong/jinja2/sbsong/view_song.html:252
+#: sbsong/jinja2/sbsong/view_song.html:253
 msgid "Add a part"
 msgstr "Добавить партию"
 
-#: sbsong/jinja2/sbsong/view_song.html:277
+#: sbsong/jinja2/sbsong/view_song.html:278
 msgid "Edit link"
 msgstr "Редактировать ссылку"
 
-#: sbsong/jinja2/sbsong/view_song.html:282
+#: sbsong/jinja2/sbsong/view_song.html:283
 msgid "Remove this link"
 msgstr "Удалить ссылку"
 
-#: sbsong/jinja2/sbsong/view_song.html:303
-#: sbsong/jinja2/sbsong/view_song.html:319
+#: sbsong/jinja2/sbsong/view_song.html:304
+#: sbsong/jinja2/sbsong/view_song.html:320
 msgid "show"
 msgstr "показать"
 
-#: sbsong/jinja2/sbsong/view_song.html:313
+#: sbsong/jinja2/sbsong/view_song.html:314
 msgid "YouTube video:"
 msgstr "Видео YouTube:"
 
-#: sbsong/jinja2/sbsong/view_song.html:377
+#: sbsong/jinja2/sbsong/view_song.html:378
 msgid "Add a link"
 msgstr "Добавить ссылку"
 
-#: sbsong/jinja2/sbsong/view_song.html:415
+#: sbsong/jinja2/sbsong/view_song.html:416
 msgid "Mark all as seen"
 msgstr "Все просмотрено"
 
