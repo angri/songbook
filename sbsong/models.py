@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.core import validators
 
 import sbgig.models
+import sbcomment.models
 
 
 class Instrument(models.Model):
@@ -330,9 +331,9 @@ class SongActions:
 
     @classmethod
     def song_comment_written(cls, song, user, text):
-        sbgig.models.Comment.objects.create(
+        sbcomment.models.Comment.objects.create(
             gig=song.gig, song=song, author=user,
-            text=text, comment_type=sbgig.models.Comment.CT_SONG_COMMENT
+            text=text, comment_type=sbcomment.models.Comment.CT_SONG_COMMENT
         )
         cls._update_changed_at(song, user)
 
@@ -374,9 +375,9 @@ class SongActions:
             info['changed_by'] = str(changed_by)
 
         gig = override_gig or song.gig
-        sbgig.models.Comment.objects.create(
+        sbcomment.models.Comment.objects.create(
             gig=gig, song=song, author=user, text=json.dumps(info),
-            comment_type=sbgig.models.Comment.CT_SONG_EDIT
+            comment_type=sbcomment.models.Comment.CT_SONG_EDIT
         )
         cls._update_changed_at(song, changed_by or user)
 

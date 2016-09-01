@@ -12,6 +12,7 @@ from django.conf import settings
 
 import sbsong.models
 import sbgig.models
+import sbcomment.models
 import sbgig.forms
 
 
@@ -68,7 +69,7 @@ def view_gig(request, slug):
         else:
             songs['staffed-other'].append(song)
     comments = gig.comments.filter(
-        comment_type__in=sbgig.models.Comment.GIG_ONLY_COMMENTS
+        comment_type__in=sbcomment.models.Comment.GIG_ONLY_COMMENTS
     )[:settings.SB_COMMENTS_ON_PAGE + 1]
     user_plays = set(request.user.plays.all().values_list('instrument_id',
                                                           flat=True))
@@ -97,9 +98,9 @@ def add_gig_comment(request, slug):
     text = request.POST.get('body').strip()
     if not text:
         return HttpResponse(status=400)
-    sbgig.models.Comment.objects.create(
+    sbcomment.models.Comment.objects.create(
         gig=gig, author=request.user,
-        text=text, comment_type=sbgig.models.Comment.CT_GIG_COMMENT
+        text=text, comment_type=sbcomment.models.Comment.CT_GIG_COMMENT
     )
     return JsonResponse({'result': 'ok'})
 
@@ -126,7 +127,7 @@ def _get_comments(request, gig, song):
     if not_after:
         qs = qs.filter(id__lt=not_after)
     if song is None:
-        qs = qs.filter(comment_type__in=sbgig.models.Comment.GIG_ONLY_COMMENTS)
+        qs = qs.filter(comment_type__in=sbcomment.models.Comment.GIG_ONLY_COMMENTS)
     qs = qs.select_related('song', 'gig', 'author')
     comments = list(qs[:settings.SB_COMMENTS_ON_PAGE + 1])
     songwatcher = None
