@@ -160,6 +160,7 @@ STATICFILES_DIRS = [
 
 # songbook specific settings
 SB_COMMENTS_ON_PAGE = 20
+SB_UPDATE_COMMENT_GAP = 60
 
 
 if 'SONGBOOK_LOCAL_SETTINGS' in os.environ:

@@ -32,7 +32,7 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.PROTECT,
                                null=True, blank=True,
                                related_name='comments')
-    datetime = models.DateTimeField(auto_now_add=True)
+    datetime = models.DateTimeField(auto_now=True)
     text = models.TextField(null=False, blank=False)
 
     class Meta:

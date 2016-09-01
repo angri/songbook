@@ -1,7 +1,10 @@
 import json
+from datetime import timedelta
+from collections import OrderedDict
 
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 from django.utils.translation import ugettext_noop as _
 
 import sbcomment.models
@@ -233,11 +236,59 @@ def _song_changed(song, action, user, changes, *,
         info['changed_by'] = str(changed_by)
 
     gig = override_gig or song.gig
-    sbcomment.models.Comment.objects.create(
-        gig=gig, song=song, author=user, text=json.dumps(info),
+    _create_or_update_comment(
+        gig=gig, song=song, author=user, info=info,
         comment_type=sbcomment.models.Comment.CT_SONG_EDIT
     )
     _update_changed_at(song, changed_by or user)
+
+
+def _create_or_update_comment(gig, song, author, info, comment_type):
+    min_datetime = (timezone.now()
+                    - timedelta(seconds=settings.SB_UPDATE_COMMENT_GAP))
+    last_comment = sbcomment.models.Comment.objects.filter(
+        datetime__gt=min_datetime
+    ).order_by('-datetime').first()
+    if (last_comment is not None
+            and last_comment.author == author
+            and last_comment.gig == gig
+            and last_comment.song == song
+            and last_comment.comment_type == comment_type):
+        prev_info = json.loads(last_comment.text)
+        if prev_info['action'] == info['action']:
+            changes = _merge_changes(prev_info['changes'], info['changes'])
+            if not changes:
+                last_comment.delete()
+            else:
+                info['changes'] = changes
+                last_comment.text = json.dumps(info)
+                last_comment.save()
+            return
+
+    sbcomment.models.Comment.objects.create(
+        gig=gig, song=song, author=author, comment_type=comment_type,
+        text=json.dumps(info)
+    )
+
+
+def _merge_changes(old_changes, new_changes):
+    merged = []
+    new_changes = OrderedDict(
+        ((change['title'], change['title_translatable']), change)
+        for change in new_changes
+    )
+    for change in old_changes:
+        key = (change['title'], change['title_translatable'])
+        new_change = new_changes.pop(key, None)
+        if new_change is None:
+            merged.append(change)
+            continue
+        change['new'] = new_change['new']
+        if change['prev'] != change['new']:
+            merged.append(change)
+    for change in new_changes.values():
+        merged.append(change)
+    return merged
 
 
 def _update_changed_at(song, user):
