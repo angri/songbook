@@ -253,12 +253,12 @@ def _update_changed_at(song, user):
 def _check_staffed(song, changes):
     new_staffed = False
     parts = song.parts.filter(required=True)
+    new_changes = changes
     if parts.exists():
         new_staffed = not (
             parts.annotate(num_perf=models.Count('songperformer'))
                  .filter(num_perf=0).exists()
         )
-        new_changes = changes
     if song.staffed != new_staffed:
         bools_txt = {True: _('Yes'),
                      False: _('No')}
