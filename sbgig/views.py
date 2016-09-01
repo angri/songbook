@@ -13,6 +13,7 @@ from django.conf import settings
 import sbsong.models
 import sbgig.models
 import sbcomment.models
+import sbcomment.actions
 import sbgig.forms
 
 
@@ -111,7 +112,7 @@ def add_song_comment(request, song_id):
     text = request.POST.get('body').strip()
     if not text:
         return HttpResponse(status=400)
-    sbsong.models.SongActions.song_comment_written(song, request.user, text)
+    sbcomment.actions.song_comment_written(song, request.user, text)
     return JsonResponse({'result': 'ok'})
 
 

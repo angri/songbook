@@ -10,6 +10,7 @@ from django.conf import settings
 from sbsong import forms
 from sbsong import models
 import sbgig.models
+import sbcomment.actions
 
 
 @login_required
@@ -23,7 +24,7 @@ def suggest_a_song(request, gigslug):
             new_song.changed_by = request.user
             new_song.gig = gig
             new_song.save()
-            models.SongActions.suggested_song(request.user, new_song)
+            sbcomment.actions.suggested_song(request.user, new_song)
             return HttpResponseRedirect(reverse('sbsong:view-song',
                                                 args=[new_song.pk]))
     else:
@@ -119,7 +120,7 @@ def edit_song(request, song_id):
     form = forms.SongForm(request.POST or None, instance=song)
     if form.is_valid():
         form.save()
-        models.SongActions.edited_song(request.user, song)
+        sbcomment.actions.edited_song(request.user, song)
         return HttpResponseRedirect(reverse('sbsong:view-song',
                                             args=[song.pk]))
     return render(request, 'sbsong/edit_song.html',
@@ -132,7 +133,7 @@ def remove_song(request, song_id):
     old_gig = song.gig
     song.gig = None
     song.save()
-    models.SongActions.removed_from_gig(request.user, song, old_gig)
+    sbcomment.actions.removed_from_gig(request.user, song, old_gig)
     messages.add_message(request, messages.INFO,
                          _('Song successfully removed'))
     return HttpResponseRedirect(reverse('sbgig:view-gig',
@@ -158,11 +159,11 @@ def join_song_part(request, part_id):
             defaults=join_part_form.cleaned_data
         )
         if created:
-            models.SongActions.joined_part(songperf.performer, songperf.part,
-                                           old_performers,
-                                           changed_by=request.user)
+            sbcomment.actions.joined_part(songperf.performer, songperf.part,
+                                          old_performers,
+                                          changed_by=request.user)
         else:
-            models.SongActions.edited_part_participation(
+            sbcomment.actions.edited_part_participation(
                 request.user, songperf.part, old_performers
             )
     return JsonResponse({'result': 'ok'})
@@ -181,8 +182,8 @@ def kick_from_song_part(request, part_id, performer_id):
         user = songperf.performer
         old_performers = list(part.songperformer_set.all())
         songperf.delete()
-        models.SongActions.left_part(user, part, old_performers,
-                                     changed_by=request.user)
+        sbcomment.actions.left_part(user, part, old_performers,
+                                    changed_by=request.user)
     return JsonResponse({'result': 'ok'})
 
 
@@ -194,7 +195,7 @@ def add_song_part(request, song_id):
         new_part = form.save(commit=False)
         new_part.song_id = song_id
         new_part.save()
-        models.SongActions.added_part(request.user, new_part.song, old_parts)
+        sbcomment.actions.added_part(request.user, new_part.song, old_parts)
     return JsonResponse({'result': 'ok'})
 
 
@@ -208,7 +209,7 @@ def remove_song_part(request, part_id):
         song = removed_part.song
         old_parts = list(song.parts.all())
         removed_part.delete()
-        models.SongActions.removed_part(request.user, song, old_parts)
+        sbcomment.actions.removed_part(request.user, song, old_parts)
     return JsonResponse({'result': 'ok'})
 
 
@@ -222,7 +223,7 @@ def add_song_link(request, song_id):
             notice=form.cleaned_data['notice'],
             link=form.cleaned_data['link']
         )
-        models.SongActions.added_link(request.user, new_link.song, old_links)
+        sbcomment.actions.added_link(request.user, new_link.song, old_links)
     return JsonResponse({'result': 'ok'})
 
 
@@ -236,7 +237,7 @@ def remove_song_link(request, link_id):
         old_links = list(link.song.links.all())
         song = link.song
         link.delete()
-        models.SongActions.removed_link(request.user, song, old_links)
+        sbcomment.actions.removed_link(request.user, song, old_links)
     return JsonResponse({'result': 'ok'})
 
 
@@ -247,7 +248,7 @@ def edit_song_link(request, link_id):
     if form.is_valid():
         old_links = list(models.SongLink.objects.filter(song=link.song))
         form.save()
-        models.SongActions.edited_link(request.user, link.song, old_links)
+        sbcomment.actions.edited_link(request.user, link.song, old_links)
     return JsonResponse({'result': 'ok'})
 
 
@@ -296,7 +297,7 @@ def copy_song(request, song_id):
             link.song = song
             link.save()
 
-    models.SongActions.song_copied(request.user, song, prev_gig, song_id)
+    sbcomment.actions.song_copied(request.user, song, prev_gig, song_id)
 
     return HttpResponseRedirect(reverse('sbsong:view-song',
                                         args=[song.pk]))
