@@ -289,3 +289,33 @@ def _update_readiness(song):
         return
     song.readiness = new_readiness
     song.save()
+
+
+def edited_gig(user, gig):
+    changes = []
+    track_changes_of = [
+        ('title', _('Gig name')),
+        ('date', _('Gig date')),
+        ('description', _('Description')),
+    ]
+    for field, verbose_name in track_changes_of:
+        oldval = str(gig._pristine[field] or '')
+        newval = str(getattr(gig, field))
+        if oldval != newval:
+            changes.append({
+                'title': verbose_name,
+                'title_translatable': True,
+                'prev': oldval,
+                'new': newval
+            })
+    if not changes:
+        return
+    action = (_('%(who)s (f) edited gig %(when)s')
+              if user.profile.gender == 'f' else
+              _('%(who)s (m) edited gig %(when)s'))
+    info = {'action': action, 'changes': changes}
+    sbcomment.models.Comment.objects.create(
+        gig=gig, song=None, author=user,
+        text=json.dumps(info),
+        comment_type=sbcomment.models.Comment.CT_GIG_EDIT,
+    )
