@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_noop
+from django.core.urlresolvers import reverse
 from django.core import validators
 
 import sbgig.models
@@ -60,6 +61,9 @@ class Song(models.Model):
             return "%s (by %s)" % (self.title, self.artist)
         else:
             return self.title
+
+    def get_absolute_url(self):
+        return reverse('sbsong:view-song', args=[self.id])
 
 
 class SongWatcher(models.Model):
