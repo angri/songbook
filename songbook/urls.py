@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^song/', include('sbsong.urls', namespace='sbsong')),
     url(r'^user/', include('sbuser.urls', namespace='sbuser')),
     url(r'^gig/', include('sbgig.urls', namespace='sbgig')),
+    url(r'^comments/', include('sbcomment.urls', namespace='sbcomment')),
     url(r'^', include('sbdashboard.urls', namespace='sbdashboard')),
 ]
