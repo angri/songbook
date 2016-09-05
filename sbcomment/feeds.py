@@ -36,7 +36,7 @@ class GigCommentsFeed(Feed):
         return comments
 
     def title(self, obj):
-        return "«%(gig)s»: comments and changes" % {'gig': obj.title}
+        return ugettext("%(gig)s: comments and changes") % {'gig': obj.title}
 
     def link(self, obj):
         return obj.get_absolute_url()
