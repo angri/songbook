@@ -1,9 +1,11 @@
 import json
+from datetime import timedelta
 
 from django.shortcuts import get_object_or_404
 from django.contrib.syndication.views import Feed
 from django.conf import settings
 from django.utils.translation import ugettext_noop as _, ugettext
+from django.utils import timezone
 
 from songbook.jinja2env import format_datetime
 import sbgig.models
@@ -11,7 +13,6 @@ import sbcomment.models
 
 
 class GigCommentsFeed(Feed):
-    # title_template = "sbcomment/gig_feed_title.html"
     description_template = "sbcomment/gig_feed_desc.html"
     EDIT_COMMENTS = set((
         sbcomment.models.Comment.CT_SONG_EDIT,
@@ -22,7 +23,10 @@ class GigCommentsFeed(Feed):
         return get_object_or_404(sbgig.models.Gig, slug=slug)
 
     def items(self, obj):
-        comments = obj.comments.all()[:settings.SB_COMMENTS_ON_PAGE + 1]
+        max_datetime = (timezone.now()
+                        - timedelta(seconds=settings.SB_UPDATE_COMMENT_GAP))
+        comments = obj.comments.filter(datetime__lte=max_datetime)
+        comments = comments[:settings.SB_COMMENTS_ON_PAGE]
         for comment in comments:
             comment.data = None
             comment.is_edit = False
