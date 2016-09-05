@@ -1,0 +1,15 @@
+{%- import "_macros.html" as macros -%}
+{% if obj.is_edit -%}
+<pre>
+{% for change in obj.data['changes'] -%}
+<strong>{{ _(change['title']) if change['title_translatable'] else change['title'] }}</strong>
+{%- if change['value_translatable'] %}
+{{ _(change['prev'])|unidiff(_(change['new'])) }}
+{%- else %}
+{{ change['prev']|unidiff(change['new']) }}
+{%- endif %}
+{% endfor -%}
+</pre>
+{%- else -%}
+  {{ obj.text|markdown_safe }}
+{%- endif -%}
