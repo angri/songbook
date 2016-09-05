@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 
 class Gig(models.Model):
@@ -19,3 +20,6 @@ class Gig(models.Model):
 
     def __str__(self):
         return "%s (%s)" % (self.title, self.date)
+
+    def get_absolute_url(self):
+        return reverse('sbgig:view-gig', args=[self.slug])
