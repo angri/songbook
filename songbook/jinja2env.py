@@ -181,6 +181,29 @@ def textdiff(prev, new):
     return jinja2.Markup(''.join(result))
 
 
+def unidiff(prev, new):
+    if prev and not prev.endswith('\n'):
+        prev = prev + '\n'
+    if new and not new.endswith('\n'):
+        new = new + '\n'
+
+    prev = prev.splitlines(True)
+    new = new.splitlines(True)
+    sm = difflib.SequenceMatcher(a=prev, b=new)
+    result = []
+    for opcode, i1, i2, j1, j2 in sm.get_opcodes():
+        if opcode == 'equal':
+            for line in prev[i1:i2]:
+                result.append(' ' + line)
+        elif opcode in {'replace', 'delete'}:
+            for line in prev[i1:i2]:
+                result.append('-' + line)
+        if opcode in {'replace', 'insert'}:
+            for line in new[j1:j2]:
+                result.append('+' + line)
+    return ''.join(result)
+
+
 def pie(value, title=None):
     if 23 <= value <= 27:
         value_rough = 25
@@ -211,6 +234,7 @@ def environment(**options):
     env.filters.update({
         'pie': pie,
         'textdiff': textdiff,
+        'unidiff': unidiff,
         'format_datedelta': format_datedelta,
         'format_timedelta': format_timedelta,
         'format_datetime': format_datetime,
