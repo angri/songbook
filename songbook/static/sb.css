@@ -130,18 +130,36 @@ a.username:first-letter {
   display: block;
 }
 .comments-stream .comment {
-  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #eee;
 }
 .comments-stream .comment-header {
-  background-color: #f6f6fa;
   padding: 0.8ex 0.2ex;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.2em;
   color: #888;
 }
-.comments-stream .song-changed-comment-body dd {
-  font-family: monospace;
+.comments-stream .comment-edit .comment-header {
+  margin-top: 0.5em;
+  font-size: 11pt;
+}
+.comments-stream .comment-edit .comment-body dl {
+  margin-bottom: 10px;
+  font-size: 10pt;
+}
+.comments-stream .comment-edit .comment-body dt {
+  color: #777;
+}
+.comments-stream .comment-edit .comment-body dd {
   overflow: auto;
   white-space: nowrap;
+  opacity: 0.8;
+}
+.comments-stream .comment-text .comment-body {
+  font-size: 13pt;
+}
+.comments-stream .comment-text .comment-header {
+  background-color: #f3f3f7;
+  margin-bottom: 1em;
 }
 .comment-unread .comment-header {
   font-weight: bold;

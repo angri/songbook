@@ -51,7 +51,7 @@ sb.comments = function(container) {
         container.find('.comments-stream').prepend(newComments.hide());
         comments.limitNumComments(numCommentsToDisplay);
         setTimeout(function() {
-          container.find('.comment:hidden').slideDown();
+          newComments.slideDown();
           container.trigger('newCommentsLoaded', [newComments]);
         }, 0);
       }
