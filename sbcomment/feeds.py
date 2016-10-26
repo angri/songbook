@@ -75,9 +75,10 @@ class GigCommentsFeed(Feed):
 
     def item_link(self, item):
         if item.song:
-            return item.song.get_absolute_url()
+            url = item.song.get_absolute_url()
         else:
-            return item.gig.get_absolute_url()
+            url = item.gig.get_absolute_url()
+        return "%s#c%s" % (url, item.id)
 
     def item_guid(self, item):
         return str(item.id)
