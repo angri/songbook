@@ -54,7 +54,7 @@ class GigCommentsFeed(Feed):
         elif item.comment_type == sbcomment.models.Comment.CT_GIG_COMMENT:
             action = (_('%(who)s (f) commented gig %(when)s')
                       if item.author.profile.gender == 'f' else
-                      _('%(who)s (m) commented gig  %(when)s'))
+                      _('%(who)s (m) commented gig %(when)s'))
         action = ugettext(action) % dict(who=item.author,
                                          when=format_datetime(item.datetime))
         if item.is_edit and 'changed_by' in item.data:
