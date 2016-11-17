@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-09-06 01:43+0300\n"
+"POT-Creation-Date: 2016-11-17 23:19+0300\n"
 "PO-Revision-Date: 2016-04-10 17:46+0300\n"
 "Last-Translator: Anton Gritsay <anton@angri.ru>\n"
 "Language: ru\n"
@@ -220,7 +220,7 @@ msgstr "%(who)s написала комментарий к выступлени�
 
 #: sbcomment/feeds.py:57
 #, python-format
-msgid "%(who)s (m) commented gig  %(when)s"
+msgid "%(who)s (m) commented gig %(when)s"
 msgstr "%(who)s написал комментарий к выступлению %(when)s"
 
 #: sbcomment/feeds.py:61
@@ -675,20 +675,20 @@ msgstr "Готовность: %(readiness)s%%"
 msgid "Show more"
 msgstr "Показать еще"
 
-#: songbook/jinja2/_macros.html:99
+#: songbook/jinja2/_macros.html:100
 #, python-format
 msgid "changes made by %(who)s"
 msgstr "изменения внесены %(who)s"
 
-#: songbook/jinja2/_macros.html:139
+#: songbook/jinja2/_macros.html:140
 msgid "Your comment"
 msgstr "Ваш комментарий"
 
-#: songbook/jinja2/_macros.html:143
+#: songbook/jinja2/_macros.html:144
 msgid "Send comment"
 msgstr "Отправить"
 
-#: songbook/jinja2/_macros.html:165
+#: songbook/jinja2/_macros.html:166
 msgid "Dismiss"
 msgstr "Закрыть"
 
