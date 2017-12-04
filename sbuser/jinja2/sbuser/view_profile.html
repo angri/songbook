@@ -41,28 +41,14 @@
   </div>
 
   <div class="col-sm-8">
-    {% if performs %}
+    {% if performs_upcoming %}
       <h3>{{ _("I participate in songs") }}</h3>
-      <dl>
-        {% for gig, gigsongs in performs %}
-          <dt><h4>{{ macros.gig(gig) }}</h4></dt>
-          <dd><ol>
-            {% for song, songparts in gigsongs %}
-              <li>
-                {{ macros.song(song) }}
-                <p>
-                  {% for part, song_performer in songparts %}
-                    {{ macros.part(part) -}}
-                    {% if song_performer.notice -%}
-                      : <span class="text-muted">{{ song_performer.notice }}</span>
-                    {%- endif -%}
-                    {%- if not loop.last %}, {% endif %}
-                  {% endfor %}
-                </p>
-              </li>
-            {% endfor %}
-          </ol></dd>
-        {% endfor %}
+      <dl>{{ macros.user_performs(performs_upcoming) }}</dl>
+    {% endif %}
+    {% if performs_past %}
+      <a data-toggle="collapse" href="#past-gigs" class="btn btn-default">{{ _("Show past gigs") }}</a>
+      <dl id="past-gigs" class="collapse">
+        {{ macros.user_performs(performs_past) }}
       </dl>
     {% endif %}
   </div>

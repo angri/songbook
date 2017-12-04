@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from django.contrib import messages
 
 import sbsong.models
@@ -11,9 +12,9 @@ import sbuser.forms
 import sbuser.models
 
 
-def _get_user_performs(user):
+def _get_user_performs(user, song_performer_qs):
     allgigs = []
-    user_performs = sbsong.models.SongPerformer.objects.filter(
+    user_performs = song_performer_qs.filter(
         performer=user, part__song__gig__isnull=False
     ).select_related(
         'part', 'part__instrument', 'part__song', 'part__song__gig'
@@ -41,11 +42,20 @@ def view_profile(request, username):
     ]
     comments = user.comments.order_by('-datetime')[:5]
     is_editable = (user == request.user or request.user.is_superuser)
-    user_performs = _get_user_performs(user)
+
+    upcoming_gigs = sbsong.models.SongPerformer.objects.filter(
+        part__song__gig__date__gte=timezone.now().date()
+    )
+    past_gigs = sbsong.models.SongPerformer.objects.filter(
+        part__song__gig__date__lt=timezone.now().date()
+    )
+    user_performs_past = _get_user_performs(user, past_gigs)
+    user_performs_upcoming = _get_user_performs(user, upcoming_gigs)
     return render(request, 'sbuser/view_profile.html',
                   {'user': user, 'all_instruments': all_instruments,
                    'comments': comments, 'is_editable': is_editable,
-                   'performs': user_performs})
+                   'performs_past': user_performs_past,
+                   'performs_upcoming': user_performs_upcoming})
 
 
 @login_required

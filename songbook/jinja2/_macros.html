@@ -168,3 +168,25 @@
     </button>
   </p>
 {% endmacro %}
+
+{% macro user_performs(performs) %}
+  {% for gig_, gigsongs in performs %}
+    <dt><h4>{{ gig(gig_) }}</h4></dt>
+    <dd><ol>
+      {% for song_, songparts in gigsongs %}
+        <li>
+          {{ song(song_) }}
+          <p>
+            {% for part_, song_performer in songparts %}
+              {{ part(part_) -}}
+              {% if song_performer.notice -%}
+                : <span class="text-muted">{{ song_performer.notice }}</span>
+              {%- endif -%}
+              {%- if not loop.last %}, {% endif %}
+            {% endfor %}
+          </p>
+        </li>
+      {% endfor %}
+    </ol></dd>
+  {% endfor %}
+{% endmacro %}
