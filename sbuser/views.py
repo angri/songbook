@@ -18,7 +18,7 @@ def _get_user_performs(user):
     ).select_related(
         'part', 'part__instrument', 'part__song', 'part__song__gig'
     ).order_by(
-        'part__song__gig', 'part__song', 'part'
+        '-part__song__gig', 'part__song', 'part'
     )
     for up in user_performs:
         if not allgigs or allgigs[-1][0].id != up.part.song.gig.id:
